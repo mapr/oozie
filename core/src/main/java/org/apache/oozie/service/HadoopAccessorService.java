@@ -246,6 +246,7 @@ public class HadoopAccessorService implements Service {
     }
 
     public void destroy() {
+      MaprJobClient.shutdown();
     }
 
     public Class<? extends Service> getInterface() {
@@ -357,7 +358,8 @@ public class HadoopAccessorService implements Service {
             UserGroupInformation ugi = getUGI(user);
             JobClient jobClient = ugi.doAs(new PrivilegedExceptionAction<JobClient>() {
                 public JobClient run() throws Exception {
-                    return new JobClient(conf);
+                    //return new JobClient(conf);
+                    return new MaprJobClient(conf);
                 }
             });
             Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(new Text("mr token"));
