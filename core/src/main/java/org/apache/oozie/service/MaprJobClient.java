@@ -149,9 +149,48 @@ public class MaprJobClient extends JobClient {
     return cp;
   }
 
+   RunningJob submitJobDirectly(final JobConf job) throws 
+                                                 FileNotFoundException,
+                                                 IOException {
+    Callable <RunningJob> callTask = new Callable<RunningJob>() {
+      public RunningJob call() throws Exception {
+        return MaprJobClient.super.submitJob(job);
+      }
+    };
+    List<Callable<RunningJob>> callableList =
+      new ArrayList<Callable<RunningJob>>();
+    callableList.add(callTask);
+
+    RunningJob runJob = null;
+    try {
+      XLog.getLog(getClass()).debug("Making direct jobSubmit call");
+      runJob = threadExecutor.invokeAny(callableList, timeOut,
+        TimeUnit.MILLISECONDS);
+      XLog.getLog(getClass()).debug("jobClient call is successful");
+    } catch (InterruptedException e) {
+      XLog.getLog(getClass()).debug("JobClient call got InterruptedExeption");
+    } catch (ExecutionException e) {
+      XLog.getLog(getClass()).debug("JobClient call got ExecutionException");
+    } catch (TimeoutException e) {
+      XLog.getLog(getClass()).debug("JobClient call got TimeoutException");
+    } catch (Exception e) {
+      if (e instanceof FileNotFoundException)
+        throw (FileNotFoundException) e;
+      if (e instanceof IOException)
+        throw (IOException) e;
+    }
+
+    return runJob;
+  }
 
   public RunningJob submitJob(final JobConf job) throws FileNotFoundException,
                                                 IOException {
+
+    if (System.getProperty("user.name").compareTo(job.getUser()) == 0) {
+      //if oozie server is running as job user, directly call the jobSubmit
+      //directly.
+      return submitJobDirectly(job);
+    }
 
     // Submit the job from another process with owner set to job user.
     // Run task-controller binary to run 'submitJob' as job user.
@@ -165,6 +204,18 @@ public class MaprJobClient extends JobClient {
     JobID newJobId;
     
     try {
+
+      String suexecExe = System.getProperty("oozie.home.dir") + 
+        "/../../server/suexec";
+      File suexecFile = new File(suexecExe);
+      if (!suexecFile.exists()) {
+        //Missing suexec binary. Can not impersonate an user.
+        XLog.getLog(getClass()).warn("Missing file: " + suexecExe);
+        throw new IOException("Can not impersonate different user");
+      }
+
+      //Change the owner of action directory to get perms to create
+      //'output' directory.
    
       jobIdFile.createNewFile();
       jobIdFile.setWritable(true, false); 
@@ -176,12 +227,9 @@ public class MaprJobClient extends JobClient {
       
       // 2) Run the task-controller to submit job in the timeout frame work.
       
-      String suexecExe = System.getProperty("oozie.home.dir") + 
-        "/../../server/suexec";
+
       String[] commandArray;
 
-      //Change the owner of action directory to get perms to create
-      //'output' directory.
       List<String> chownCommand = new ArrayList<String>();
       if (System.getProperty("user.name").compareTo("root") != 0) {
         chownCommand.add("sudo");
