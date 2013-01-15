@@ -45,7 +45,7 @@ The examples create output under the =examples/output-data/${EXAMPLE_NAME}= dire
 *How to run an example application:*
 
 <verbatim>
-$ oozie job -oozie http://localhost:8080/oozie -config examples/apps/map-reduce/job.properties -run
+$ oozie job -oozie http://localhost:11000/oozie -config examples/apps/map-reduce/job.properties -run
 .
 job: 14-20090525161321-oozie-tucu
 </verbatim>
@@ -53,7 +53,7 @@ job: 14-20090525161321-oozie-tucu
 Check the workflow job status:
 
 <verbatim>
-$ oozie job -oozie http://localhost:8080/oozie -info 14-20090525161321-oozie-tucu
+$ oozie job -oozie http://localhost:11000/oozie -info 14-20090525161321-oozie-tucu
 .
 .----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Workflow Name :  map-reduce-wf
@@ -73,13 +73,13 @@ mr-node                 map-reduce  OK         end         job_200904281535_0254
 .----------------------------------------------------------------------------------------------------------------------------------------------------------------
 </verbatim>
 
-To check the workflow job status via the Oozie web console, with a browser go to =http://localhost:8080/oozie=.
+To check the workflow job status via the Oozie web console, with a browser go to =http://localhost:11000/oozie=.
 
 To avoid having to provide the =-oozie= option with the Oozie URL with every =oozie= command, set =OOZIE_URL= env 
 variable to the Oozie URL in the shell environment. For example:
 
 <verbatim>
-$ export OOZIE_URL="http://localhost:8080/oozie"
+$ export OOZIE_URL="http://localhost:11000/oozie"
 $
 $ oozie job -info 14-20090525161321-oozie-tucu
 </verbatim>
@@ -101,7 +101,7 @@ import java.util.Properties;
     ...
 .
     // get a OozieClient for local Oozie
-    OozieClient wc = new OozieClient("http://bar:8080/oozie");
+    OozieClient wc = new OozieClient("http://bar:11000/oozie");
 .
     // create a workflow job configuration and set the workflow application path
     Properties conf = wc.createConfiguration();
