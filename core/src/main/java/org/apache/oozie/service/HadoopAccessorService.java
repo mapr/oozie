@@ -355,6 +355,9 @@ public class HadoopAccessorService implements Service {
         String jobTracker = conf.get("mapred.job.tracker");
         validateJobTracker(jobTracker);
         try {
+            /* MapR change: We dont support kerberos now. Commenting out the 
+               following lines. 
+             
             UserGroupInformation ugi = getUGI(user);
             JobClient jobClient = ugi.doAs(new PrivilegedExceptionAction<JobClient>() {
                 public JobClient run() throws Exception {
@@ -364,11 +367,13 @@ public class HadoopAccessorService implements Service {
             });
             Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(new Text("mr token"));
             conf.getCredentials().addToken(new Text("mr token"), mrdt);
-            return jobClient;
+            */
+            return new MaprJobClient(conf);
         }
+        /*
         catch (InterruptedException ex) {
             throw new HadoopAccessorException(ErrorCode.E0902, ex);
-        }
+        } MapR change */
         catch (IOException ex) {
             throw new HadoopAccessorException(ErrorCode.E0902, ex);
         }

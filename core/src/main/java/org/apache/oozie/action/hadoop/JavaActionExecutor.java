@@ -707,8 +707,9 @@ public class JavaActionExecutor extends ActionExecutor {
                 XLog.getLog(getClass()).debug("Submitting the job through Job Client for action " + action.getId());
 
                 // setting up propagation of the delegation token.
-                Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(new Text("mr token"));
-                launcherJobConf.getCredentials().addToken(new Text("mr token"), mrdt);
+                // MapR change: We dont support kerberos now.
+                //Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(new Text("mr token"));
+                //launcherJobConf.getCredentials().addToken(new Text("mr token"), mrdt);
 
                 // insert credentials tokens to launcher job conf if needed
                 if (needInjectCredentials()) {
