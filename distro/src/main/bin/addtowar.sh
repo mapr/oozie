@@ -128,6 +128,8 @@ function getHadoopJars() {
     cleanUp
     exit -1;
   fi
+  #MapR change - add maprfs jars to it
+  hadoopJars=$hadoopJars:maprfs-[0-9]*.jar
 }
 
 function printUsage() {
