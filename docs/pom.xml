@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -16,8 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.oozie</groupId>
@@ -30,7 +28,6 @@
     <description>Apache Oozie Docs</description>
     <name>Apache Oozie Docs</name>
     <packaging>war</packaging>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.oozie</groupId>
@@ -38,21 +35,20 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
-                 <groupId>org.apache.rat</groupId>
-                 <artifactId>apache-rat-plugin</artifactId>
-                 <configuration>
-                     <excludeSubProjects>false</excludeSubProjects>
-                     <excludes>
-                         <!-- excluding all as the root POM does the full check-->
-                         <exclude>**</exclude>
-                     </excludes>
-                 </configuration>
-             </plugin>
-             <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludeSubProjects>false</excludeSubProjects>
+                    <excludes>
+                        <!-- excluding all as the root POM does the full check-->
+                        <exclude>**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
@@ -70,7 +66,6 @@
             </plugin>
         </plugins>
     </build>
-
     <profiles>
         <profile>
             <id>generateDocs</id>
@@ -89,8 +84,7 @@
                         <version>2.2</version>
                         <reportSets>
                             <reportSet>
-                                <reports>
-                                </reports>
+                                <reports></reports>
                             </reportSet>
                         </reportSets>
                     </plugin>
@@ -108,13 +102,19 @@
                         <dependencies>
                             <dependency>
                                 <!-- Customized Doxia Maven Plugin for twiki documentation -->
-                                <groupId>org.apache.maven.doxia</groupId>
+                                <groupId>com.mapr.maven.doxia</groupId>
                                 <artifactId>doxia-module-twiki</artifactId>
                                 <version>1.0-alpha-9.2y</version>
+                                <exclusions>
+                                    <exclusion>
+                                        <groupId>org.apache.maven.doxia</groupId>
+                                        <artifactId>doxia-core</artifactId>
+                                    </exclusion>
+                                </exclusions>
                             </dependency>
                             <dependency>
                                 <!-- Customized Doxia Maven Plugin for twiki documentation -->
-                                <groupId>org.apache.maven.doxia</groupId>
+                                <groupId>com.mapr.maven.doxia</groupId>
                                 <artifactId>doxia-core</artifactId>
                                 <version>1.0-alpha-9.2y</version>
                             </dependency>
@@ -166,7 +166,5 @@
             </build>
         </profile>
     </profiles>
-
-
 </project>
 
