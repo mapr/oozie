@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -130,6 +130,7 @@ function getHadoopJars() {
     exit -1;
   fi
   #MapR change - add maprfs jars to it
+  hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
   hadoopJars=$hadoopJars:maprfs-[0-9]*.jar
 }
 
