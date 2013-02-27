@@ -129,8 +129,13 @@ function getHadoopJars() {
     cleanUp
     exit -1;
   fi
-  #MapR change - add maprfs jars to it
-  hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
+  #
+  # MapR change - add maprfs jars to the hadoopJars list.  If the 
+  # maprfs-jni jar exists, include the jar in the list of hadoop jars.
+  #
+  if [[ -n $(find ${hadoopHome} -type f -name "maprfs-jni*.jar" -print) ]]; then
+      hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
+  fi
   hadoopJars=$hadoopJars:maprfs-[0-9]*.jar
 }
 
