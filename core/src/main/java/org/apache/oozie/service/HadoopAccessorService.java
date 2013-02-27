@@ -395,7 +395,8 @@ public class HadoopAccessorService implements Service {
             throw new HadoopAccessorException(ErrorCode.E0903);
         }
 
-        checkSupportedFilesystem(uri);
+        // MapR change. 
+        // checkSupportedFilesystem(uri);
 
         String nameNode = uri.getAuthority();
         if (nameNode == null) {

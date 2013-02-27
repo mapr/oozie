@@ -264,6 +264,13 @@
             Supported values are: simple | kerberos | #AUTHENTICATION_HANDLER_CLASSNAME#
         </description>
     </property>
+    <property>
+        <name>oozie.service.HadoopAccessorService.supported.filesystems</name>
+        <value>maprfs</value>
+        <decscription>
+          MapR fs suppport
+        </decscription>
+    </property>
 
     <property>
         <name>oozie.authentication.token.validity</name>

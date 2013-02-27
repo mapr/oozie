@@ -71,7 +71,7 @@ function checkFileDoesNotExist() {
 
 #finds a file under a directory any depth, file returns in variable RET
 function findFile() {
-   RET=`find -H ${1} -name ${2} | grep -e "[0-9.a${hadoopJarsSuffix}].jar"`
+   RET=`find -H ${1} -name ${2} | grep -e "[0-9.a-z${hadoopJarsSuffix}].jar"`
    RET=`echo ${RET} | sed "s/ .*//"`
    if [ "${RET}" = "" ]; then
      echo
