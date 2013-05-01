@@ -26,7 +26,7 @@
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.0-mapr</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -105,18 +105,28 @@
 
     <distributionManagement>
         <repository>
-          <id>apache.staging.https</id>
-          <name>Apache Release Distribution Repository</name>
-          <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
+          <id>mapr.releases</id>
+          <name>${distMgmtReleasesName}</name>
+          <url>${distMgmtReleasesUrl}</url>
         </repository>
         <snapshotRepository>
-          <id>apache.snapshots.https</id>
+          <id>mapr.snapshots</id>
           <name>${distMgmtSnapshotsName}</name>
           <url>${distMgmtSnapshotsUrl}</url>
         </snapshotRepository>
     </distributionManagement>
 
     <repositories>
+        <repository>
+          <id>repository.mapr.com</id>
+          <url>http://repository.mapr.com/maven/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
         <repository>
             <id>central</id>
             <url>http://repo1.maven.org/maven2</url>
