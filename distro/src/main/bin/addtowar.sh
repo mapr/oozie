@@ -136,7 +136,7 @@ function getHadoopJars() {
   if [[ -n $(find ${hadoopHome} -type f -name "maprfs-jni*.jar" -print) ]]; then
       hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
   fi
-  hadoopJars=$hadoopJars:maprfs-[0-9]*.jar
+  hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
 }
 
 function printUsage() {
