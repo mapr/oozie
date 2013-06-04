@@ -206,7 +206,7 @@ public class MaprJobClient extends JobClient {
     try {
 
       String suexecExe = System.getProperty("oozie.home.dir") + 
-        "/../../server/suexec";
+        "/../../server/oozieexecute";
       File suexecFile = new File(suexecExe);
       if (!suexecFile.exists()) {
         //Missing suexec binary. Can not impersonate an user.
@@ -227,48 +227,20 @@ public class MaprJobClient extends JobClient {
       
       // 2) Run the task-controller to submit job in the timeout frame work.
       
-
       String[] commandArray;
 
-      List<String> chownCommand = new ArrayList<String>();
-      if (System.getProperty("user.name").compareTo("root") != 0) {
-        chownCommand.add("sudo");
-      }
-      chownCommand.add(suexecExe);
-      chownCommand.add("root");
-      chownCommand.add("/usr/bin/hadoop");
-      chownCommand.add("fs");
-      chownCommand.add("-chown");
-      chownCommand.add("-R");
-      chownCommand.add(job.getUser());
-      chownCommand.add(job.get("oozie.action.dir.path"));
-      commandArray = chownCommand.toArray(new String[0]);
-      XLog.getLog(getClass()).debug("sudo cmd: " + chownCommand.toString());
-      ShellCommandExecutor shExecChown = new ShellCommandExecutor(commandArray,
-        null,null);
-      shExecChown.execute();
-      XLog.getLog(getClass()).debug("sudo chown cmd exit code: " 
-        + shExecChown.getExitCode());
-      
- 
       List<String> command = new ArrayList<String>();
-      if (System.getProperty("user.name").compareTo("root") != 0) {
-        command.add("sudo");
-      }
       command.add(suexecExe);
       command.add(job.getUser());
-        
-      File jvm =                                  // use same jvm as parent
-        new File(new File(System.getProperty("java.home"), "bin"), "java");
-      command.add(jvm.toString());
+      command.add(job.get("oozie.action.dir.path"));
+      command.add(jobConfFile.toString());
+      command.add(jobIdFile.toString());
+
       command.add("-classpath");
       command.add(getSubmitjobClasspath());
  
       String libraryPath = System.getProperty("java.library.path");
       command.add("-Djava.library.path=" + libraryPath);
-      command.add(MaprSubmitJob.class.getName());
-      command.add(jobConfFile.toString());
-      command.add(jobIdFile.toString());
  
       commandArray = command.toArray(new String[0]);
       XLog.getLog(getClass()).debug("sudo cmd: " + command.toString());
