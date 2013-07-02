@@ -260,6 +260,7 @@ public class HadoopAccessorService implements Service {
     }
 
     public void destroy() {
+        MaprJobClient.shutdown();
     }
 
     public Class<? extends Service> getInterface() {
@@ -368,6 +369,8 @@ public class HadoopAccessorService implements Service {
         String jobTracker = conf.get(JavaActionExecutor.HADOOP_JOB_TRACKER);
         validateJobTracker(jobTracker);
         try {
+
+            /* MapR change: We dont support kerberos now. Comment following lines
             UserGroupInformation ugi = getUGI(user);
             JobClient jobClient = ugi.doAs(new PrivilegedExceptionAction<JobClient>() {
                 public JobClient run() throws Exception {
@@ -376,11 +379,13 @@ public class HadoopAccessorService implements Service {
             });
             Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(getMRDelegationTokenRenewer(conf));
             conf.getCredentials().addToken(MR_TOKEN_ALIAS, mrdt);
-            return jobClient;
+            */
+            return new MaprJobClient(conf);
         }
+        /*
         catch (InterruptedException ex) {
             throw new HadoopAccessorException(ErrorCode.E0902, ex.getMessage(), ex);
-        }
+        } MapR change */
         catch (IOException ex) {
             throw new HadoopAccessorException(ErrorCode.E0902, ex.getMessage(), ex);
         }
@@ -402,7 +407,9 @@ public class HadoopAccessorService implements Service {
             throw new HadoopAccessorException(ErrorCode.E0903);
         }
 
+        /* MapR change
         checkSupportedFilesystem(uri);
+         */
 
         String nameNode = uri.getAuthority();
         if (nameNode == null) {

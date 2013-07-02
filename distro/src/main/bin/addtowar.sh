@@ -71,7 +71,8 @@ function checkFileDoesNotExist() {
 
 #finds a file under a directory any depth, file returns in variable RET
 function findFile() {
-   RET=`find -H ${1} -name ${2} | grep -e "[0-9.a${hadoopJarsSuffix}].jar"`
+   # MapR change
+   RET=`find -H ${1} -name ${2} | grep -e "[0-9.a-zT${hadoopJarsSuffix}].jar"`
    RET=`echo ${RET} | sed "s/ .*//"`
    if [ "${RET}" = "" ]; then
      echo
@@ -130,6 +131,14 @@ function getHadoopJars() {
     cleanUp
     exit -1;
   fi
+  #
+  # MapR change - add maprfs jars to the hadoopJars list.  If the 
+  # maprfs-jni jar exists, include the jar in the list of hadoop jars.
+  #
+  if [[ -n $(find ${hadoopHome} -type f -name "maprfs-jni*.jar" -print) ]]; then
+      hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
+  fi
+  hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
 }
 
 function printUsage() {
