@@ -100,22 +100,22 @@ function getHadoopJars() {
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar"
     # MapR change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
   elif [ "${version}" = "0.20.2" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar"
     # MapR Change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
   elif [ "${version}" = "0.20.104" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
     #MapR Change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
   elif [ "${version}" = "0.20.200" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar"
     # MapR Change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
   elif [[ "${version}" =~ .*23 ]]; then
     suffix="-[0-9.]*"
     #List is separated by ":"
