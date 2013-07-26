@@ -138,7 +138,13 @@ function getHadoopJars() {
   if [[ -n $(find ${hadoopHome} -type f -name "maprfs-jni*.jar" -print) ]]; then
       hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
   fi
-  hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
+  
+  # MapR change - Check for the maprfs fat jar and inject it into the war
+  if [[ -n $(find ${hadoopHome} -name "maprfs-[0-9]*[0-9]-SNAPSHOT.jar" -print) ]]; then
+      hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9]-SNAPSHOT.jar
+  else
+      hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
+  fi
 }
 
 function printUsage() {
