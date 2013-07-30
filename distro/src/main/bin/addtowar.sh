@@ -135,10 +135,12 @@ function getHadoopJars() {
   # MapR change - add maprfs jars to the hadoopJars list.  If the 
   # maprfs-jni jar exists, include the jar in the list of hadoop jars.
   #
-  if [[ -n $(find ${hadoopHome} -type f -name "maprfs-jni*.jar" -print) ]]; then
-      hadoopJars=$hadoopJars:maprfs-jni-[0-9]*.jar
+  if [[ -n $(find ${hadoopHome} -name "maprfs-jni-[0-9]*[0-9].jar" -print) ]]; then
+      hadoopJars=$hadoopJars:maprfs-jni-[0-9]*[0-9].jar
+  elif [[ -n $(find ${hadoopHome} -name "maprfs-jni-[0-9]*[0-9]-SNAPSHOT.jar" -print) ]]; then
+      hadoopJars=$hadoopJars:maprfs-jni-[0-9]*[0-9]-SNAPSHOT.jar
   fi
-  
+ 
   # MapR change - Check for the maprfs fat jar and inject it into the war
   if [[ -n $(find ${hadoopHome} -name "maprfs-[0-9]*[0-9]-SNAPSHOT.jar" -print) ]]; then
       hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9]-SNAPSHOT.jar
