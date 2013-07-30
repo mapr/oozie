@@ -70,7 +70,8 @@ setup_catalina_opts() {
   catalina_opts="${catalina_opts} -Doozie.https.keystore.pass=${OOZIE_HTTPS_KEYSTORE_PASS}";
 
   # add required native libraries such as compression codecs
-  catalina_opts="${catalina_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}";
+  # MAPR CHANGE: Add mapr lib to the java library path
+  catalina_opts="${catalina_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib";
 
   echo "Adding to CATALINA_OPTS:     ${catalina_opts}"
 
