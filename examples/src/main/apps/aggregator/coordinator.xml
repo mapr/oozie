@@ -45,7 +45,7 @@
 
     <action>
         <workflow>
-            <app-path>${nameNode}/user/${coord:user()}/${examplesRoot}/apps/aggregator</app-path>
+            <app-path>maprfs:/user/${coord:user()}/${examplesRoot}/apps/aggregator</app-path>
             <configuration>
                 <property>
                     <name>jobTracker</name>
