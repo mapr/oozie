@@ -40,8 +40,17 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+MAPR_CONF_DIR=/opt/mapr/conf
+ENV_FILE=env.sh
 
 source ${BASEDIR}/bin/oozie-sys.sh
+
+# MapR change. Source env.sh if it exists 
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+    source ${MAPR_CONF_DIR}/env.sh 
+    echo "env.sh sourced" 
+fi
+
 
 CATALINA=${OOZIE_CATALINA_HOME:-${BASEDIR}/oozie-server}/bin/catalina.sh
 
@@ -68,6 +77,8 @@ setup_catalina_opts() {
   catalina_opts="${catalina_opts} -Doozie.base.url=${OOZIE_BASE_URL}";
   catalina_opts="${catalina_opts} -Doozie.https.keystore.file=${OOZIE_HTTPS_KEYSTORE_FILE}";
   catalina_opts="${catalina_opts} -Doozie.https.keystore.pass=${OOZIE_HTTPS_KEYSTORE_PASS}";
+  catalina_opts="${catalina_opts} -Dmapr.library.flatclass=true"; 
+  catalina_opts="${catalina_opts} ${MAPR_AUTH_CLIENT_OPTS}"; 
 
   # add required native libraries such as compression codecs
   # MAPR CHANGE: Add mapr lib to the java library path

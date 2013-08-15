@@ -147,6 +147,31 @@ function getHadoopJars() {
   else
       hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
   fi
+
+  # MapR change - Check for the maprfs fat jar and inject it into the war
+  if [[ -n $(find ${hadoopHome} -name "protobuf-java*.jar" -print) ]]; then
+      hadoopJars=$hadoopJars:protobuf-java*.jar
+  fi
+
+  # MapR change - add JPam*.jar to the maprJars list.
+  if [[ -n $(find ${maprLib} -name "JPam*.jar" -print) ]]; then
+      maprJars=$maprJars:JPam*.jar
+  fi
+
+  # MapR change - add baseutils*.jar to the maprJars list.
+  if [[ -n $(find ${maprLib} -name "baseutils*.jar" -print) ]]; then
+      maprJars=$maprJars:baseutils*.jar
+  fi
+
+  # MapR change - add JPam*.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "libprotodefs*.jar" -print) ]]; then
+      maprJars=$maprJars:libprotodefs*.jar
+  fi
+
+  # MapR change - add JPam*.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "json-*.jar" -print) ]]; then
+      maprJars=$maprJars:json-*.jar
+  fi
 }
 
 function printUsage() {
@@ -181,6 +206,8 @@ inputWar=""
 outputWar=""
 secureWeb=false
 secureWebPath=""
+maprLib=/opt/mapr/lib
+maprJars=""
 
 while [ $# -gt 0 ]
 do
@@ -325,6 +352,16 @@ if [ "${addHadoop}" = "true" ]; then
     for jar in ${hadoopJars//:/$'\n'}
     do
       findFile ${hadoopHome} ${jar}
+      jar=${RET}
+      echo ${jar}
+      cp ${jar} ${tmpWarDir}/WEB-INF/lib/
+      checkExec "copying jar ${jar} to staging"
+    done
+
+  ## adding MapR JARS 
+    for jar in ${maprJars//:/$'\n'}
+    do
+      findFile ${maprLib} ${jar}
       jar=${RET}
       echo ${jar}
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
