@@ -168,9 +168,14 @@ function getHadoopJars() {
       maprJars=$maprJars:libprotodefs*.jar
   fi
 
-  # MapR change - add JPam*.jar to the hadoopJars list.
+  # MapR change - add json*.jar to the hadoopJars list.
   if [[ -n $(find ${maprLib} -name "json-*.jar" -print) ]]; then
       maprJars=$maprJars:json-*.jar
+  fi
+
+  # MapR change - add zookeeper*.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "zookeeper-*.jar" -print) ]]; then
+      maprJars=$maprJars:zookeeper-*.jar
   fi
 }
 
