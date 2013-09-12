@@ -1,8 +1,6 @@
 # Apache Oozie
-=============
 
 ## What is Oozie
---------------
 
 Oozie is an extensible, scalable and reliable system to define, manage, schedule, and execute complex Hadoop workloads via web services. More specifically, this includes:
 
@@ -14,7 +12,6 @@ Oozie is an extensible, scalable and reliable system to define, manage, schedule
   * Authentication, authorization, and capacity-aware load throttling to allow multi-tenant software as a service.
 
 ## Oozie Overview
-----------
 
 Oozie is a server based Workflow Engine specialized in running workflow jobs with actions that run Hadoop Map/Reduce and Pig jobs.
 
@@ -35,7 +32,6 @@ Action nodes are the mechanism by which a workflow triggers the execution of a c
 Oozie workflows can be parameterized (using variables like ${inputDir} within the workflow definition). When submitting a workflow job values for the parameters must be provided. If properly parameterized (i.e. using different output directories) several identical workflow jobs can concurrently.
 
 ## Documentations 
------------------
 Oozie web service is bundle with the built-in details documentation.
 
 More inforamtion could be found at:
@@ -49,17 +45,17 @@ http://oozie.apache.org/docs/3.2.0-incubating/DG_QuickStart.html
 Clone and checkout the `<release-version>-mapr` tag or branch from the git repository
 For example if you want to compile oozie-3.3.2
 
+```bash
 $ git clone https://github.com/mapr/private-oozie.git oozie-3.3.2
 $ cd oozie-3.3.2
 $ git checkout release-3.3.2-mapr
 $ mvn package -DskipTests
+```
 
 ## Supported Hadoop Versions
-----------------------------
 
 This version of Oozie was primarily tested against Hadoop 0.20.205.x. This will not work on earlier versions of Hadoop such as 0.20.x. and 0.21.
 
---------------------------------------
 
 If you have any questions/issues, please send an email to:
 
