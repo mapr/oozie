@@ -183,8 +183,7 @@ public class MaprJobClient extends JobClient {
     return runJob;
   }
 
-  public RunningJob submitJob(final JobConf job) throws FileNotFoundException,
-                                                IOException {
+  public RunningJob submitJob(final JobConf job) throws FileNotFoundException, IOException {
 
     if (System.getProperty("user.name").compareTo(job.getUser()) == 0) {
       //if oozie server is running as job user, directly call the jobSubmit
@@ -197,6 +196,14 @@ public class MaprJobClient extends JobClient {
 
     // 1) Serialize jobConf object.
     String oozieTmpDir = System.getProperty("oozie.data.dir");
+
+    /* Throw exception if oozie.data.dir is not set */
+    if (oozieTmpDir == null || oozieTmpDir.equalsIgnoreCase(""))
+    {
+        XLog.getLog(getClass()).error("oozie.data.dir property not set, set oozie.data.dir to valid directory");
+        throw new IOException("Unable to create JobIdFile because oozie.data.dir is not set");
+    }
+
     File jobConfFile =
       new File(oozieTmpDir +"/"+ job.get("oozie.job.id") + "-jobconf.dat");
     File jobIdFile =
@@ -216,6 +223,7 @@ public class MaprJobClient extends JobClient {
 
       //Change the owner of action directory to get perms to create
       //'output' directory.
+
 
       jobIdFile.createNewFile();
       jobIdFile.setWritable(true, false);
