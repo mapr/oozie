@@ -100,30 +100,30 @@ function getHadoopJars() {
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar"
     # MapR change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
   elif [ "${version}" = "0.20.2" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar"
     # MapR Change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
   elif [ "${version}" = "0.20.104" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
     #MapR Change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
   elif [ "${version}" = "0.20.200" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar"
     # MapR Change
-    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:guava*.jar"
+    hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
   elif [[ "${version}" =~ .*23 ]]; then
     suffix="-[0-9.]*"
     #List is separated by ":"
-    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:guava*.jar:protobuf-*.jar:avro-ipc-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar"
+    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:protobuf-*.jar:avro-ipc-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar"
   elif [[ "${version}" =~ 2.* ]]; then
     suffix="-[0-9.]*"
     #List is separated by ":"
-    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:guava*.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar"
+    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar"
   else
     echo
     echo "Exiting: Unsupported Hadoop version '${hadoopVer}', supported versions: 0.20.1, 0.20.2, 0.20.104, 0.20.200, 0.23.x and 2.x"
@@ -148,9 +148,14 @@ function getHadoopJars() {
       hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
   fi
 
-  # MapR change - Check for the maprfs fat jar and inject it into the war
+  # MapR change - Add protobuf*jar to oozie.war 
   if [[ -n $(find ${hadoopHome} -name "protobuf-java*.jar" -print) ]]; then
       hadoopJars=$hadoopJars:protobuf-java*.jar
+  fi
+
+  # MapR change - Add guava*jar to oozie.war 
+  if [[ -n $(find ${hadoopHome} -name "guava-[0-9]*[0-9].jar" -print) ]]; then
+      hadoopJars=$hadoopJars:guava-[0-9]*[0-9].jar
   fi
 
   # MapR change - add JPam*.jar to the maprJars list.
@@ -176,6 +181,11 @@ function getHadoopJars() {
   # MapR change - add zookeeper*.jar to the hadoopJars list.
   if [[ -n $(find ${maprLib} -name "zookeeper-*.jar" -print) ]]; then
       maprJars=$maprJars:zookeeper-*.jar
+  fi
+
+  # MapR change - add hadoop-*-auth.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "hadoop*auth.jar" -print) ]]; then
+      maprJars=$maprJars:hadoop*auth.jar
   fi
 }
 
