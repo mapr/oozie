@@ -49,7 +49,7 @@ For example if you want to compile oozie-3.3.2
 $ git clone https://github.com/mapr/private-oozie.git oozie-3.3.2
 $ cd oozie-3.3.2
 $ git checkout release-3.3.2-mapr
-$ mvn package -DskipTests
+$ bin/mkdistro.sh -DskipTests
 ```
 
 ## Supported Hadoop Versions
