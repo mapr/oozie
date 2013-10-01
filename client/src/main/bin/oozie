@@ -32,6 +32,13 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+MAPR_CONF_DIR=/opt/mapr/conf
+ENV_FILE=env.sh
+
+# MapR change. Source env.sh if it exists 
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+    source ${MAPR_CONF_DIR}/env.sh
+fi
 
 OOZIECPPATH=""
 for i in "${BASEDIR}/lib/"*.jar; do
@@ -48,6 +55,9 @@ fi
 
 # Prime OOZIE_CLIENT_OPTS with JAVA_PROPERTIES for backwards compatibility
 OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
+
+# Add MAPR_SSL_OPTS for SSL truststore location
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_SSL_OPTS}"
 
 while [[ ${1} =~ ^\-D ]]; do
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${1}"
