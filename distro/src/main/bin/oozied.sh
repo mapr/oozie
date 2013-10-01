@@ -50,7 +50,6 @@ if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
     source ${MAPR_CONF_DIR}/env.sh 
 fi
 
-
 CATALINA=${OOZIE_CATALINA_HOME:-${BASEDIR}/oozie-server}/bin/catalina.sh
 
 setup_catalina_opts() {
@@ -82,6 +81,15 @@ setup_catalina_opts() {
   # add required native libraries such as compression codecs
   # MAPR CHANGE: Add mapr lib to the java library path
   catalina_opts="${catalina_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib";
+
+  # MAPR Change: Set parameters in oozie-site.xml based on if MapR security is enabled or not
+  if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+      catalina_opts="${catalina_opts} -Dmapr_sec_type=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler"
+      catalina_opts="${catalina_opts} -Dmapr_sec_enabled=true"
+   else
+      catalina_opts="${catalina_opts} -Dmapr_sec_type=simple"
+      catalina_opts="${catalina_opts} -Dmapr_sec_enabled=false"
+  fi
 
   echo "Adding to CATALINA_OPTS:     ${catalina_opts}"
 

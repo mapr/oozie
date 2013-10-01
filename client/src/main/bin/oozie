@@ -35,7 +35,7 @@ BASEDIR=`cd ${BASEDIR}/..;pwd`
 MAPR_CONF_DIR=/opt/mapr/conf
 ENV_FILE=env.sh
 
-# MapR change. Source env.sh if it exists 
+# Source env.sh if it exists 
 if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
     source ${MAPR_CONF_DIR}/env.sh
 fi
@@ -58,6 +58,13 @@ OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
 
 # Add MAPR_SSL_OPTS for SSL truststore location
 OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_SSL_OPTS}"
+
+# If Mapr security is enabled, use MaprAuthenticator to authenticate to server
+# If you wish to use Kerberos to authenticate to Oozie server uncomment the following three lines
+if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+  OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
+fi
+
 
 while [[ ${1} =~ ^\-D ]]; do
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${1}"
