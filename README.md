@@ -66,3 +66,4 @@ Subscribe using the link:
 http://oozie.apache.org/mail-lists.html
 
 
+Using git pull requests for review
