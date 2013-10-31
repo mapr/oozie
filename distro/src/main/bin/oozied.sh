@@ -18,7 +18,7 @@
 #
 
 if [ $# -le 0 ]; then
-  echo "Usage: oozied.sh (start|stop|run) [<catalina-args...>]"
+  echo "Usage: oozied.sh (start|stop|run|status) [<catalina-args...>]"
   exit 1
 fi
 
@@ -117,6 +117,24 @@ case $actionCmd in
 
     # A bug in catalina.sh script does not use CATALINA_OPTS for stopping the server
     export JAVA_OPTS=${CATALINA_OPTS}
+    ;;
+  (status)
+    if [ ! -z "$CATALINA_PID" ]; then
+     if [ -f "$CATALINA_PID" ]; then
+       if [ -s "$CATALINA_PID" ]; then
+         if [ -r "$CATALINA_PID" ]; then
+           PID=`cat "$CATALINA_PID"`
+           ps -p $PID >/dev/null 2>&1
+           if [ $? -eq 0 ] ; then
+             echo "Tomcat is running with PID $PID."
+             exit 0
+           fi
+          fi
+       fi
+     fi
+    fi
+    echo "Most likely Tomcat is not running"
+    exit 1
     ;;
 esac
 

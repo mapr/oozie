@@ -56,6 +56,7 @@
             <scope>compile</scope>
             <excludes>
                 <exclude>javax.persistence:persistence-api</exclude>
+                <exclude>org.apache.hadoop:hadoop-auth</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>

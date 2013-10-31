@@ -24,8 +24,8 @@
             <job-tracker>${jobTracker}</job-tracker>
             <name-node>${nameNode}</name-node>
             <prepare>
-                <delete path="${nameNode}/user/${wf:user()}/${examplesRoot}/output-data/sqoop"/>
-                <mkdir path="${nameNode}/user/${wf:user()}/${examplesRoot}/output-data"/>
+                <delete path="${nameNode}/oozie/${examplesRoot}/output-data/sqoop"/>
+                <mkdir path="${nameNode}/oozie/${examplesRoot}/output-data"/>
             </prepare>
             <configuration>
                 <property>
@@ -33,7 +33,7 @@
                     <value>${queueName}</value>
                 </property>
             </configuration>
-            <command>import --connect jdbc:hsqldb:file:db.hsqldb --table TT --target-dir /user/${wf:user()}/${examplesRoot}/output-data/sqoop -m 1</command>
+            <command>import --connect jdbc:hsqldb:file:db.hsqldb --table TT --target-dir /oozie/${examplesRoot}/output-data/sqoop -m 1</command>
             <file>db.hsqldb.properties#db.hsqldb.properties</file>
             <file>db.hsqldb.script#db.hsqldb.script</file>
         </sqoop>
