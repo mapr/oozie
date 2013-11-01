@@ -127,7 +127,7 @@
 
     <property>
         <name>oozie.service.JPAService.create.db.schema</name>
-        <value>false</value>
+        <value>true</value>
         <description>
             Creates Oozie DB.
 
@@ -259,6 +259,15 @@
             specify where the Pig JAR files are. Instead, the ones from the system
             library path are used.
         </description>
+    </property>
+
+
+    <property>
+        <name>oozie.service.HadoopAccessorService.supported.filesystems</name>
+        <value>maprfs</value>
+        <decscription>
+          MapR fs suppport
+        </decscription>
     </property>
 
     <property>

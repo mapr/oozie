@@ -19,9 +19,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.mapr</groupId>
+        <artifactId>mapr-root</artifactId>
+        <version>1.0</version>
+    </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.0.0</version>
+    <version>4.0.0-mapr</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -121,13 +126,23 @@
           <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-          <id>apache.snapshots.https</id>
+          <id>mapr.snapshots</id>
           <name>${distMgmtSnapshotsName}</name>
           <url>${distMgmtSnapshotsUrl}</url>
         </snapshotRepository>
     </distributionManagement>
 
     <repositories>
+        <repository>
+          <id>repository.mapr.com</id>
+          <url>http://repository.mapr.com/maven/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
         <repository>
             <id>central</id>
             <url>http://repo1.maven.org/maven2</url>

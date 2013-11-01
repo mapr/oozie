@@ -263,6 +263,7 @@ public class HadoopAccessorService implements Service {
     }
 
     public void destroy() {
+        MaprJobClient.shutdown();
     }
 
     public Class<? extends Service> getInterface() {
@@ -365,6 +366,7 @@ public class HadoopAccessorService implements Service {
         String jobTracker = conf.get(JavaActionExecutor.HADOOP_JOB_TRACKER);
         validateJobTracker(jobTracker);
         try {
+            /* MapR change
             UserGroupInformation ugi = getUGI(user);
             JobClient jobClient = ugi.doAs(new PrivilegedExceptionAction<JobClient>() {
                 public JobClient run() throws Exception {
@@ -374,11 +376,14 @@ public class HadoopAccessorService implements Service {
             Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(getMRDelegationTokenRenewer(conf));
             conf.getCredentials().addToken(MR_TOKEN_ALIAS, mrdt);
             return jobClient;
+            */
+            return new MaprJobClient(conf);
         }
+        /*
         catch (InterruptedException ex) {
             throw new HadoopAccessorException(ErrorCode.E0902, ex.getMessage(), ex);
-        }
-        catch (IOException ex) {
+        } */
+        catch (IOException ex) { 
             throw new HadoopAccessorException(ErrorCode.E0902, ex.getMessage(), ex);
         }
     }
@@ -398,8 +403,10 @@ public class HadoopAccessorService implements Service {
         if (!conf.getBoolean(OOZIE_HADOOP_ACCESSOR_SERVICE_CREATED, false)) {
             throw new HadoopAccessorException(ErrorCode.E0903);
         }
-
+ 
+        /* Mpar Change
         checkSupportedFilesystem(uri);
+        */
 
         String nameNode = uri.getAuthority();
         if (nameNode == null) {
