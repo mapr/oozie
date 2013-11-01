@@ -232,11 +232,10 @@ fi
 
 export CATALINA_OPTS="${CATALINA_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
 
-print "MapR: Adding /opt/mapr/lib to java.library.path"
-export CATALINA_OPTS="${CATALINA_OPTS} -Djava.library.path=/opt/mapr/lib"
-
 export PATH=${PATH}:/opt/mapr/bin
 print "MapR: Adding /opt/mapr/bin to PATH"
 
+# Needed for file client impersonation
+export MAPR_IMPERSONATION_ENABLED="true"
 
 print

@@ -93,6 +93,45 @@ function checkFileDoesNotExist() {
   fi
 }
 
+read_dom () {
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+} 
+  
+function getKeyStoreLocationAndPassword() {
+  if [[ -n $(find ${OOZIE_HOME}/../../conf -name "ssl-server.xml" 2>&1) ]]; then
+      sslServer="${OOZIE_HOME}/../../conf/ssl-server.xml"
+  
+      locationFound=""
+      location=""
+      passwordFound=""
+      password=""
+
+      #parse xml and get keystore location and password
+      while read_dom; do
+          if [[ $ENTITY = "name" ]]; then
+              if [[ $CONTENT = "ssl.server.keystore.location" ]]; then
+                  locationFound="true"
+              fi
+              if [[ $CONTENT = "ssl.server.keystore.password" ]]; then
+                  passwordFound="true"
+              fi
+          fi
+          if [[ $location = "" && $locationFound = "true" && $ENTITY = "value" ]]; then
+              location=`echo $CONTENT`
+          fi
+          if [[ $password = "" && $passwordFound = "true" && $ENTITY = "value" ]]; then
+              password=`echo $CONTENT`
+          fi
+      done < ${sslServer}
+  
+      #replace these values in oozie's ssl-server.xml
+      sed -i -e "s@\${oozie.https.keystore.file}@${location}@g" ${CATALINA_BASE}/conf/server.xml
+      sed -i -e "s@\${oozie.https.keystore.pass}@${password}@g" ${CATALINA_BASE}/conf/server.xml
+  fi
+
+echo "Keystore location successfully added"
+}
 
 # resolve links - $0 may be a softlink
 PRG="${0}"
@@ -241,6 +280,7 @@ else
     #Use the SSL version of server.xml in oozie-server
     checkFileExists ${secureConfigsDir}/ssl-server.xml
     cp ${secureConfigsDir}/ssl-server.xml ${CATALINA_BASE}/conf/server.xml
+    getKeyStoreLocationAndPassword
     #Inject the SSL version of web.xml in oozie war
     checkFileExists ${secureConfigsDir}/ssl-web.xml
     cp ${secureConfigsDir}/ssl-web.xml ${tmpWarDir}/WEB-INF/web.xml
