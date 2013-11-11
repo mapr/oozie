@@ -22,7 +22,7 @@
             <job-tracker>${jobTracker}</job-tracker>
             <name-node>${nameNode}</name-node>
             <prepare>
-                <delete path="${nameNode}/oozie/${examplesRoot}/output-data/${outputDir}"/>
+                <delete path="${nameNode}/user/${wf:user()}/output-data/${outputDir}"/>
             </prepare>
             <configuration>
                 <property>
@@ -31,7 +31,7 @@
                 </property>
             </configuration>
             <arg>${nameNode}/oozie/${examplesRoot}/input-data/text/data.txt</arg>
-            <arg>${nameNode}/oozie/${examplesRoot}/output-data/${outputDir}/data.txt</arg>
+            <arg>${nameNode}/user/${wf:user()}/output-data/${outputDir}/data.txt</arg>
             </distcp>
         <ok to="end"/>
         <error to="fail"/>

@@ -26,7 +26,7 @@
             <uri-template>${nameNode}/oozie/${examplesRoot}/input-data/rawLogs/${YEAR}/${MONTH}/${DAY}/${HOUR}/${MINUTE}</uri-template>
         </dataset>
         <dataset name="aggregated-logs" frequency="${coord:hours(1)}" initial-instance="2010-01-01T01:00Z" timezone="UTC">
-            <uri-template>${nameNode}/oozie/${examplesRoot}/output-data/aggregator/aggregatedLogs/${YEAR}/${MONTH}/${DAY}/${HOUR}</uri-template>
+            <uri-template>${nameNode}/user/${wf:user()}/output-data/aggregator/aggregatedLogs/${YEAR}/${MONTH}/${DAY}/${HOUR}</uri-template>
         </dataset>
     </datasets>
 
