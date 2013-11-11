@@ -24,8 +24,8 @@
             <job-tracker>${jobTracker}</job-tracker>
             <name-node>${nameNode}</name-node>
             <prepare>
-                <delete path="${nameNode}/oozie/${examplesRoot}/output-data/sqoop-freeform"/>
-                <mkdir path="${nameNode}/oozie/${examplesRoot}/output-data"/>
+                <delete path="${nameNode}/user/${wf:user()}/output-data/sqoop-freeform"/>
+                <mkdir path="${nameNode}/user/${wf:user()}/output-data"/>
             </prepare>
             <configuration>
                 <property>
@@ -44,7 +44,7 @@
             <arg>--query</arg>
             <arg>select TT.I, TT.S from TT where $CONDITIONS</arg>
             <arg>--target-dir</arg>
-            <arg>/oozie/${examplesRoot}/output-data/sqoop-freeform</arg>
+            <arg>/user/${wf:user()}/output-data/sqoop-freeform</arg>
             <arg>-m</arg>
             <arg>1</arg>
             <file>db.hsqldb.properties#db.hsqldb.properties</file>

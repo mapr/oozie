@@ -22,7 +22,7 @@
             <job-tracker>${jobTracker}</job-tracker>
             <name-node>${nameNode}</name-node>
             <prepare>
-                <delete path="${nameNode}/oozie/${examplesRoot}/output-data/${outputDir}"/>
+                <delete path="${nameNode}/user/${wf:user()}/output-data/${outputDir}"/>
             </prepare>
             <configuration>
                 <property>
@@ -47,7 +47,7 @@
                 </property>
                 <property>
                     <name>mapred.output.dir</name>
-                    <value>/oozie/${examplesRoot}/output-data/${outputDir}</value>
+                    <value>/user/${wf:user()}/output-data/${outputDir}</value>
                 </property>
             </configuration>
         </map-reduce>
