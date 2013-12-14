@@ -761,12 +761,11 @@ public class JavaActionExecutor extends ActionExecutor {
                 XLog.getLog(getClass()).debug("Submitting the job through Job Client for action " + action.getId());
 
                 // setting up propagation of the delegation token.
-                /* mapR change
                 HadoopAccessorService has = Services.get().get(HadoopAccessorService.class);
                 Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(has
                         .getMRDelegationTokenRenewer(launcherJobConf));
                 launcherJobConf.getCredentials().addToken(HadoopAccessorService.MR_TOKEN_ALIAS, mrdt);
-                */
+
                 // insert credentials tokens to launcher job conf if needed
                 if (needInjectCredentials()) {
                     for (Token<? extends TokenIdentifier> tk : credentialsConf.getCredentials().getAllTokens()) {

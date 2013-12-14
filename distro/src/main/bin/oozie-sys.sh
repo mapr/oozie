@@ -238,4 +238,7 @@ print "MapR: Adding /opt/mapr/bin to PATH"
 # Needed for file client impersonation
 export MAPR_IMPERSONATION_ENABLED="true"
 
+# Needed for file client impersonation
+export MAPR_IMPERSONATION_ENABLED="true"
+
 print

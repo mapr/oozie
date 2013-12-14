@@ -32,7 +32,6 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
-MAPR_CONF_DIR=/opt/mapr/conf
 MAPR_HOME_DIR="/opt/mapr"
 MAPR_CONF_DIR=${MAPR_HOME_DIR}/conf
 MAPR_LIB_DIR=${MAPR_HOME_DIR}/lib
@@ -82,7 +81,7 @@ OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
 OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_SSL_OPTS}"
 
 #If you wish to use Kerberos to authenticate to Oozie server comment the below IF block
-# If Mapr security is enabled, use MaprAuthenticator to authenticate to server
+# where we pass MaprAuthenticator as the method of authentication  
 if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
 fi

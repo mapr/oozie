@@ -113,6 +113,9 @@ case $actionCmd in
     setup_oozie 
     ;;
   (stop)
+    if [[ $@ != "-force" ]]; then
+      actionCmd=${actionCmd}" -force"
+    fi
     setup_catalina_opts
 
     # A bug in catalina.sh script does not use CATALINA_OPTS for stopping the server

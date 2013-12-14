@@ -24,8 +24,8 @@
             <job-tracker>${jobTracker}</job-tracker>
             <name-node>${nameNode}</name-node>
             <prepare>
-                <delete path="${nameNode}/oozie/${examplesRoot}/output-data/hive"/>
-                <mkdir path="${nameNode}/oozie/${examplesRoot}/output-data"/>
+                <delete path="${nameNode}/user/${wf:user()}/output-data/hive"/>
+                <mkdir path="${nameNode}/user/${wf:user()}/output-data"/>
             </prepare>
             <configuration>
                 <property>
@@ -35,7 +35,7 @@
             </configuration>
             <script>script.q</script>
             <param>INPUT=/oozie/${examplesRoot}/input-data/table</param>
-            <param>OUTPUT=/oozie/${examplesRoot}/output-data/hive</param>
+            <param>OUTPUT=/user/${wf:user()}/output-data/hive</param>
         </hive>
         <ok to="end"/>
         <error to="fail"/>
