@@ -22,6 +22,7 @@ function printUsage() {
   echo " Usage  : oozie-setup.sh <Command and OPTIONS>"
   echo "          prepare-war [-d directory] [-secure] (-d identifies an alternative directory for processing jars"
   echo "                                                -secure will configure the war file to use HTTPS (SSL))"
+  echo "                                                -hadoop HADOOP_VERIONS HADOOP_HOME will add hadoop jars"
   echo "          sharelib create -fs FS_URI [-locallib SHARED_LIBRARY] (create sharelib for oozie,"
   echo "                                                                FS_URI is the fs.default.name"
   echo "                                                                for hdfs uri; SHARED_LIBRARY, path to the"
@@ -242,7 +243,7 @@ fi
 
 echo
 
-if [ "${prepareWar}" == "" ]; then
+if [ "${prepareWar}${addHadoopJars}" == "" ]; then
   echo "no arguments given"
   printUsage
   exit -1
@@ -288,8 +289,6 @@ else
 
   if [ "${addExtjs}" = "true" ]; then
     checkFileExists ${extjsHome}
-  else
-    echo "INFO: Oozie webconsole disabled, ExtJS library not specified"
   fi
 
   if [ "${addJars}" = "true" ]; then
@@ -324,8 +323,6 @@ else
   OPTIONS=""
   if [ "${addExtjs}" != "" ]; then
     OPTIONS="-extjs ${extjsHome}"
-  else
-    echo "INFO: Oozie webconsole disabled, ExtJS library not specified"
   fi
   if [ "${addJars}" != "" ]; then
     OPTIONS="${OPTIONS} -jars ${jarsPath}"
@@ -344,7 +341,6 @@ else
     cp ${secureConfigsDir}/server.xml ${CATALINA_BASE}/conf/server.xml
   fi
 
-  echo "ADDTOWAR command: ${inputWar} ${outputWar} ${OPTIONS}"
   ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${outputWar} ${OPTIONS}
 
   if [ "$?" != "0" ]; then
