@@ -352,15 +352,6 @@ components=""
 
 if [ "${addHadoop}" = "true" ]; then
   components="Hadoop JARs";
-  found=`ls ${tmpWarDir}/WEB-INF/lib/hadoop*core*jar 2> /dev/null | wc -l`
-  checkExec "looking for Hadoop JARs in input WAR"
-  if [ ! $found = 0 ]; then
-    echo
-    echo "Specified Oozie WAR '${inputWar}' already contains Hadoop JAR files"
-    echo
-    cleanUp
-    exit -1
-  fi  
   ## adding hadoop
     echo "Injecting following Hadoop JARs"
     echo
@@ -389,13 +380,6 @@ if [ "${addExtjs}" = "true" ]; then
     components="${components}, "
   fi
   components="${components}ExtJS library"
-  if [ -e ${tmpWarDir}/ext-2.2 ]; then
-    echo
-    echo "Specified Oozie WAR '${inputWar}' already contains ExtJS library files"
-    echo
-    cleanUp
-    exit -1
-  fi
   #If the extjs path given is a ZIP, expand it and use it from there
   if [ -f ${extjsHome} ]; then
     unzip ${extjsHome} -d ${tmpDir} > /dev/null
@@ -414,15 +398,6 @@ if [ "${addJars}" = "true" ]; then
 
   for jarPath in ${jarsPath//:/$'\n'}
   do
-    found=`ls ${tmpWarDir}/WEB-INF/lib/${jarPath} 2> /dev/null | wc -l`
-    checkExec "looking for JAR ${jarPath} in input WAR"
-    if [ ! $found = 0 ]; then
-      echo
-      echo "Specified Oozie WAR '${inputWar}' already contains JAR ${jarPath}"
-      echo
-      cleanUp
-      exit -1
-    fi
     cp ${jarPath} ${tmpWarDir}/WEB-INF/lib/
     checkExec "copying jar ${jarPath} to staging"
   done
