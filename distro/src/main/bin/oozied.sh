@@ -86,9 +86,11 @@ setup_catalina_opts() {
   if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
       catalina_opts="${catalina_opts} -Dmapr_sec_type=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler"
       catalina_opts="${catalina_opts} -Dmapr_sec_enabled=true"
+      catalina_opts="${catalina_opts} -Dmapr_signature_secret=com.mapr.security.maprauth.MaprSignatureSecretFactory"
    else
       catalina_opts="${catalina_opts} -Dmapr_sec_type=simple"
       catalina_opts="${catalina_opts} -Dmapr_sec_enabled=false"
+      catalina_opts="${catalina_opts} -Dmapr_signature_secret=oozie"
   fi
 
   echo "Adding to CATALINA_OPTS:     ${catalina_opts}"
