@@ -219,6 +219,7 @@ do
       exit -1
     fi
     extjsHome=$1
+    addExtjs=true
   elif [ "$1" = "-secure" ]; then
     shift
     secure=true
