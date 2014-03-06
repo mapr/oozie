@@ -10,7 +10,6 @@ import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.util.PlatformName;
 import org.apache.oozie.util.XLog;
 
 import java.util.concurrent.Executors;
