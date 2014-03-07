@@ -72,7 +72,14 @@ function checkFileDoesNotExist() {
 #finds a file under a directory any depth, file returns in variable RET
 function findFile() {
    # MapR change
-   RET=`find -H ${1} -name ${2} | grep -e "[0-9.a-zT${hadoopJarsSuffix}].jar"`
+   RET=`find -H ${1} -name ${2} | grep -e "[.0-9].jar"`
+   if [ "${RET}" = "" ]; then
+      RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
+      if [ "${RET}" = "" ]; then
+          RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+      fi
+   fi
+   
    RET=`echo ${RET} | sed "s/ .*//"`
    if [ "${RET}" = "" ]; then
      echo
@@ -123,7 +130,7 @@ function getHadoopJars() {
   elif [[ "${version}" =~ 2.* ]]; then
     suffix="-[0-9.]*"
     #List is separated by ":"
-    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar"
+    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar:commons-cli${suffix}.jar:commons-configuration${suffix}.jar:httpclient${suffix}.jar:httpcore${suffix}.jar"
   else
     echo
     echo "Exiting: Unsupported Hadoop version '${hadoopVer}', supported versions: 0.20.1, 0.20.2, 0.20.104, 0.20.200, 0.23.x and 2.x"

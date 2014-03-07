@@ -45,13 +45,44 @@ ENV_FILE=env.sh
 
 source ${BASEDIR}/bin/oozie-sys.sh
 
-
 # MapR change. Source env.sh if it exists 
 if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
     source ${MAPR_CONF_DIR}/env.sh 
 fi
 
 CATALINA=${OOZIE_CATALINA_HOME:-${BASEDIR}/oozie-server}/bin/catalina.sh
+
+
+# Find hadoop conf directory, to be passed to oozie-site.xml
+# Find hadoop home 
+function real_script_name() {
+        local base=$1
+        local real
+        if readlink -f $base >/dev/null 2>&1; then
+                # Darwin/Mac OS X
+                real=`readlink -f $base`
+        fi
+        if [[ "$?" != "0" || -z "$real" ]]; then
+                # Linux
+                local bin=$(cd -P -- "$(dirname -- "$base")">/dev/null && pwd -P)
+                local script="$(basename -- "$base")"
+                real="$bin/$script"
+        fi
+        echo "$real"
+}
+
+hadoop_bin=`real_script_name "/usr/bin/hadoop"`
+
+hadoop_bin_dir=`dirname "${hadoop_bin}"`
+hadoop_home="${hadoop_bin_dir}/../"
+
+version=`/usr/bin/hadoop version`
+confDir="hadoop-conf"
+
+if  [[ "${version}" == Hadoop\ 2.* ]] ;
+then
+    confDir="${hadoop_home}etc/hadoop"
+fi
 
 setup_catalina_opts() {
   # The Java System properties 'oozie.http.port' and 'oozie.https.port' are not
@@ -78,6 +109,7 @@ setup_catalina_opts() {
   catalina_opts="${catalina_opts} -Doozie.https.keystore.pass=${OOZIE_HTTPS_KEYSTORE_PASS}";
   catalina_opts="${catalina_opts} -Dmapr.library.flatclass=true"; 
   catalina_opts="${catalina_opts} ${MAPR_AUTH_CLIENT_OPTS}";
+  catalina_opts="${catalina_opts} -Dhadoop_conf_directory=${confDir}";
   # add required native libraries such as compression codecs
   # MAPR CHANGE: Add mapr lib to the java library path
   catalina_opts="${catalina_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib";
