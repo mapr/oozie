@@ -93,6 +93,7 @@
          <hive.version>0.10.0</hive.version>
          <pig.version>0.10.1</pig.version>
          <pig.classifier></pig.classifier>
+         <pig-2.classifier>h2</pig-2.classifier>
          <sqoop.version>1.4.3</sqoop.version>
          <sqoop.classifier>hadoop100</sqoop.classifier>
          <streaming.version>${hadoop.version}</streaming.version>
@@ -223,6 +224,11 @@
             <dependency>
                 <groupId>org.apache.oozie</groupId>
                 <artifactId>oozie-sharelib-pig</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.oozie</groupId>
+                <artifactId>oozie-sharelib-pig2</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
