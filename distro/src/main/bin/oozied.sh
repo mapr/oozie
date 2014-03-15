@@ -42,7 +42,7 @@ BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
 MAPR_CONF_DIR=/opt/mapr/conf
 ENV_FILE=env.sh
-
+HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
 source ${BASEDIR}/bin/oozie-sys.sh
 
 # MapR change. Source env.sh if it exists 
@@ -79,8 +79,9 @@ hadoop_home="${hadoop_bin_dir}/../"
 version=`/usr/bin/hadoop version`
 confDir="hadoop-conf"
 
-if  [[ "${version}" == Hadoop\ 2.* ]] ;
+if  [[ "${hadoop_home}" == ${HADOOP_BASE_DIR}2.* ]] ;
 then
+    echo "INSIDE IF"
     confDir="${hadoop_home}etc/hadoop"
 fi
 

@@ -113,6 +113,7 @@ function getHadoopJars() {
     #hadoopJars="hadoop-core*.jar"
     # MapR Change
     hadoopJars="hadoop*core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
+    addUnifiedJars="true"
   elif [ "${version}" = "0.20.104" ]; then
     #List is separated by ":"
     #hadoopJars="hadoop-core*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar"
@@ -146,11 +147,17 @@ function getHadoopJars() {
       hadoopJars=$hadoopJars:maprfs-jni-[0-9]*[0-9].jar
   elif [[ -n $(find ${hadoopHome} -name "maprfs-jni-[0-9]*[0-9]-SNAPSHOT.jar" -print) ]]; then
       hadoopJars=$hadoopJars:maprfs-jni-[0-9]*[0-9]-SNAPSHOT.jar
+  elif [[ -n $(find ${hadoopHome} \( -name "maprfs-jni*jar" ! -name "*test*.jar" \) -print) ]]; then
+      jniJar=$(basename "$(find ${hadoopHome} \( -name "maprfs-jni*jar" ! -name "*test*.jar" \) -print)")
+      hadoopJars=$hadoopJars:${jniJar}
   fi
  
   # MapR change - Check for the maprfs fat jar and inject it into the war
   if [[ -n $(find ${hadoopHome} -name "maprfs-[0-9]*[0-9]-SNAPSHOT.jar" -print) ]]; then
       hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9]-SNAPSHOT.jar
+  elif [[ -n $(find ${hadoopHome} \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print) ]]; then
+      maprfsJar=$(basename "$(find ${hadoopHome} \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print)")
+      hadoopJars=$hadoopJars:${maprfsJar}
   else
       hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
   fi
@@ -370,6 +377,22 @@ if [ "${addHadoop}" = "true" ]; then
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
       checkExec "copying jar ${jar} to staging"
     done
+
+    if [ "${addHadoop}" = "true" ]; then
+      suffix="-[0-9.]*"
+      unifiedJars="hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:hadoop-hdfs${suffix}.jar:httpcore${suffix}.jar:httpclient${suffix}.jar"
+      ## adding hadoop
+      echo "Injecting following Hadoop JARs"
+      echo
+      for jar in ${unifiedJars//:/$'\n'}
+      do
+        findFile ${hadoopHome} ${jar}
+        jar=${RET}
+        echo ${jar}
+        cp ${jar} ${tmpWarDir}/WEB-INF/lib/
+        checkExec "copying jar ${jar} to staging"
+      done
+    fi
 
   ## adding MapR JARS 
     for jar in ${maprJars//:/$'\n'}
