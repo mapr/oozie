@@ -89,6 +89,20 @@ function findFile() {
      exit -1;
    fi  
 }
+
+#finds a file under a directory any depth, file returns in variable RET, ignores if the file is not found
+function findFileIgnoreError() {
+   # MapR change
+   RET=`find -H ${1} -name ${2} | grep -e "[.0-9].jar"`
+   if [ "${RET}" = "" ]; then
+      RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
+      if [ "${RET}" = "" ]; then
+          RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+      fi
+   fi
+
+   RET=`echo ${RET} | sed "s/ .*//"`
+}
   
 function checkOption() {
   if [ "$2" = "" ]; then
@@ -382,14 +396,14 @@ if [ "${addHadoop}" = "true" ]; then
       suffix="-[0-9.]*"
       unifiedJars="hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:hadoop-hdfs${suffix}.jar:httpcore${suffix}.jar:httpclient${suffix}.jar"
       ## adding hadoop
-      echo "Injecting following Hadoop JARs"
-      echo
       for jar in ${unifiedJars//:/$'\n'}
       do
-        findFile ${hadoopHome} ${jar}
+        findFileIgnoreError ${hadoopHome} ${jar}
         jar=${RET}
-        echo ${jar}
-        cp ${jar} ${tmpWarDir}/WEB-INF/lib/
+        if [ ! "${jar}" = "" ]; then
+          echo ${jar}
+          cp ${jar} ${tmpWarDir}/WEB-INF/lib/
+        fi
         checkExec "copying jar ${jar} to staging"
       done
     fi
