@@ -629,15 +629,23 @@ public class HadoopAccessorService implements Service {
      */
     public static boolean useFCImpersonation(String[] version)
     {
-        if (version == null || version.length < BASE_MAPR_VERSION.length)
+        if (version == null || version.length < BASE_MAPR_VERSION.length) {
+            LOG.debug("Using oozieexecute, unable to find correct mapr build version");
             return false;
+        }
 
         for (int i = 0; i < BASE_MAPR_VERSION.length; i++)
         {
-            if (Integer.parseInt(BASE_MAPR_VERSION[i]) > Integer.parseInt(version[i]))
+            if (Integer.parseInt(BASE_MAPR_VERSION[i]) > Integer.parseInt(version[i])) {
+                LOG.debug("Using oozieexecute, current build version does not support FC impersonation");
                 return false;
+            } else if (Integer.parseInt(BASE_MAPR_VERSION[i]) < Integer.parseInt(version[i])) {
+                LOG.debug("Using FC impersonation");
+                return true;
+            }
         }
 
+        LOG.debug("Using FC impersonation");
         return true;
     }
 
