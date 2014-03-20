@@ -343,6 +343,7 @@ else
   fi
 
   ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${outputWar} ${OPTIONS}
+  echo "${hadoopVersion}" > ${OOZIE_LOG}/hadoop_version.log
 
   if [ "$?" != "0" ]; then
     exit -1
