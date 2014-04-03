@@ -76,7 +76,10 @@ function findFile() {
    if [ "${RET}" = "" ]; then
       RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
       if [ "${RET}" = "" ]; then
-          RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+          RET=`find -H ${1} -name ${2} | grep -e "beta.jar"`
+          if [ "${RET}" = "" ]; then
+              RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+          fi
       fi
    fi
    
@@ -97,7 +100,10 @@ function findFileIgnoreError() {
    if [ "${RET}" = "" ]; then
       RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
       if [ "${RET}" = "" ]; then
-          RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+          RET=`find -H ${1} -name ${2} | grep -e "beta.jar"`
+          if [ "${RET}" = "" ]; then
+              RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+          fi
       fi
    fi
 
