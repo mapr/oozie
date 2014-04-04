@@ -48,7 +48,7 @@ For example if you want to compile oozie-3.3.2
 ```bash
 $ git clone https://github.com/mapr/private-oozie.git oozie-3.3.2
 $ cd oozie-3.3.2
-$ git checkout release-4.0.0-mapr
+$ git checkout release-4.0.0-mapr-1403
 $ bin/mkdistro.sh -DskipTests
 ```
 
