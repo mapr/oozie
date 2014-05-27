@@ -100,7 +100,13 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 String id = reader.readLine();
                 reader.close();
-                if (!jobId.equals(id)) {
+
+                if (id == null) {
+                    Writer writer = new OutputStreamWriter(fs.create(path));
+                    writer.write(jobId);
+                    writer.close();
+                }
+                else if (!jobId.equals(id)) {
                     failLauncher(0, MessageFormat.format(
                             "Hadoop job Id mismatch, action file [{0}] declares Id [{1}] current Id [{2}]", path, id,
                             jobId), null);
