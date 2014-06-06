@@ -232,4 +232,10 @@ fi
 
 export CATALINA_OPTS="${CATALINA_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
 
+export PATH=${PATH}:/opt/mapr/bin
+print "MapR: Adding /opt/mapr/bin to PATH"
+
+# Needed for file client impersonation
+export MAPR_IMPERSONATION_ENABLED="true"
+
 print

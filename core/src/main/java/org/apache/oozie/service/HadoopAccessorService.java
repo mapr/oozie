@@ -85,6 +85,19 @@ public class HadoopAccessorService implements Service {
 
     private UserGroupInformationService ugiService;
 
+
+
+    /* Mapr change, variables to find mapr home and the file that has mapr build version */
+    private static final String MAPR_ENV_VAR = "MAPR_HOME";
+    private static final String MAPR_PROPERTY_HOME = "mapr.home.dir";
+    private static final String MAPR_HOME_PATH_DEFAULT = "/opt/mapr";
+    private static final String MAPR_BUILD_VERSION="MapRBuildVersion";
+    /* For us to use file client impersonation instead of oozieexecute
+     * we require the mapr core version be atleast 3.1
+     */
+
+    private static final String[] BASE_MAPR_VERSION = {"3", "1"};
+
     /**
      * Supported filesystem schemes for namespace federation
      */
@@ -263,6 +276,7 @@ public class HadoopAccessorService implements Service {
     }
 
     public void destroy() {
+        MaprJobClient.shutdown();
     }
 
     public Class<? extends Service> getInterface() {
@@ -365,16 +379,30 @@ public class HadoopAccessorService implements Service {
         String jobTracker = conf.get(JavaActionExecutor.HADOOP_JOB_TRACKER);
         validateJobTracker(jobTracker);
         try {
-            UserGroupInformation ugi = getUGI(user);
-            JobClient jobClient = ugi.doAs(new PrivilegedExceptionAction<JobClient>() {
-                public JobClient run() throws Exception {
-                    return new JobClient(conf);
-                }
-            });
-            Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(getMRDelegationTokenRenewer(conf));
-            conf.getCredentials().addToken(MR_TOKEN_ALIAS, mrdt);
-            return jobClient;
+         /* get the mapr build version */
+            String vers[] = getMaprBuildVersion();
+         /* check if our mapr core version is greater than WLS release
+          * We support file client impersonation only after WLS otherwise
+          * we use oozieexecute
+          */
+            if (useFCImpersonation(vers))
+            {
+                UserGroupInformation ugi = getUGI(user);
+                JobClient jobClient = ugi.doAs(new PrivilegedExceptionAction<JobClient>() {
+                    public JobClient run() throws Exception {
+                        return new JobClient(conf);
+                    }
+                });
+                Token<DelegationTokenIdentifier> mrdt = jobClient.getDelegationToken(getMRDelegationTokenRenewer(conf));
+                conf.getCredentials().addToken(MR_TOKEN_ALIAS, mrdt);
+                return jobClient;
+            }
+            else
+            {
+                return new MaprJobClient(conf);
+            }
         }
+
         catch (InterruptedException ex) {
             throw new HadoopAccessorException(ErrorCode.E0902, ex.getMessage(), ex);
         }
@@ -399,7 +427,7 @@ public class HadoopAccessorService implements Service {
             throw new HadoopAccessorException(ErrorCode.E0903);
         }
 
-        checkSupportedFilesystem(uri);
+        //MpaR change checkSupportedFilesystem(uri);
 
         String nameNode = uri.getAuthority();
         if (nameNode == null) {
@@ -540,5 +568,72 @@ public class HadoopAccessorService implements Service {
     public Set<String> getSupportedSchemes() {
         return supportedSchemes;
     }
+
+     /* Get the mapr home */
+
+    public static String getPathToMaprHome()
+    {
+        String maprHome = System.getenv(MAPR_ENV_VAR);
+        if (maprHome == null)
+        {
+            maprHome = System.getProperty(MAPR_PROPERTY_HOME);
+            if (maprHome == null)
+            {
+                maprHome = MAPR_HOME_PATH_DEFAULT;
+            }
+        }
+        return maprHome;
+    }
+
+ /* Get the mapr home path and try to read
+  * the file containing the Mapr build version
+  * If for some reason we cannot read the
+  * version successfully we return null
+  */
+
+    public static String[] getMaprBuildVersion()
+    {
+        try
+        {
+         /* Get the mapr home location */
+            String maprHome = getPathToMaprHome();
+            File file = new File(maprHome + File.separator + MAPR_BUILD_VERSION);
+            BufferedReader reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+            String versionText = reader.readLine();
+            String[] version = versionText.split("\\.");
+            return version;
+        }
+        catch (IOException e)
+        {
+            LOG.error("Could not read mapr build version: ", e);
+        }
+        return null;
+    }
+
+ /* Function compares the installed mapr core version to
+  * the base mapr version beyond which we use regular
+  * File Client Impersonation instead of the oozieexecute
+  */
+
+    public static boolean useFCImpersonation(String[] version)
+    {
+        if (version == null || version.length < BASE_MAPR_VERSION.length) {
+            LOG.debug("Using oozieexecute, unable to find correct mapr build version");
+            return false;
+        }
+        for (int i = 0; i < BASE_MAPR_VERSION.length; i++)
+        {
+            if (Integer.parseInt(BASE_MAPR_VERSION[i]) > Integer.parseInt(version[i])) {
+                LOG.debug("Using oozieexecute, current build version does not support FC impersonation");
+                return false;
+            } else if (Integer.parseInt(BASE_MAPR_VERSION[i]) < Integer.parseInt(version[i])) {
+                LOG.debug("Using FC impersonation");
+                return true;
+            }
+        }
+        LOG.debug("Using FC impersonation");
+        return true;
+    }
+
 
 }

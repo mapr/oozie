@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.1-mapr</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -88,6 +88,7 @@
          <hive.version>0.10.0</hive.version>
          <pig.version>0.10.1</pig.version>
          <pig.classifier></pig.classifier>
+         <pig-2.classifier>h2</pig-2.classifier>
          <sqoop.version>1.4.3</sqoop.version>
          <sqoop.classifier>hadoop100</sqoop.classifier>
          <streaming.version>${hadoop.version}</streaming.version>
@@ -97,6 +98,7 @@
          <tomcat.version>6.0.37</tomcat.version>
 
          <openjpa.version>2.2.2</openjpa.version>
+         <xerces.version>2.10.0</xerces.version>
     </properties>
 
     <modules>
@@ -116,18 +118,28 @@
 
     <distributionManagement>
         <repository>
-          <id>apache.staging.https</id>
-          <name>Apache Release Distribution Repository</name>
-          <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
+          <id>${release-repo-id}</id>
+          <name>${release-repo-name}</name>
+          <url>${release-repo-url}</url>
         </repository>
         <snapshotRepository>
-          <id>apache.snapshots.https</id>
+          <id>mapr.snapshots</id>
           <name>${distMgmtSnapshotsName}</name>
           <url>${distMgmtSnapshotsUrl}</url>
         </snapshotRepository>
     </distributionManagement>
 
     <repositories>
+        <repository>
+            <id>repository.mapr.com</id>
+            <url>http://repository.mapr.com/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>central</id>
             <url>http://repo1.maven.org/maven2</url>
@@ -207,6 +219,11 @@
             <dependency>
                 <groupId>org.apache.oozie</groupId>
                 <artifactId>oozie-sharelib-pig</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.oozie</groupId>
+                <artifactId>oozie-sharelib-pig2</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -383,8 +400,8 @@
 
             <dependency>
                 <groupId>org.apache.pig</groupId>
-                <artifactId>pig</artifactId>
-                <version>${pig.version}</version>
+                <artifactId>pig-withouthadoop</artifactId>
+                <version>0.11.2-mapr</version>
                 <classifier>${pig.classifier}</classifier>
                 <exclusions>
                     <exclusion>
@@ -708,7 +725,7 @@
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
-                <version>2.10.0</version>
+                <version>${xerces.version}</version>
             </dependency>
 
             <!-- For drawing runtime DAG -->
@@ -1066,6 +1083,28 @@
             <modules>
                 <module>login</module>
             </modules>
+        </profile>
+        <profile>
+            <id>deployReleasesToApache</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <release-repo-id>apache.staging.https</release-repo-id>
+                <release-repo-name>Apache Release Distribution Repository</release-repo-name>
+                <release-repo-url>https://repository.apache.org/service/local/staging/deploy/maven2</release-repo-url>
+            </properties>
+        </profile>
+        <profile>
+            <id>deployReleasesToMapr</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <release-repo-id>mapr.staging.https</release-repo-id>
+                <release-repo-name>MapR Release Repo</release-repo-name>
+                <release-repo-url>${env.MAPR_MAVEN_REPO}</release-repo-url>
+            </properties>
         </profile>
     </profiles>
 </project>
