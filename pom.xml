@@ -401,7 +401,7 @@
             <dependency>
                 <groupId>org.apache.pig</groupId>
                 <artifactId>pig-withouthadoop</artifactId>
-                <version>0.11.2-mapr</version>
+                <version>0.12.1-mapr-1403</version>
                 <classifier>${pig.classifier}</classifier>
                 <exclusions>
                     <exclusion>
