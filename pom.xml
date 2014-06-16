@@ -26,7 +26,7 @@
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.0.0-mapr</version>
+    <version>4.0.0-mapr-1405</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
