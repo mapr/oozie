@@ -81,7 +81,8 @@ if [ -e ${MAPR_CONF_DIR}/hadoop_version ]; then
   else
     # Yarn
     mode=2
-  fielse
+  fi
+else
   mode=""
 fi
 
@@ -209,7 +210,7 @@ case $actionCmd in
     echo "Most likely Tomcat is not running"
     exit 1
 
-+    ;;
+  ;;
 
 esac
 
