@@ -19,8 +19,8 @@ package org.apache.oozie.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;

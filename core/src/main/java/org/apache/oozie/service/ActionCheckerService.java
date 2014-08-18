@@ -203,14 +203,13 @@ public class ActionCheckerService implements Service {
                 callables = new ArrayList<XCallable<Void>>();
             }
         }
-    }
-
-    private List<String> toIds(List<WorkflowActionBean> actions) {
-        List<String> ids = new ArrayList<String>(actions.size());
-        for (WorkflowActionBean action : actions) {
-            ids.add(action.getId());
+        private List<String> toIds(List<WorkflowActionBean> actions) {
+            List<String> ids = new ArrayList<String>(actions.size());
+            for (WorkflowActionBean action : actions) {
+                ids.add(action.getId());
+            }
+            return ids;
         }
-        return ids;
     }
 
     /**

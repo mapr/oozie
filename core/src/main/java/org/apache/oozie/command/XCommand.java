@@ -26,7 +26,6 @@ import org.apache.oozie.service.InstrumentationService;
 import org.apache.oozie.service.MemoryLocksService;
 import org.apache.oozie.service.Services;
 import org.apache.oozie.util.Instrumentation;
-import org.apache.oozie.util.MemoryLocks;
 import org.apache.oozie.lock.LockToken;
 import org.apache.oozie.util.XCallable;
 import org.apache.oozie.util.XLog;
