@@ -142,6 +142,11 @@ public abstract class BaseAdminServlet extends JsonRestServlet {
             JsonBean jmsBean = getJMSConnectionInfo(request, response);
             sendJsonResponse(response, HttpServletResponse.SC_OK, jmsBean, timeZoneId);
         }
+        else if (resource.equals(RestConstants.ADMIN_AVAILABLE_OOZIE_SERVERS_RESOURCE)) {
+            JSONObject json = new JSONObject();
+            json.putAll(getOozieURLs());
+            sendJsonResponse(response, HttpServletResponse.SC_OK, json);
+        }
 
     }
 
@@ -244,5 +249,7 @@ public abstract class BaseAdminServlet extends JsonRestServlet {
 
         return array;
     }
+
+    protected abstract Map<String, String> getOozieURLs() throws XServletException;
 
 }

@@ -50,7 +50,7 @@ import org.apache.oozie.executor.jpa.CoordJobsGetChangedJPAExecutor;
 import org.apache.oozie.executor.jpa.CoordJobsGetPendingJPAExecutor;
 import org.apache.oozie.executor.jpa.JPAExecutorException;
 import org.apache.oozie.util.DateUtils;
-import org.apache.oozie.util.MemoryLocks;
+import org.apache.oozie.lock.LockToken;
 import org.apache.oozie.util.StatusUtils;
 import org.apache.oozie.util.XLog;
 
@@ -79,7 +79,7 @@ public class StatusTransitService implements Service {
      */
     public static class StatusTransitRunnable implements Runnable {
         private JPAService jpaService = null;
-        private MemoryLocks.LockToken lock;
+        private LockToken lock;
 
         public StatusTransitRunnable() {
             jpaService = Services.get().get(JPAService.class);

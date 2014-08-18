@@ -27,6 +27,7 @@ import javax.servlet.ServletContextEvent;
  */
 public class ServicesLoader implements ServletContextListener {
     private static Services services;
+    private static boolean sslEnabled = false;
 
     /**
      * Initialize Oozie services.
@@ -35,6 +36,10 @@ public class ServicesLoader implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent event) {
         try {
+            String ssl = event.getServletContext().getInitParameter("ssl.enabled");
+            if (ssl != null) {
+                sslEnabled = true;
+            }
             services = new Services();
             services.init();
         }
@@ -60,6 +65,10 @@ public class ServicesLoader implements ServletContextListener {
      */
     public void contextDestroyed(ServletContextEvent event) {
         services.destroy();
+    }
+
+    public static boolean isSSLEnabled() {
+        return sslEnabled;
     }
 
 }

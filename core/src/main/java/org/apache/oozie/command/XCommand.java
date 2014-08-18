@@ -27,6 +27,7 @@ import org.apache.oozie.service.MemoryLocksService;
 import org.apache.oozie.service.Services;
 import org.apache.oozie.util.Instrumentation;
 import org.apache.oozie.util.MemoryLocks;
+import org.apache.oozie.lock.LockToken;
 import org.apache.oozie.util.XCallable;
 import org.apache.oozie.util.XLog;
 
@@ -69,7 +70,7 @@ public abstract class XCommand<T> implements XCallable<T> {
     private int priority;
     private String type;
     private long createdTime;
-    private MemoryLocks.LockToken lock;
+    private LockToken lock;
     private AtomicBoolean used = new AtomicBoolean(false);
     private boolean inInterrupt = false;
 
