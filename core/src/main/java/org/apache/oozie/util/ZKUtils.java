@@ -65,9 +65,10 @@ public class ZKUtils {
      */
     public static final String ZK_NAMESPACE = "oozie.zookeeper.namespace";
     /**
-     * oozie-site property for specifying the ID for this Oozie Server.  Each Oozie server should have a unique ID.
+     * oozie-env environment variable for specifying the Oozie instance ID
      */
     public static final String ZK_ID = "oozie.zookeeper.oozie.id";
+    public static final String OOZIE_INSTANCE_ID = "oozie.instance.id";
     private static final String ZK_OOZIE_SERVICE = "servers";
     private static final String ZK_BASE_PATH = "/services";
 
@@ -89,9 +90,7 @@ public class ZKUtils {
     private ZKUtils() throws Exception {
         log = XLog.getLog(getClass());
         zkId = Services.get().getConf().get(ZK_ID, "").trim();
-        if (zkId.length() == 0) {
-            zkId = System.getProperty("oozie.http.hostname");
-        }
+        zkId = System.getProperty(OOZIE_INSTANCE_ID);
         createClient();
         advertiseService();
     }
