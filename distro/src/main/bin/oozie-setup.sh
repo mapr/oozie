@@ -372,7 +372,7 @@ else
 
     if [ -f ${yarn_site_file} ] && grep  "yarn.resourcemanager.hostname" ${yarn_site_file}
     then
-      \cp ${yarn_site_file} ${MapRHomeDir}/oozie/oozie-4.0.1/conf/hadoop-conf/
+      \cp ${yarn_site_file} ${OOZIE_HOME}/conf/hadoop-conf/
     fi
 
     if [ -e "${oozie_hadoop1_war}" ]; then
