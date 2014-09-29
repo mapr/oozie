@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.0.1-mapr</version>
+        <version>4.0.1-mapr-1409</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-hadoop-distcp</artifactId>
-    <version>2.3.0.oozie-4.0.1-mapr</version>
+    <version>2.3.0.oozie-4.0.1-mapr-1409</version>
     <description>Apache Oozie Hadoop Distcp ${project.version}</description>
     <name>Apache Oozie Hadoop Distcp ${project.version}</name>
     <packaging>jar</packaging>
