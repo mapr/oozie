@@ -38,7 +38,7 @@ public class ShellActionExecutor extends JavaActionExecutor {
     }
 
     @Override
-    protected List<Class> getLauncherClasses() {
+    public List<Class> getLauncherClasses() {
         List<Class> classes = super.getLauncherClasses();
         // Base class of ShellMain dedicated for 'shell' action
         classes.add(LauncherMain.class);

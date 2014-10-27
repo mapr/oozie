@@ -52,7 +52,7 @@ public class MapReduceActionExecutor extends JavaActionExecutor {
     }
 
     @Override
-    protected List<Class> getLauncherClasses() {
+    public List<Class> getLauncherClasses() {
         List<Class> classes = super.getLauncherClasses();
         classes.add(LauncherMain.class);
         classes.add(MapReduceMain.class);

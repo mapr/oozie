@@ -29,7 +29,8 @@ import org.jdom.Element;
 
 
 public class DistcpActionExecutor extends JavaActionExecutor{
-    public static final String CONF_OOZIE_DISTCP_ACTION_MAIN_CLASS = "org.apache.hadoop.tools.DistCp";
+    public static final String CONF_OOZIE_DISTCP_ACTION_MAIN_CLASS = "org.apache.oozie.action.hadoop.DistcpMain";
+    private static final String DISTCP_MAIN_CLASS_NAME = "org.apache.hadoop.tools.DistCp";
     public static final String CLASS_NAMES = "oozie.actions.main.classnames";
     private static final XLog LOG = XLog.getLog(DistcpActionExecutor.class);
     public static final String DISTCP_TYPE = "distcp";
@@ -47,7 +48,7 @@ public class DistcpActionExecutor extends JavaActionExecutor{
         if(name != null){
             classNameDistcp = name;
         }
-        actionConf.set(JavaMain.JAVA_MAIN_CLASS, classNameDistcp);
+        actionConf.set(JavaMain.JAVA_MAIN_CLASS, DISTCP_MAIN_CLASS_NAME);
         return actionConf;
     }
 

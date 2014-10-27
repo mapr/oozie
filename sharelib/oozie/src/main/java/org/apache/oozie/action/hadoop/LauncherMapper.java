@@ -17,17 +17,15 @@
  */
 package org.apache.oozie.action.hadoop;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.Reporter;
+
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -38,14 +36,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.Mapper;
-import org.apache.hadoop.mapred.OutputCollector;
-import org.apache.hadoop.mapred.Reporter;
 
 public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, Runnable {
 
@@ -80,6 +70,8 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
     static final String ACTION_EXTERNAL_CHILD_IDS_PROPS = "externalChildIds.properties";
     static final String ACTION_NEW_ID_PROPS = "newId.properties";
     static final String ACTION_ERROR_PROPS = "error.properties";
+    static final String ACTION_DATA_NEW_ID = "newId";
+    static final String ACTION_DATA_SEQUENCE_FILE = "action-data.seq"; // COMBO FILE
 
     static final String JOB_ID_REGEX = "^job_\\d+_\\d+$";
 
@@ -576,14 +568,14 @@ class LauncherSecurityManager extends SecurityManager {
         exitInvoked = false;
         exitCode = 0;
     }
+}
 
-    /**
-     * Used by JavaMain to wrap a Throwable when an Exception occurs
-     */
-    @SuppressWarnings("serial")
-    class JavaMainException extends Exception {
-        public JavaMainException(Throwable t) {
-            super(t);
-        }
+/**
+ * Used by JavaMain to wrap a Throwable when an Exception occurs
+ */
+@SuppressWarnings("serial")
+class JavaMainException extends Exception {
+    public JavaMainException(Throwable t) {
+        super(t);
     }
 }

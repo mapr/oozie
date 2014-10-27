@@ -17,6 +17,8 @@
  */
 package org.apache.oozie.action.hadoop;
 
+import org.apache.hadoop.util.Shell;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -95,6 +97,24 @@ public abstract class LauncherMain {
         writer.close();
         System.out.println(writer.toString());
         System.out.flush();
+    }
+
+    /**
+     * Get file path from the given environment
+     */
+    protected static String getFilePathFromEnv(String env) {
+        String path = System.getenv(env);
+        if (path != null && Shell.WINDOWS) {
+            // In Windows, file paths are enclosed in \" so remove them here
+            // to avoid path errors
+            if (path.charAt(0) == '"') {
+                path = path.substring(1);
+            }
+            if (path.charAt(path.length() - 1) == '"') {
+                path = path.substring(0, path.length() - 1);
+            }
+        }
+        return path;
     }
 
 }

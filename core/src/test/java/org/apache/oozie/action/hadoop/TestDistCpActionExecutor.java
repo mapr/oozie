@@ -15,7 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.oozie.action.hadoop;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
@@ -31,12 +38,6 @@ import org.apache.oozie.service.WorkflowAppService;
 import org.apache.oozie.util.IOUtils;
 import org.apache.oozie.util.XConfiguration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-
 public class TestDistCpActionExecutor extends ActionExecutorTestCase{
 
     @Override
@@ -48,7 +49,7 @@ public class TestDistCpActionExecutor extends ActionExecutorTestCase{
     @SuppressWarnings("unchecked")
     public void testSetupMethods() throws Exception {
         DistcpActionExecutor ae = new DistcpActionExecutor();
-        assertEquals(Arrays.asList(JavaMain.class), ae.getLauncherClasses());
+        assertEquals(Arrays.asList(DistcpMain.class), ae.getLauncherClasses());
     }
 
     public void testDistCpFile() throws Exception {
@@ -61,11 +62,11 @@ public class TestDistCpActionExecutor extends ActionExecutorTestCase{
         os.close();
 
         String actionXml = "<distcp>" +
-                "<job-tracker>" + getJobTrackerUri() + "</job-tracker>" +
-                "<name-node>" + getNameNodeUri() + "</name-node>" +
-                "<arg>" + inputPath + "</arg>"+
-                "<arg>" + outputPath + "</arg>" +
-                "</distcp>";
+            "<job-tracker>" + getJobTrackerUri() + "</job-tracker>" +
+            "<name-node>" + getNameNodeUri() + "</name-node>" +
+            "<arg>" + inputPath + "</arg>"+
+            "<arg>" + outputPath + "</arg>" +
+            "</distcp>";
         Context context = createContext(actionXml);
         final RunningJob runningJob = submitAction(context);
         waitFor(60 * 1000, new Predicate() {
@@ -128,7 +129,6 @@ public class TestDistCpActionExecutor extends ActionExecutorTestCase{
 
         return new Context(wf, action);
     }
-
 
     protected RunningJob submitAction(Context context) throws Exception {
         DistcpActionExecutor ae = new DistcpActionExecutor();

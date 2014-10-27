@@ -27,10 +27,8 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.security.PrivilegedExceptionAction;
+import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -38,11 +36,11 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.Counters;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RunningJob;
+import org.apache.oozie.client.OozieClient;
 import org.apache.oozie.client.WorkflowAction;
-import org.apache.oozie.service.HadoopAccessorException;
-import org.apache.oozie.service.HadoopAccessorService;
-import org.apache.oozie.service.Services;
-import org.apache.oozie.service.URIHandlerService;
+import org.apache.oozie.service.*;
+import org.apache.oozie.util.IOUtils;
+import org.apache.oozie.util.PropertiesUtils;
 import org.apache.oozie.util.XLog;
 
 public class LauncherMapperHelper {
@@ -221,6 +219,15 @@ public class LauncherMapperHelper {
             }
         }
         return swap;
+    }
+
+    /**
+     * Get the sequence file path storing all action data
+     * @param actionDir
+     * @return
+     */
+    public static Path getActionDataSequenceFilePath(Path actionDir) {
+        return new Path(actionDir, LauncherMapper.ACTION_DATA_SEQUENCE_FILE);
     }
 
     public static boolean hasIdSwap(RunningJob runningJob, String user, String group, Path actionDir)

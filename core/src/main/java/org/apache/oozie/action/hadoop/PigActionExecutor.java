@@ -51,7 +51,7 @@ public class PigActionExecutor extends ScriptLanguageActionExecutor {
     }
 
     @Override
-    protected List<Class> getLauncherClasses() {
+    public List<Class> getLauncherClasses() {
         List<Class> classes = super.getLauncherClasses();
         try {
             classes.add(Class.forName(PIG_MAIN_CLASS_NAME));

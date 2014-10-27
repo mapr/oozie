@@ -53,7 +53,7 @@ public class HiveActionExecutor extends ScriptLanguageActionExecutor {
     }
 
     @Override
-    protected List<Class> getLauncherClasses() {
+    public List<Class> getLauncherClasses() {
         List<Class> classes = super.getLauncherClasses();
         try {
             classes.add(Class.forName(HIVE_MAIN_CLASS_NAME));
