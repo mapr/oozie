@@ -71,7 +71,7 @@
 
         <hadoop.version>1.1.1</hadoop.version>
         <hbase.version>0.94.2</hbase.version>
-        <hcatalog.version>0.5.0</hcatalog.version>
+        <hcatalog.version>0.13.1</hcatalog.version>
 
         <hadooplib.version>${hadoop.version}.oozie-${project.version}</hadooplib.version>
         <hbaselib.version>${hbase.version}.oozie-${project.version}</hbaselib.version>
@@ -814,6 +814,12 @@
                 <groupId>net.sourceforge.collections</groupId>
                 <artifactId>collections-generic</artifactId>
                 <version>4.01</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.oozie</groupId>
+                <artifactId>oozie-hadoop-utils</artifactId>
+                <version>${hadooplib.version}</version>
             </dependency>
 
         </dependencies>
