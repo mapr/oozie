@@ -17,23 +17,14 @@
  */
 package org.apache.oozie.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TimeZone;
-import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.annotations.VisibleForTesting;
+import org.apache.commons.cli.*;
+import org.apache.oozie.BuildInfo;
+import org.apache.oozie.client.*;
+import org.apache.oozie.client.OozieClient.SYSTEM_MODE;
+import org.apache.oozie.client.rest.RestConstants;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -43,35 +34,12 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.oozie.BuildInfo;
-import org.apache.oozie.client.AuthOozieClient;
-import org.apache.oozie.client.BulkResponse;
-import org.apache.oozie.client.BundleJob;
-import org.apache.oozie.client.CoordinatorAction;
-import org.apache.oozie.client.CoordinatorJob;
-import org.apache.oozie.client.OozieClient;
-import org.apache.oozie.client.OozieClient.SYSTEM_MODE;
-import org.apache.oozie.client.OozieClientException;
-import org.apache.oozie.client.WorkflowAction;
-import org.apache.oozie.client.WorkflowJob;
-import org.apache.oozie.client.XOozieClient;
-import org.apache.oozie.client.rest.RestConstants;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
-
-import com.google.common.annotations.VisibleForTesting;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Oozie command line utility.
@@ -1592,6 +1560,8 @@ public class OozieCLI {
                         "ssh-action-0.1.xsd")));
                 sources.add(new StreamSource(Thread.currentThread().getContextClassLoader().getResourceAsStream(
                         "ssh-action-0.2.xsd")));
+                sources.add(new StreamSource(Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                        "hiveserver2-action-0.1.xsd")));
                 SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                 Schema schema = factory.newSchema(sources.toArray(new StreamSource[sources.size()]));
                 Validator validator = schema.newValidator();
