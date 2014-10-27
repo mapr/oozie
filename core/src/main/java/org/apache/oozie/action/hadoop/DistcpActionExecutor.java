@@ -17,7 +17,12 @@
  */
 package org.apache.oozie.action.hadoop;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.oozie.action.ActionExecutorException;
 import org.apache.oozie.service.Services;
 import org.apache.oozie.util.XLog;
 import org.jdom.Element;
@@ -33,17 +38,17 @@ public class DistcpActionExecutor extends JavaActionExecutor{
         super("distcp");
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.oozie.action.hadoop.JavaActionExecutor#getLauncherMain(org.apache.hadoop.conf.Configuration, org.jdom.Element)
-     */
     @Override
-    protected String getLauncherMain(Configuration launcherConf, Element actionXml) {
+    Configuration setupActionConf(Configuration actionConf, Context context, Element actionXml, Path appPath)
+            throws ActionExecutorException {
+        actionConf = super.setupActionConf(actionConf, context, actionXml, appPath);
         String classNameDistcp = CONF_OOZIE_DISTCP_ACTION_MAIN_CLASS;
         String name = getClassNamebyType(DISTCP_TYPE);
         if(name != null){
             classNameDistcp = name;
         }
-        return launcherConf.get(LauncherMapper.CONF_OOZIE_ACTION_MAIN_CLASS, classNameDistcp);
+        actionConf.set(JavaMain.JAVA_MAIN_CLASS, classNameDistcp);
+        return actionConf;
     }
 
     /**
@@ -70,6 +75,18 @@ public class DistcpActionExecutor extends JavaActionExecutor{
         return classname;
     }
 
+    @Override
+    public List<Class> getLauncherClasses() {
+        List<Class> classes = new ArrayList<Class>();
+        try {
+            classes.add(Class.forName(CONF_OOZIE_DISTCP_ACTION_MAIN_CLASS));
+        }
+        catch (ClassNotFoundException e) {
+            throw new RuntimeException("Class not found", e);
+        }
+        return classes;
+    }
+
     /**
      * To trim string
      *
@@ -94,6 +111,11 @@ public class DistcpActionExecutor extends JavaActionExecutor{
     @Override
     protected String getDefaultShareLibName(Element actionXml) {
         return "distcp";
+    }
+
+    @Override
+    protected String getLauncherMain(Configuration launcherConf, Element actionXml) {
+        return launcherConf.get(LauncherMapper.CONF_OOZIE_ACTION_MAIN_CLASS, CONF_OOZIE_DISTCP_ACTION_MAIN_CLASS);
     }
 
 }

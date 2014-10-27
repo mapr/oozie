@@ -17,6 +17,11 @@
  */
 package org.apache.oozie.action.hadoop;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.sqoop.Sqoop;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,11 +30,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.sqoop.Sqoop;
 
 public class SqoopMain extends LauncherMain {
 
@@ -161,6 +161,8 @@ public class SqoopMain extends LauncherMain {
         for (String arg : sqoopArgs) {
             System.out.println("             " + arg);
         }
+
+        LauncherMainHadoopUtils.killChildYarnJobs(sqoopConf);
 
         System.out.println("=================================================================");
         System.out.println();

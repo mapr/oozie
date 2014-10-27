@@ -241,12 +241,18 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
                         mainMethod.invoke(null, (Object) args);
                     }
                     catch (InvocationTargetException ex) {
-                        if (LauncherMainException.class.isInstance(ex.getCause())) {
+                        // Get what actually caused the exception
+                        Throwable cause = ex.getCause();
+                        // If we got a JavaMainException from JavaMain, then we need to unwrap it
+                        if (JavaMainException.class.isInstance(cause)) {
+                            cause = cause.getCause();
+                        }
+                        if (LauncherMainException.class.isInstance(cause)) {
                             errorMessage = msgPrefix + "exit code [" +((LauncherMainException)ex.getCause()).getErrorCode()
                                 + "]";
                             errorCause = null;
                         }
-                        else if (SecurityException.class.isInstance(ex.getCause())) {
+                        else if (SecurityException.class.isInstance(cause)) {
                             if (LauncherSecurityManager.getExitInvoked()) {
                                 System.out.println("Intercepting System.exit(" + LauncherSecurityManager.getExitCode()
                                         + ")");
@@ -409,6 +415,7 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
         System.setProperty(EXTERNAL_ACTION_STATS, new File(ACTION_STATS_PROPS).getAbsolutePath());
         System.setProperty(EXTERNAL_CHILD_IDS, new File(ACTION_EXTERNAL_CHILD_IDS_PROPS).getAbsolutePath());
         System.setProperty("oozie.action.newId.properties", new File(ACTION_NEW_ID_PROPS).getAbsolutePath());
+        System.setProperty("oozie.job.launch.time", getJobConf().get("oozie.job.launch.time"));
     }
 
     // Method to execute the prepare actions
@@ -568,5 +575,15 @@ class LauncherSecurityManager extends SecurityManager {
     public static void reset() {
         exitInvoked = false;
         exitCode = 0;
+    }
+
+    /**
+     * Used by JavaMain to wrap a Throwable when an Exception occurs
+     */
+    @SuppressWarnings("serial")
+    class JavaMainException extends Exception {
+        public JavaMainException(Throwable t) {
+            super(t);
+        }
     }
 }

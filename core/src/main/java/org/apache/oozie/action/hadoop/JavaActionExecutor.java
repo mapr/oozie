@@ -102,6 +102,7 @@ public class JavaActionExecutor extends ActionExecutor {
     public static final String YARN_AM_RESOURCE_MB = "yarn.app.mapreduce.am.resource.mb";
     public static final String YARN_AM_COMMAND_OPTS = "yarn.app.mapreduce.am.command-opts";
     public static final String YARN_AM_ENV = "yarn.app.mapreduce.am.env";
+    private static final String JAVA_MAIN_CLASS_NAME = "org.apache.oozie.action.hadoop.JavaMain";
     public static final int YARN_MEMORY_MB_MIN = 512;
     private boolean useLauncherJar;
     private static int maxActionOutputLen;
@@ -137,16 +138,14 @@ public class JavaActionExecutor extends ActionExecutor {
         return getType() + "-launcher.jar";
     }
 
-    protected List<Class> getLauncherClasses() {
+    public List<Class> getLauncherClasses() {
         List<Class> classes = new ArrayList<Class>();
-        classes.add(LauncherMapper.class);
-        classes.add(LauncherSecurityManager.class);
-        classes.add(LauncherException.class);
-        classes.add(LauncherMainException.class);
-        classes.add(PrepareActionsDriver.class);
-        classes.addAll(Services.get().get(URIHandlerService.class).getClassesForLauncher());
-        classes.add(ActionStats.class);
-        classes.add(ActionType.class);
+        try {
+            classes.add(Class.forName(JAVA_MAIN_CLASS_NAME));
+        }
+        catch (ClassNotFoundException e) {
+            throw new RuntimeException("Class not found", e);
+        }
         return classes;
     }
 
@@ -393,6 +392,9 @@ public class JavaActionExecutor extends ActionExecutor {
             HadoopAccessorService has = Services.get().get(HadoopAccessorService.class);
             XConfiguration actionDefaults = has.createActionDefaultConf(actionConf.get(HADOOP_JOB_TRACKER), getType());
             XConfiguration.injectDefaults(actionDefaults, actionConf);
+
+            // Set the Java Main Class for the Java action to give to the Java launcher
+            setJavaMain(actionConf, actionXml);
 
             has.checkSupportedFilesystem(appPath.toUri());
 
@@ -650,9 +652,15 @@ public class JavaActionExecutor extends ActionExecutor {
 
 
     protected String getLauncherMain(Configuration launcherConf, Element actionXml) {
+        return launcherConf.get(LauncherMapper.CONF_OOZIE_ACTION_MAIN_CLASS, JavaMain.class.getName());
+    }
+
+    private void setJavaMain(Configuration actionConf, Element actionXml) {
         Namespace ns = actionXml.getNamespace();
         Element e = actionXml.getChild("main-class", ns);
-        return e.getTextTrim();
+        if (e != null) {
+            actionConf.set(JavaMain.JAVA_MAIN_CLASS, e.getTextTrim());
+        }
     }
 
     private static final String QUEUE_NAME = "mapred.job.queue.name";
@@ -679,6 +687,9 @@ public class JavaActionExecutor extends ActionExecutor {
             // launcher job configuration
             JobConf launcherJobConf = createBaseHadoopConf(context, actionXml);
             setupLauncherConf(launcherJobConf, actionXml, appPathRoot, context);
+
+            // Properties for when a launcher job's AM gets restarted
+            LauncherMapperHelper.setupYarnRestartHandling(launcherJobConf, actionConf, action.getId());
 
             String actionShareLibProperty = actionConf.get(ACTION_SHARELIB_FOR + getType());
             if (actionShareLibProperty != null) {
@@ -712,6 +723,7 @@ public class JavaActionExecutor extends ActionExecutor {
             LauncherMapperHelper.setupLauncherInfo(launcherJobConf, jobId, actionId, actionDir, recoveryId, actionConf,
                     prepareXML);
 
+            // Set the launcher Main Class
             LauncherMapperHelper.setupMainClass(launcherJobConf, getLauncherMain(launcherJobConf, actionXml));
             LauncherMapperHelper.setupLauncherURIHandlerConf(launcherJobConf);
             LauncherMapperHelper.setupMaxOutputData(launcherJobConf, maxActionOutputLen);

@@ -59,6 +59,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.oozie</groupId>
+            <artifactId>oozie-hadoop-utils</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.4.9</version>

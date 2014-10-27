@@ -17,11 +17,6 @@
  */
 package org.apache.oozie.action.hadoop;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
@@ -36,12 +31,24 @@ import org.apache.oozie.service.WorkflowAppService;
 import org.apache.oozie.util.IOUtils;
 import org.apache.oozie.util.XConfiguration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+
 public class TestDistCpActionExecutor extends ActionExecutorTestCase{
 
     @Override
     protected void setSystemProps() throws Exception {
         super.setSystemProps();
         setSystemProperty("oozie.service.ActionService.executor.classes", DistcpActionExecutor.class.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testSetupMethods() throws Exception {
+        DistcpActionExecutor ae = new DistcpActionExecutor();
+        assertEquals(Arrays.asList(JavaMain.class), ae.getLauncherClasses());
     }
 
     public void testDistCpFile() throws Exception {

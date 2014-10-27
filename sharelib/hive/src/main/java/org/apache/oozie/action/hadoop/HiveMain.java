@@ -17,26 +17,17 @@
  */
 package org.apache.oozie.action.hadoop;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.cli.CliDriver;
 import org.apache.hadoop.hive.conf.HiveConf;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 public class HiveMain extends LauncherMain {
     private static final Pattern[] HIVE_JOB_IDS_PATTERNS = {
@@ -259,6 +250,8 @@ public class HiveMain extends LauncherMain {
             System.out.println("             " + arg);
         }
         System.out.println();
+
+        LauncherMainHadoopUtils.killChildYarnJobs(hiveConf);
 
         System.out.println("=================================================================");
         System.out.println();
