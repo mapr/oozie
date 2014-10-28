@@ -22,13 +22,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.oozie.util.XConfiguration;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Properties;
 
 public class TestMapReduceMain extends MainTestCase {
 
@@ -63,20 +60,14 @@ public class TestMapReduceMain extends MainTestCase {
         jobConf.writeXml(os);
         os.close();
 
-        File newIdProperties = new File(getTestCaseDir(), "newId.properties");
+        File newId = new File(getTestCaseDir(), "newId");
 
         System.setProperty("oozie.action.conf.xml", actionXml.getAbsolutePath());
-        System.setProperty("oozie.action.newId.properties", newIdProperties.getAbsolutePath());
+        System.setProperty("oozie.action.newId", newId.getAbsolutePath());
         MapReduceMain.main(new String[0]);
 
-        assertTrue(newIdProperties.exists());
-
-        InputStream is = new FileInputStream(newIdProperties);
-        Properties props = new Properties();
-        props.load(is);
-        is.close();
-
-        assertTrue(props.containsKey("id"));
+        assertTrue(newId.exists());
+        assertNotNull(LauncherMapper.getLocalFileContentStr(newId, "", -1));
         return null;
     }
 

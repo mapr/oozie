@@ -48,7 +48,7 @@ public class LauncherMainTester {
                 System.out.println(file.getAbsolutePath());
             }
             if (args[0].equals("id")) {
-                File file = new File(System.getProperty("oozie.action.newId.properties"));
+                File file = new File(System.getProperty("oozie.action.newId"));
                 Properties props = new Properties();
                 props.setProperty("id", "IDSWAP");
                 OutputStream os = new FileOutputStream(file);

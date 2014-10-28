@@ -32,8 +32,8 @@ import org.apache.oozie.service.HadoopAccessorException;
 import org.apache.oozie.service.Services;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 public class TestLauncher extends XFsTestCase {
 
@@ -114,15 +114,13 @@ public class TestLauncher extends XFsTestCase {
             }
         });
         assertTrue(runningJob.isSuccessful());
-
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertFalse(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertFalse(LauncherMapperHelper.hasOutputData(runningJob));
-        assertFalse(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertFalse(LauncherMapperHelper.hasOutputData(actionData));
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertFalse(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
     }
 
     public void testExit0() throws Exception {
@@ -137,14 +135,13 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertFalse(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertFalse(LauncherMapperHelper.hasOutputData(runningJob));
-        assertFalse(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertFalse(LauncherMapperHelper.hasOutputData(actionData));
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertFalse(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
     }
 
     public void testExit1() throws Exception {
@@ -159,14 +156,14 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertFalse(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertFalse(LauncherMapperHelper.hasOutputData(runningJob));
-        assertFalse(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertFalse(LauncherMapperHelper.hasOutputData(actionData));
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertTrue(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
+        assertTrue(actionData.containsKey(LauncherMapper.ACTION_DATA_ERROR_PROPS));
     }
 
     public void testException() throws Exception {
@@ -181,14 +178,13 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertFalse(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertFalse(LauncherMapperHelper.hasOutputData(runningJob));
-        assertFalse(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertFalse(LauncherMapperHelper.hasOutputData(actionData));
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertTrue(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
     }
 
     public void testOutput() throws Exception {
@@ -203,14 +199,13 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertTrue(LauncherMapperHelper.hasOutputData(runningJob));
-        assertFalse(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertTrue(LauncherMapperHelper.hasOutputData(actionData));
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertFalse(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertTrue(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
     }
 
     public void testNewId() throws Exception {
@@ -225,14 +220,13 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertFalse(LauncherMapperHelper.hasOutputData(runningJob));
-        assertTrue(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertFalse(LauncherMapperHelper.hasOutputData(actionData));
+        assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertFalse(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertTrue(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
     }
 
     public void testSecurityManager() throws Exception {
@@ -247,14 +241,13 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        assertFalse(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
-        assertFalse(LauncherMapperHelper.hasOutputData(runningJob));
-        assertFalse(LauncherMapperHelper.hasIdSwap(runningJob));
+        assertFalse(LauncherMapperHelper.hasOutputData(actionData));
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
-        assertFalse(fs.exists(LauncherMapperHelper.getErrorPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getIdSwapPath(actionDir)));
-        assertFalse(fs.exists(LauncherMapperHelper.getOutputDataPath(actionDir)));
     }
 
     // Test to ensure that the property value "oozie.action.prepare.xml" in the configuration of the job is an empty
@@ -318,8 +311,6 @@ public class TestLauncher extends XFsTestCase {
   // when there is prepare block in workflow XML
   public void testSetupLauncherInfoHadoop2_0_2_alphaWorkaround() throws Exception {
     Path actionDir = getFsTestCaseDir();
-    FileSystem fs = getFileSystem();
-    Path newDir = new Path(actionDir, "newDir");
 
     // Setting up the job configuration
     JobConf jobConf = Services.get().get(HadoopAccessorService.class).

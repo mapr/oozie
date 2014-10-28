@@ -19,20 +19,17 @@ package org.apache.oozie.action.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RunningJob;
-import org.apache.hadoop.security.UserGroupInformation;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.File;
 
 public class MapReduceMain extends LauncherMain {
 

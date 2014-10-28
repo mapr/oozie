@@ -18,19 +18,14 @@
 
 package org.apache.oozie.action.hadoop;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 
 public class ShellMain extends LauncherMain {
     public static final String CONF_OOZIE_SHELL_ARGS = "oozie.shell.args";
@@ -188,7 +183,7 @@ public class ShellMain extends LauncherMain {
 
             try {
                 if (needCaptured) {
-                    File file = new File(System.getProperty("oozie.action.output.properties"));
+                    File file = new File(System.getProperty(LauncherMapper.ACTION_PREFIX + LauncherMapper.ACTION_DATA_OUTPUT_PROPS));
                     os = new BufferedWriter(new FileWriter(file));
                 }
                 while ((line = reader.readLine()) != null) {

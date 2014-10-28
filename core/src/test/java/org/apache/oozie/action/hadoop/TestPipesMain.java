@@ -78,18 +78,18 @@ public class TestPipesMain extends MainTestCase {
             jobConf.writeXml(os);
             os.close();
 
-            File newIdProperties = new File(getTestCaseDir(), "newId.properties");
+            File newId = new File(getTestCaseDir(), "newId");
 
             System.setProperty("oozie.action.conf.xml", actionXml.getAbsolutePath());
-            System.setProperty("oozie.action.newId.properties", newIdProperties.getAbsolutePath());
+            System.setProperty("oozie.action.newId", newId.getAbsolutePath());
 
             String[] args = {};
 
             PipesMain.main(args);
 
-            assertTrue(newIdProperties.exists());
+            assertTrue(newId.exists());
 
-            is = new FileInputStream(newIdProperties);
+            is = new FileInputStream(newId);
             Properties props = new Properties();
             props.load(is);
             is.close();

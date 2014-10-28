@@ -41,6 +41,7 @@ import org.apache.oozie.util.PropertiesUtils;
 import org.apache.oozie.util.XConfiguration;
 import org.apache.oozie.util.XmlUtils;
 import org.jdom.Element;
+import java.util.Map;
 
 public class TestShellActionExecutor extends ActionExecutorTestCase {
 
@@ -273,7 +274,10 @@ public class TestShellActionExecutor extends ActionExecutorTestCase {
         assertTrue(launcherJob.isSuccessful());
 
         sleep(2000);// Wait more to make sure no ID swap happens
-        assertFalse(LauncherMapperHelper.hasIdSwap(launcherJob));
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+               new XConfiguration());
+        assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
+
 
         ShellActionExecutor ae = new ShellActionExecutor();
         ae.check(context, context.getAction());

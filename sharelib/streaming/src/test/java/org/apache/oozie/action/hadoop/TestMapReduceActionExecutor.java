@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.util.Map;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -344,7 +345,9 @@ public class TestMapReduceActionExecutor extends ActionExecutorTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
 
-        assertTrue(LauncherMapperHelper.hasIdSwap(launcherJob));
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            new XConfiguration());
+        assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         MapReduceActionExecutor ae = new MapReduceActionExecutor();
         ae.check(context, context.getAction());
@@ -394,7 +397,9 @@ public class TestMapReduceActionExecutor extends ActionExecutorTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
 
-        assertTrue(LauncherMapperHelper.hasIdSwap(launcherJob));
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            new XConfiguration());
+        assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         MapReduceActionExecutor ae = new MapReduceActionExecutor();
         ae.check(context, context.getAction());
@@ -717,7 +722,9 @@ public class TestMapReduceActionExecutor extends ActionExecutorTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
 
-        assertTrue(LauncherMapperHelper.hasIdSwap(launcherJob));
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            new XConfiguration());
+        assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         MapReduceActionExecutor ae = new MapReduceActionExecutor();
         ae.check(context, context.getAction());
@@ -792,7 +799,9 @@ public class TestMapReduceActionExecutor extends ActionExecutorTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
 
-        assertTrue(LauncherMapperHelper.hasIdSwap(launcherJob));
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            new XConfiguration());
+        assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         MapReduceActionExecutor ae = new MapReduceActionExecutor();
         ae.check(context, context.getAction());
@@ -873,7 +882,9 @@ public class TestMapReduceActionExecutor extends ActionExecutorTestCase {
         });
 
         assertTrue(launcherJob.isSuccessful());
-        assertTrue(LauncherMapperHelper.hasIdSwap(launcherJob));
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            new XConfiguration());
+        assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
         // Assert launcher job name has been set
         System.out.println("Launcher job name: " + launcherJob.getJobName());
         assertTrue(launcherJob.getJobName().equals(launcherJobName));

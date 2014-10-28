@@ -133,7 +133,7 @@ public class TestHiveServer2ActionExecutor extends ActionExecutorTestCase {
             "</hiveserver2>";
         return MessageFormat.format(script, getJobTrackerUri(), getNameNodeUri(), getHiveServer2JdbcURL(""));
     }
-/*
+
     @SuppressWarnings("deprecation")
     public void testHive2Action() throws Exception {
         setupHiveServer2();
@@ -175,7 +175,7 @@ public class TestHiveServer2ActionExecutor extends ActionExecutorTestCase {
 
         assertTrue(fs.exists(outputDir));
         assertTrue(fs.isDirectory(outputDir));
-    }*/
+    }
 
     private RunningJob submitAction(Context context) throws Exception {
         HiveServer2ActionExecutor ae = new HiveServer2ActionExecutor();
