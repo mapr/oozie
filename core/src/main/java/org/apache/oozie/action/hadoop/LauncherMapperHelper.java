@@ -39,11 +39,14 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.mapred.Counters;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.oozie.client.OozieClient;
 import org.apache.oozie.client.OozieClient;
 import org.apache.oozie.client.WorkflowAction;
 import org.apache.oozie.service.*;
 import org.apache.oozie.util.IOUtils;
 import org.apache.oozie.util.PropertiesUtils;
+import org.apache.oozie.service.UserGroupInformationService;
 
 public class LauncherMapperHelper {
 
@@ -210,14 +213,6 @@ public class LauncherMapperHelper {
         return actionData.containsKey(LauncherMapper.ACTION_DATA_STATS);
     }
 
-    /**
-     * Get the sequence file path storing all action data
-     * @param actionDir
-     * @return
-     */
-    public static Path getActionDataSequenceFilePath(Path actionDir) {
-        return new Path(actionDir, LauncherMapper.ACTION_DATA_SEQUENCE_FILE);
-    }
 
     /**
      * Determine whether action has new id (id swap) or not
@@ -243,26 +238,33 @@ public class LauncherMapperHelper {
      * Utility function to load the contents of action data sequence file into
      * memory object
      *
-     * @param fs FileSystem - HDFS
-     * @param actionDir action directory
-     * @param conf job conf
-     * @param obj memory object
-     * @param type type of action data
-     * @param maxLen maximum allowed length of the data
-     * @return the objectv (map)
+     * @param fs Action Filesystem
+     * @param actionDir Path
+     * @param conf Configuration
+     * @return Map action data
      * @throws IOException
+     * @throws InterruptedException
      */
-    public static Map<String, String> getActionData(FileSystem fs, Path actionDir, Configuration conf) throws IOException {
-        Map<String, String> ret = new HashMap<String, String>();
-        Path seqFilePath = getActionDataSequenceFilePath(actionDir);
-        if (fs.exists(seqFilePath)) {
-            SequenceFile.Reader seqFile = new SequenceFile.Reader(fs, seqFilePath, conf);
-            Text key = new Text(), value = new Text();
-            while (seqFile.next(key, value)) {
-                ret.put(key.toString(), value.toString());
+    public static Map<String, String> getActionData(final FileSystem fs, final Path actionDir, final Configuration conf)
+        throws IOException, InterruptedException {
+        UserGroupInformationService ugiService = Services.get().get(UserGroupInformationService.class);
+        UserGroupInformation ugi = ugiService.getProxyUser(conf.get(OozieClient.USER_NAME));
+
+        return ugi.doAs(new PrivilegedExceptionAction<Map<String, String>>() {
+            @Override
+            public Map<String, String> run() throws IOException {
+                Map<String, String> ret = new HashMap<String, String>();
+                Path seqFilePath = getActionDataSequenceFilePath(actionDir);
+                if (fs.exists(seqFilePath)) {
+                    SequenceFile.Reader seqFile = new SequenceFile.Reader(fs, seqFilePath, conf);
+                    Text key = new Text(), value = new Text();
+                    while (seqFile.next(key, value)) {
+                        ret.put(key.toString(), value.toString());
+                    }
+                    seqFile.close();
+                }
+                return ret;
             }
-            seqFile.close();
-        }
-        return ret;
+        });
     }
 }

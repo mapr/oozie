@@ -44,7 +44,6 @@ import org.apache.oozie.executor.jpa.WorkflowJobGetJPAExecutor;
 import org.apache.oozie.service.ActionCheckerService;
 import org.apache.oozie.service.HadoopAccessorService;
 import org.apache.oozie.service.InstrumentationService;
-import org.apache.oozie.util.XConfiguration;
 import org.apache.oozie.service.JPAService;
 import org.apache.oozie.service.Services;
 import org.apache.oozie.service.UUIDService;
@@ -216,7 +215,7 @@ public class TestActionCheckXCommand extends XDataTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         new ActionCheckXCommand(action.getId()).call();
@@ -328,7 +327,7 @@ public class TestActionCheckXCommand extends XDataTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         new ActionCheckXCommand(actionId).call();
@@ -395,7 +394,7 @@ public class TestActionCheckXCommand extends XDataTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         new ActionCheckXCommand(action1.getId()).call();
@@ -462,7 +461,7 @@ public class TestActionCheckXCommand extends XDataTestCase {
 
         assertTrue(launcherJob2.isSuccessful());
         actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
 
         new ActionCheckXCommand(actionId).call();

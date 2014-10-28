@@ -114,7 +114,9 @@ public class TestLauncher extends XFsTestCase {
             }
         });
         assertTrue(runningJob.isSuccessful());
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertFalse(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
@@ -135,7 +137,9 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertFalse(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
@@ -156,7 +160,9 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertFalse(LauncherMapperHelper.isMainSuccessful(runningJob));
@@ -178,7 +184,9 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertFalse(LauncherMapperHelper.isMainSuccessful(runningJob));
@@ -199,7 +207,9 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
@@ -220,7 +230,9 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertTrue(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));
@@ -241,7 +253,9 @@ public class TestLauncher extends XFsTestCase {
         });
         assertTrue(runningJob.isSuccessful());
 
-        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, new XConfiguration());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(fs, actionDir, conf);
         assertFalse(fs.exists(LauncherMapperHelper.getActionDataSequenceFilePath(actionDir)));
         assertTrue(LauncherMapperHelper.isMainDone(runningJob));
         assertTrue(LauncherMapperHelper.isMainSuccessful(runningJob));

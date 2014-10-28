@@ -200,7 +200,7 @@ public class TestSqoopActionExecutor extends ActionExecutorTestCase {
         assertTrue(launcherJob.isSuccessful());
 
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            context.getProtoActionConf());
         assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
 
         SqoopActionExecutor ae = new SqoopActionExecutor();
@@ -244,7 +244,7 @@ public class TestSqoopActionExecutor extends ActionExecutorTestCase {
         assertTrue(launcherJob.isSuccessful());
 
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-           new XConfiguration());
+            context.getProtoActionConf());
         assertFalse(LauncherMapperHelper.hasIdSwap(actionData));
         SqoopActionExecutor ae = new SqoopActionExecutor();
         ae.check(context, context.getAction());

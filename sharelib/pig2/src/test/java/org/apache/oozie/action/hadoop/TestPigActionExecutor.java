@@ -263,8 +263,10 @@ public class TestPigActionExecutor extends ActionExecutorTestCase {
         final RunningJob launcherJob = submitAction(context);
         evaluateLauncherJob(launcherJob);
         assertTrue(launcherJob.isSuccessful());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasStatsData(actionData));
 
         PigActionExecutor ae = new PigActionExecutor();
@@ -352,8 +354,10 @@ public class TestPigActionExecutor extends ActionExecutorTestCase {
         final RunningJob launcherJob = submitAction(context);
         evaluateLauncherJob(launcherJob);
         assertTrue(launcherJob.isSuccessful());
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertFalse(LauncherMapperHelper.hasStatsData(actionData));
 
         PigActionExecutor ae = new PigActionExecutor();

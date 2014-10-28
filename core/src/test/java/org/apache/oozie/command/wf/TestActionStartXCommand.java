@@ -171,7 +171,7 @@ public class TestActionStartXCommand extends XDataTestCase {
         });
         assertTrue(launcherJob.isSuccessful());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
     }
 
@@ -237,7 +237,7 @@ public class TestActionStartXCommand extends XDataTestCase {
         // check if launcher job succeeds
         assertTrue(launcherJob.isSuccessful());
         Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
-            new XConfiguration());
+            conf);
         assertTrue(LauncherMapperHelper.hasIdSwap(actionData));
     }
 
