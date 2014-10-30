@@ -259,7 +259,14 @@ public class LauncherMapperHelper {
                     SequenceFile.Reader seqFile = new SequenceFile.Reader(fs, seqFilePath, conf);
                     Text key = new Text(), value = new Text();
                     while (seqFile.next(key, value)) {
-                        ret.put(key.toString(), value.toString());
+                        String newValue = "";
+                        String oldValue = value.toString();
+                        if(value.toString().contains("job_")){
+                            newValue = oldValue.substring(oldValue.indexOf("job_"), oldValue.length()-1);
+                            ret.put(key.toString(), newValue);
+                        }else{
+                            ret.put(key.toString(), oldValue);
+                        }
                     }
                     seqFile.close();
                 }

@@ -30,7 +30,7 @@
             org.apache.oozie.action.hadoop.HiveActionExecutor,
             org.apache.oozie.action.hadoop.ShellActionExecutor,
             org.apache.oozie.action.hadoop.SqoopActionExecutor,
-            org.apache.oozie.action.hadoop.DistcpActionExecutor
+            org.apache.oozie.action.hadoop.DistcpActionExecutor,
             org.apache.oozie.action.hadoop.HiveServer2ActionExecutor
         </value>
     </property>
