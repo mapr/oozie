@@ -183,10 +183,9 @@ public class HadoopAccessorService implements Service {
                 if (principal.length() == 0) {
                     throw new ServiceException(ErrorCode.E0026, KERBEROS_PRINCIPAL);
                 }
-               //TODO this must be fix in mapr 4.0.2
-              //  Configuration conf = new Configuration();
-              //  conf.set("hadoop.security.authentication", "kerberos");
-              //  UserGroupInformation.setConfiguration(conf);
+                Configuration conf = new Configuration();
+                conf.set("hadoop.security.authentication", "kerberos");
+                UserGroupInformation.setConfiguration(conf);
                 UserGroupInformation.loginUserFromKeytab(principal, keytabFile);
                 XLog.getLog(getClass()).info("Got Kerberos ticket, keytab [{0}], Oozie principal principal [{1}]",
                                              keytabFile, principal);
