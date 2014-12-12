@@ -54,7 +54,11 @@ OOZIECPPATH="${OOZIECPPATH}:${MAPR_LIB_DIR}/*"
 
 # Check if HADOOP_HOME is not set
 if [[ ${HADOOP_HOME} = "" ]]; then
-  HADOOP_HOME=${MAPR_HOME_DIR}/hadoop/hadoop-0.20.2
+  BASEMAPR=${MAPR_HOME:-/opt/mapr}
+  CMD="hadoop version"
+  res=`eval $CMD`
+  HADOOP_VERSION=`readlink \`which hadoop\` | awk -F "/" '{print$5}'`
+  export HADOOP_HOME=${BASEMAPR}/hadoop/${HADOOP_VERSION}/
 fi
 
 # Find the hadoop core JAR and add it to the classpath
