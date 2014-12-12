@@ -95,17 +95,6 @@ public class TestPigActionExecutor extends ActionExecutorTestCase {
 
     public void _testSetupMethods(boolean launcherJarShouldExist) throws Exception {
         PigActionExecutor ae = new PigActionExecutor();
-        Path jar = new Path(ae.getOozieRuntimeDir(), ae.getLauncherJarName());
-        File fJar = new File(jar.toString());
-        fJar.delete();
-        assertFalse(fJar.exists());
-        ae.createLauncherJar();
-        assertEquals(launcherJarShouldExist, fJar.exists());
-
-        assertEquals("pig", ae.getType());
-
-        assertEquals("pig-launcher.jar", ae.getLauncherJarName());
-
         List<Class> classes = new ArrayList<Class>();
         classes.add(LauncherMapper.class);
         classes.add(LauncherSecurityManager.class);
@@ -209,14 +198,15 @@ public class TestPigActionExecutor extends ActionExecutorTestCase {
         assertTrue(launcherJob.isSuccessful());
 
         sleep(2000);
-        assertFalse(LauncherMapperHelper.hasIdSwap(launcherJob));
-        if (checkForSuccess) {
-            assertTrue(LauncherMapperHelper.hasStatsData(launcherJob));
-        }
+
 
         PigActionExecutor ae = new PigActionExecutor();
         ae.check(context, context.getAction());
         ae.end(context, context.getAction());
+        if (checkForSuccess) {
+           assertFalse(context.getExternalChildIDs().equals(launcherId));
+           assertNotNull(context.getAction().getStats());
+        }
         assertTrue(launcherId.equals(context.getAction().getExternalId()));
         if (checkForSuccess) {
             assertEquals("SUCCEEDED", context.getAction().getExternalStatus());
@@ -245,8 +235,11 @@ public class TestPigActionExecutor extends ActionExecutorTestCase {
         final RunningJob launcherJob = submitAction(context);
         evaluateLauncherJob(launcherJob);
         assertTrue(launcherJob.isSuccessful());
-        assertTrue(LauncherMapperHelper.hasStatsData(launcherJob));
-
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            conf);
+        assertTrue(LauncherMapperHelper.hasStatsData(actionData));
         PigActionExecutor ae = new PigActionExecutor();
         WorkflowAction wfAction = context.getAction();
         ae.check(context, wfAction);
@@ -332,8 +325,11 @@ public class TestPigActionExecutor extends ActionExecutorTestCase {
         final RunningJob launcherJob = submitAction(context);
         evaluateLauncherJob(launcherJob);
         assertTrue(launcherJob.isSuccessful());
-        assertFalse(LauncherMapperHelper.hasStatsData(launcherJob));
-
+        Configuration conf = new XConfiguration();
+        conf.set("user.name", getTestUser());
+        Map<String, String> actionData = LauncherMapperHelper.getActionData(getFileSystem(), context.getActionDir(),
+            conf);
+        assertFalse(LauncherMapperHelper.hasStatsData(actionData));
         PigActionExecutor ae = new PigActionExecutor();
         WorkflowAction wfAction = context.getAction();
         ae.check(context, wfAction);
