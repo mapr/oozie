@@ -127,7 +127,7 @@
 
     <property>
         <name>oozie.service.JPAService.create.db.schema</name>
-        <value>false</value>
+        <value>true</value>
         <description>
             Creates Oozie DB.
 
@@ -181,7 +181,7 @@
 
     <property>
         <name>oozie.service.HadoopAccessorService.kerberos.enabled</name>
-        <value>false</value>
+        <value>${mapr_sec_enabled}</value>
         <description>
             Indicates if Oozie is configured to use Kerberos.
         </description>
@@ -229,7 +229,7 @@
 
     <property>
         <name>oozie.service.HadoopAccessorService.hadoop.configurations</name>
-        <value>*=hadoop-conf</value>
+        <value>*=${hadoop_conf_directory}</value>
         <description>
             Comma separated AUTHORITY=HADOOP_CONF_DIR, where AUTHORITY is the HOST:PORT of
             the Hadoop service (JobTracker, HDFS). The wildcard '*' configuration is
@@ -242,7 +242,7 @@
 
     <property>
         <name>oozie.service.WorkflowAppService.system.libpath</name>
-        <value>/user/${user.name}/share/lib</value>
+        <value>/oozie/share/lib</value>
         <description>
             System library path to use for workflow applications.
             This path is added to workflow application if their job properties sets
@@ -262,8 +262,16 @@
     </property>
 
     <property>
+        <name>oozie.service.HadoopAccessorService.supported.filesystems</name>
+        <value>maprfs</value>
+        <decscription>
+            MapR fs suppport
+        </decscription>
+    </property>
+
+    <property>
         <name>oozie.authentication.type</name>
-        <value>simple</value>
+        <value>${mapr_sec_type}</value>
         <description>
             Defines authentication used for Oozie HTTP endpoint.
             Supported values are: simple | kerberos | #AUTHENTICATION_HANDLER_CLASSNAME#
@@ -276,17 +284,6 @@
         <description>
             Indicates how long (in seconds) an authentication token is valid before it has
             to be renewed.
-        </description>
-    </property>
-
-    <property>
-        <name>oozie.authentication.signature.secret</name>
-        <value>oozie</value>
-        <description>
-            The signature secret for signing the authentication tokens.
-            If not set a random secret is generated at startup time.
-            In order to authentiation to work correctly across multiple hosts
-            the secret must be the same across al the hosts.
         </description>
     </property>
 
@@ -333,6 +330,17 @@
         <description>
             The kerberos names rules is to resolve kerberos principal names, refer to Hadoop's
             KerberosName for more details.
+        </description>
+    </property>
+
+    <property>
+        <name>oozie.authentication.signature.secret</name>
+        <value>${mapr_signature_secret}</value>
+        <description>
+            The signature secret for signing the authentication tokens.
+            If not set a random secret is generated at startup time.
+            In order to authentiation to work correctly across multiple hosts
+            the secret must be the same across al the hosts.
         </description>
     </property>
 
