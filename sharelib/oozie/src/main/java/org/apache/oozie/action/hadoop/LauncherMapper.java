@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.security.Permission;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -65,6 +66,8 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
     static final String ACTION_DATA_NEW_ID = "newId";
     static final String ACTION_DATA_ERROR_PROPS = "error.properties";
 
+    static final String JOB_ID_REGEX = "^job_\\d+_\\d+$";
+
     private void setRecoveryId(Configuration launcherConf, Path actionDir, String recoveryId) throws LauncherException {
         try {
             String jobId = launcherConf.get("mapred.job.id");
@@ -72,9 +75,11 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
             FileSystem fs = FileSystem.get(path.toUri(), launcherConf);
             if (!fs.exists(path)) {
                 try {
+                    System.out.printf("Attempt to create recovery file %s\n", path.toString());
                     java.io.Writer writer = new OutputStreamWriter(fs.create(path));
                     writer.write(jobId);
                     writer.close();
+                    System.out.printf("%s successfully written with value '%s'\n", path.toString(), jobId);
                 }
                 catch (IOException ex) {
                     failLauncher(0, "IO error", ex);
@@ -85,10 +90,14 @@ public class LauncherMapper<K1, V1, K2, V2> implements Mapper<K1, V1, K2, V2>, R
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 String id = reader.readLine();
                 reader.close();
-                if (id == null) {
+                System.out.printf("%s found with jobId '%s'\n", path, id);
+                if (id == null || !Pattern.matches(JOB_ID_REGEX, id)) {
+                    System.out.printf("Malformed jobId %s. Attempt to recover with jobId '%s'\n", id, jobId);
+                    fs.delete(path, true);
                     Writer writer = new OutputStreamWriter(fs.create(path));
                     writer.write(jobId);
                     writer.close();
+                    System.out.printf("%s successfully written with value '%s'\n", path.toString(), jobId);
                 }
                 else if (!jobId.equals(id)) {
                     failLauncher(0, MessageFormat.format(
