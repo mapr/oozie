@@ -89,7 +89,7 @@
          <pig.version>0.12.1</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
-         <sqoop.version>1.4.3</sqoop.version>
+         <sqoop.version>1.4.4</sqoop.version>
          <sqoop.classifier>hadoop100</sqoop.classifier>
          <streaming.version>${hadoop.version}</streaming.version>
          <distcp.version>${hadooplib.version}</distcp.version>
