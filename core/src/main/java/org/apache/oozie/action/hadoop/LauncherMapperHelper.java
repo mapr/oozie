@@ -263,6 +263,7 @@ public class LauncherMapperHelper {
                         String oldValue = value.toString();
                         if(value.toString().contains("job_")){
                             newValue = oldValue.substring(oldValue.indexOf("job_"), oldValue.length());
+                            newValue = newValue.replace("\n","").replace("\r","");
                             ret.put(key.toString(), newValue);
                         }else{
                             ret.put(key.toString(), oldValue);
