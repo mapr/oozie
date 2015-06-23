@@ -22,6 +22,9 @@
         <spark xmlns="uri:oozie:spark-action:0.1">
             <job-tracker>${jobTracker}</job-tracker>
             <name-node>${nameNode}</name-node>
+             <prepare>
+                <delete path="${nameNode}/user/${wf:user()}/${examplesRoot}/output"/>
+            </prepare>
             <master>local[*]</master>
             <name>Spark-FileCopy</name>
             <class>org.apache.oozie.example.SparkFileCopy</class>
