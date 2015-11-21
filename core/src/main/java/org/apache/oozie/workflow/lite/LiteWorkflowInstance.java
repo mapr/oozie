@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Hashtable;
 
 //TODO javadoc
 public class LiteWorkflowInstance implements Writable, WorkflowInstance {
@@ -157,9 +158,9 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
     private Configuration conf;
     private String instanceId;
     private Status status;
-    private Map<String, NodeInstance> executionPaths = new HashMap<String, NodeInstance>();
-    private Map<String, String> persistentVars = new HashMap<String, String>();
-    private Map<String, Object> transientVars = new HashMap<String, Object>();
+    private Map<String, NodeInstance> executionPaths = new Hashtable<String, NodeInstance>();
+    private Map<String, String> persistentVars = new Hashtable<String, String>();
+    private Map<String, Object> transientVars = new Hashtable<String, Object>();
     private ActionEndTimesComparator actionEndTimesComparator = null;
 
     protected LiteWorkflowInstance() {
@@ -238,6 +239,17 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
                 List<String> pathsToStart = new ArrayList<String>();
                 List<String> fullTransitions;
                 try {
+                    String nodeName = nodeJob.nodeName;
+                    if (!context.getNodeDef().getTransitions().contains(signalValue)) {
+                        nodeName = executionPaths.get(executionPath).nodeName;
+                        nodeHandler = newInstance(def.getNode(nodeName).getHandlerClass());
+                    }
+                    for (Map.Entry<String, NodeInstance> entry : executionPaths.entrySet()) {
+                        log.debug(XLog.STD, "Execution paths: path [{0}], node name [{1}]", entry.getKey(), entry.getValue().nodeName);
+                    }
+                    log.debug(XLog.STD, "Current context transitions: [{0}]", context.getNodeDef().getTransitions().toString());
+                    log.debug(XLog.STD, "Name of current process node: [{0}]", nodeName);
+                    log.debug(XLog.STD, "NodeHandler class for this node: [{0}]", nodeHandler.getClass().getCanonicalName());
                     fullTransitions = nodeHandler.multiExit(context);
                     int last = fullTransitions.size() - 1;
                     // TEST THIS
