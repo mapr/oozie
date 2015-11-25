@@ -241,8 +241,9 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
             if (exiting) {
                 List<String> pathsToStart = new ArrayList<String>();
                 List<String> fullTransitions;
+                final List<String> transitions = context.getNodeDef().getTransitions();
                 try {
-                    if (!context.getNodeDef().getTransitions().contains(signalValue) && !context.getNodeDef().getTransitions().isEmpty() &&
+                    if (!transitions.contains(signalValue) && !transitions.isEmpty() &&
                       !context.getNodeDef().getHandlerClass().equals(LiteControlNodeHandler.class) && OK.equals(signalValue)) {
                         nodeHandler = new LiteActionHandler();
                         log.debug(XLog.STD, "Reinitialize Action Handler");
@@ -251,7 +252,7 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
                     for (Map.Entry<String, NodeInstance> entry : executionPaths.entrySet()) {
                         log.debug(XLog.STD, "Execution paths: path [{0}], node name [{1}]", entry.getKey(), entry.getValue().nodeName);
                     }
-                    log.debug(XLog.STD, "Current context transitions: [{0}]", context.getNodeDef().getTransitions().toString());
+                    log.debug(XLog.STD, "Current context transitions: [{0}]", transitions);
                     log.debug(XLog.STD, "Name of current process node: [{0}]", nodeJob.nodeName);
                     log.debug(XLog.STD, "NodeHandler class for this node: [{0}]", nodeHandler.getClass().getCanonicalName());
                     fullTransitions = nodeHandler.multiExit(context);
