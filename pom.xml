@@ -86,7 +86,7 @@
 
          <!-- Sharelib component versions -->
         <!-- Pig and Hive version must be changed after release -->
-         <hive.version>1.2.0-mapr-1508</hive.version>
+         <hive.version>1.2.0-mapr-1510</hive.version>
          <pig.version>0.15.0-mapr-1508</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
@@ -498,6 +498,19 @@
                 <artifactId>oozie-hadoop-distcp</artifactId>
                 <version>${hadooplib.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive.hcatalog</groupId>
+                <artifactId>hive-hcatalog-core</artifactId>
+                <version>${hive.version}</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-cli</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
