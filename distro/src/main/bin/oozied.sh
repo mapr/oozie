@@ -185,17 +185,15 @@ setup_oozie() {
 
     # default share dir
     directory=/oozie/share
-
-    if hadoop fs -test -d ${directory} ; then
-      hadoop fs -rmr ${directory}
-    fi
-    hadoop fs -mkdir -p $directory
-    hadoop fs -put ${OOZIE_HOME}/share2/* ${directory}
-    hadoop fs -rmr ${directory}/lib/distcp/*
-    if [ "${mode}" == "1" ]; then
-      hadoop fs -put ${OOZIE_HOME}/share1/lib/distcp/* ${directory}/lib/distcp/
-    else
-      hadoop fs -put ${OOZIE_HOME}/share2/lib/distcp/* ${directory}/lib/distcp/
+    hadoop fs -test -d ${directory}
+    if [ $? != 0 ]
+    then
+      hadoop fs -mkdir -p $directory
+      if [ "${mode}" == "1" ]; then
+        ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
+      else
+        ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+      fi
     fi
 
   fi

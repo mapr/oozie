@@ -168,6 +168,24 @@ secureConfigsDir="${CATALINA_BASE}/conf/ssl"
 MapRHomeDir=/opt/mapr
 hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
 
+HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
+confDir="hadoop-conf"
+if [ -f ${hadoopVersionFile} ]
+then
+  hadoop_mode=`cat ${hadoopVersionFile} | grep default_mode | cut -d '=' -f 2`
+  if [ "$hadoop_mode" = "yarn" ]; then
+    version_hadoop=`cat ${hadoopVersionFile} | grep yarn_version | cut -d '=' -f 2`
+    confDir=${HADOOP_BASE_DIR}${version_hadoop}/etc/hadoop/
+  elif [ "$hadoop_mode" = "classic" ]; then
+    version_hadoop=`cat ${hadoopVersionFile} | grep classic_version | cut -d '=' -f 2`
+    confDir=${HADOOP_BASE_DIR}${version_hadoop}/conf/
+  else
+    echo 'Unknown hadoop version'
+  fi
+else
+  echo "Unknown hadoop version"
+fi
+
 if [ -e ${hadoopVersionFile} ]; then
   addBothHadoopJars=true
 fi
@@ -180,9 +198,16 @@ do
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.log.dir=${OOZIE_LOG}";
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.data.dir=${OOZIE_DATA}";
     OOZIE_OPTS="${OOZIE_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
+    OOZIE_OPTS="${OOZIE_OPTS} -Dhadoop_conf_directory=${confDir}"
+
+    if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+      OOZIE_OPTS="${OOZIE_OPTS} -Dmapr_sec_enabled=true"
+    else
+      OOZIE_OPTS="${OOZIE_OPTS} -Dmapr_sec_enabled=false"
+    fi
 
     OOZIECPPATH=""
-    OOZIECPPATH=${BASEDIR}/libtools/'*':${BASEDIR}/libext/'*'
+    OOZIECPPATH=${BASEDIR}/libtools/'*':${BASEDIR}/libext/'*':`hadoop classpath`
 
     if test -z ${JAVA_HOME}; then
       JAVA_BIN=java
