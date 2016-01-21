@@ -195,14 +195,15 @@ setup_oozie() {
 
     # default share dir
     directory=/oozie/share
-
-    if hadoop fs -test -d ${directory} ; then
-      hadoop fs -rmr ${directory}
-    fi
-    if [ "${mode}" == "1" ]; then
-      ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
-    else
-      ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+    hadoop fs -test -d ${directory}
+    if [ $? != 0 ]
+    then
+      hadoop fs -mkdir -p $directory
+      if [ "${mode}" == "1" ]; then
+        ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
+      else
+        ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+      fi
     fi
 
   fi
