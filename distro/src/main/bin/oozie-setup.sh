@@ -189,13 +189,6 @@ if [ -e ${hadoopVersionFile} ]; then
   addBothHadoopJars=true
 fi
 
-if [ -e "${CATALINA_PID}" ]; then
-  ${BASEDIR}/bin/oozied.sh stop
-  if [ -f "${CATALINA_PID}" ]; then
-    rm -f "${CATALINA_PID}"
-  fi
-fi
-
 while [ $# -gt 0 ]
 do
   if [ "$1" = "sharelib" ] || [ "$1" = "db" ]; then
@@ -276,6 +269,13 @@ do
   fi
   shift
 done
+
+if [ -e "${CATALINA_PID}" ]; then
+  ${BASEDIR}/bin/oozied.sh stop
+  if [ -f "${CATALINA_PID}" ]; then
+    rm -f "${CATALINA_PID}"
+  fi
+fi
 
 if [ "${prepareWar}${addHadoopJars}" == "" ]; then
   echo "no arguments given"
