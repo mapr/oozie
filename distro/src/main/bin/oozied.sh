@@ -159,6 +159,14 @@ setup_catalina_opts() {
   export CATALINA_OPTS="${CATALINA_OPTS} ${catalina_opts}"
 }
 
+setup_oozie_sharelib() {
+   if [ "${mode}" == "1" ]; then
+      ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
+   else
+      ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+   fi
+}
+
 setup_oozie() {
   if [ "${mode}" != "" ]; then
     # This means we are operating with MapR >= 4.0.1 and need to copy over correct war before startup.
@@ -178,6 +186,7 @@ setup_oozie() {
 
     # If needed, copy the correct oozie war over.
     if [ ! -e ${CATALINA_BASE}/webapps/oozie.war -o "${mode}" != "${oozie_hadoop_version}" -o ${OOZIE_HOME}/oozie-hadoop${mode}.war -nt ${CATALINA_BASE}/webapps/oozie.war ]; then
+      setup_oozie_sharelib
       cp ${OOZIE_HOME}/oozie-hadoop${mode}.war ${CATALINA_BASE}/webapps/oozie.war
       rm -rf ${CATALINA_BASE}/webapps/oozie
       echo "oozie_hadoop_version=${mode}" > ${oozie_hadoop_version_file}
@@ -189,11 +198,7 @@ setup_oozie() {
     if [ $? != 0 ]
     then
       hadoop fs -mkdir -p $directory
-      if [ "${mode}" == "1" ]; then
-        ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
-      else
-        ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
-      fi
+      setup_oozie_sharelib
     fi
 
   fi
