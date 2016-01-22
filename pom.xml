@@ -84,7 +84,7 @@
         <hadoop.auth.version>2.0.2-alpha</hadoop.auth.version>
 
          <!-- Sharelib component versions -->
-         <hive.version>0.13.1</hive.version>
+         <hive.version>0.13.0-mapr</hive.version>
          <pig.version>0.12.1-mapr-1408</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
