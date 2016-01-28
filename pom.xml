@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.1.0-mapr</version>
+    <version>4.1.0-mapr-1601</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -84,7 +84,7 @@
         <hadoop.auth.version>2.0.2-alpha</hadoop.auth.version>
 
          <!-- Sharelib component versions -->
-         <hive.version>0.13.0-mapr</hive.version>
+         <hive.version>0.13.0-mapr-1601</hive.version>
          <pig.version>0.12.1-mapr-1408</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
