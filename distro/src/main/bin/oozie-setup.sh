@@ -298,7 +298,7 @@ else
   # MAPR-21606 Automate installing extjs
   if [ ! -f "${libext}/ext-2.2.zip" ]; then
     cd ${libext}
-    wget -q -c http://dev.sencha.com/deploy/ext-2.2.zip || echo "ExtJS could not be downloaded! Oozie UI will be disabled!"
+    wget -q -c -t3 -T3 http://dev.sencha.com/deploy/ext-2.2.zip || echo "ExtJS could not be downloaded! Oozie UI will be disabled!"
   fi
 
   if [ -d "${libext}" ]; then
