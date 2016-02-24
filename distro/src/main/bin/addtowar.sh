@@ -392,13 +392,13 @@ components=""
 if [ "${addHadoop}" = "true" ]; then
   components="Hadoop JARs";
   ## adding hadoop
-    echo "Injecting following Hadoop JARs"
-    echo
+  #  echo "Injecting following Hadoop JARs"
+  #  echo
     for jar in ${hadoopJars//:/$'\n'}
     do
       findFile ${hadoopHome} ${jar}
       jar=${RET}
-      echo ${jar}
+    #  echo ${jar}
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
       checkExec "copying jar ${jar} to staging"
     done
@@ -411,7 +411,7 @@ if [ "${addHadoop}" = "true" ]; then
         findFileIgnoreError ${hadoopHome} ${jar}
         jar=${RET}
         if [ ! "${jar}" = "" ]; then
-          echo ${jar}
+        #  echo ${jar}
           cp ${jar} ${tmpWarDir}/WEB-INF/lib/
         fi
         checkExec "copying jar ${jar} to staging"
@@ -423,7 +423,7 @@ if [ "${addHadoop}" = "true" ]; then
     do
        findFile ${maprLib} ${jar}
        jar=${RET}
-       echo ${jar}
+     #  echo ${jar}
        cp ${jar} ${tmpWarDir}/WEB-INF/lib/
        checkExec "copying jar ${jar} to staging"
     done
@@ -474,9 +474,7 @@ cd ${currentDir}
 cp ${tmpWarDir}/oozie.war ${outputWar}
 checkExec "copying new Oozie WAR"
 
-echo 
 echo "New Oozie WAR file with added '${components}' at ${outputWar}"
-echo
 
 cleanUp
 exit 0
