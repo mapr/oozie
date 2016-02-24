@@ -269,7 +269,7 @@ do
 done
 
 if [ -e "${CATALINA_PID}" ]; then
-  ${BASEDIR}/bin/oozied.sh stop
+  ${BASEDIR}/bin/oozied.sh stop > /dev/null 2>&1
   if [ -f "${CATALINA_PID}" ]; then
     rm -f "${CATALINA_PID}"
   fi
@@ -304,7 +304,7 @@ else
   if [ -d "${libext}" ]; then
     if [ `ls ${libext} | grep \.jar\$ | wc -c` != 0 ]; then
       for i in "${libext}/"*.jar; do
-        echo "INFO: Adding extension: $i"
+      #  echo "INFO: Adding extension: $i"
         jarsPath="${jarsPath}:$i"
         addJars="true"
       done
