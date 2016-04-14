@@ -86,6 +86,7 @@ public class OozieClient {
     public static final long WS_PROTOCOL_VERSION = 2; // pointer to current version
 
     public static final String USER_NAME = "user.name";
+    public static final String REAL_USER_NAME = "real.user.name";
 
     @Deprecated
     public static final String GROUP_NAME = "group.name";
@@ -404,6 +405,7 @@ public class OozieClient {
             userName = System.getProperty("user.name");
         }
         conf.setProperty(USER_NAME, userName);
+        conf.setProperty(REAL_USER_NAME, userName);
         return conf;
     }
 

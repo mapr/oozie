@@ -225,6 +225,10 @@ public abstract class BaseJobServlet extends JsonRestServlet {
      */
     static void checkAuthorizationForApp(Configuration conf) throws XServletException {
         String user = conf.get(OozieClient.USER_NAME);
+        String realUser = conf.get(OozieClient.REAL_USER_NAME);
+        if(realUser != null && !realUser.equals(user)){
+            XLog.getLog(BaseJobServlet.class).info("Job starting with user - " + conf.get("user.name") + ", but real user - " + realUser);
+        }
         String acl = ConfigUtils.getWithDeprecatedCheck(conf, OozieClient.GROUP_NAME, OozieClient.JOB_ACL, null);
         try {
             if (user == null) {
