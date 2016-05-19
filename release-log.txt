@@ -1,3 +1,4 @@
+OOZIE-2531 Prevent Spark trying for token which is already available (satishsaley via rkanter)
 OOZIE-2391 spark-opts value in workflow.xml is not parsed properly (gezapeti via rkanter)
 OOZIE-2277 Honor oozie.action.sharelib.for.spark in Spark jobs (rkanter)
 OOZIE-2350 Package changes for release (shwethags)
