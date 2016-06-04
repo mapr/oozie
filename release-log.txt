@@ -1,3 +1,4 @@
+OOZIE-2503 show ChildJobURLs to spark action
 OOZIE-2482 Pyspark job fails with Oozie (satishsaley and gezapeti via rkanter)
 OOZIE-2531 Prevent Spark trying for token which is already available (satishsaley via rkanter)
 OOZIE-2391 spark-opts value in workflow.xml is not parsed properly (gezapeti via rkanter)
