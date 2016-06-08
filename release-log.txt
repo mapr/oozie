@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 OOZIE-2503 show ChildJobURLs to spark action
 OOZIE-2563 Pass spark-defaults.conf to spark action (satishsaley via rohini)
 OOZIE-2482 Pyspark job fails with Oozie (satishsaley and gezapeti via rkanter)
