@@ -41,6 +41,7 @@ done
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
 BASEMAPR=/opt/mapr
+PID_LINK=${BASEMAPR}/pid/oozie.pid
 MAPR_CONF_DIR=/opt/mapr/conf
 ENV_FILE=env.sh
 HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
@@ -214,9 +215,9 @@ setup_oozie() {
 
   fi
   if [ "${CATALINA_PID}" = "" ]; then
-    ln -sf ${OOZIE_HOME}/oozie-server/temp/oozie.pid ${BASEMAPR}/pid
+    ln -sf ${OOZIE_HOME}/oozie-server/temp/oozie.pid ${PID_LINK}
   else
-    ln -sf ${CATALINA_PID} ${BASEMAPR}/pid
+    ln -sf ${CATALINA_PID} ${PID_LINK}
   fi
   if [ ! -e "${CATALINA_BASE}/webapps/oozie.war" ]; then
     echo "WARN: Oozie WAR has not been set up at '${CATALINA_BASE}/webapps', doing default set up"
@@ -247,6 +248,10 @@ case $actionCmd in
   (stop)
     if [[ $@ != "-force" ]]; then
       actionCmd=${actionCmd}" -force"
+    fi
+
+    if [ -h "${PID_LINK}" ]; then
+      rm -rf ${PID_LINK}
     fi
     setup_catalina_opts
 
