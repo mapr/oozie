@@ -1,4 +1,8 @@
-5a59803... OOZIE-2277 Honor oozie.action.sharelib.for.spark in Spark jobs (rkanter)
+-- Applied from Oozie 4.3.0
+
+OOZIE-2581 Oozie should reset SecurityManager in finally block
+OOZIE-2277 Honor oozie.action.sharelib.for.spark in Spark jobs (rkanter)
+
 -- Oozie 4.2.0 release
 
 OOZIE-2240 add configuration to disable email attachment support (egashira via shwethags)
