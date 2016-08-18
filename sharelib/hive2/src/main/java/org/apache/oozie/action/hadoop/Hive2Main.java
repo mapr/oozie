@@ -34,8 +34,6 @@ import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hive.beeline.BeeLine;
-import org.apache.hadoop.security.UserGroupInformation;
-import org.apache.hadoop.security.UserGroupInformation.AuthenticationMethod;
 
 public class Hive2Main extends LauncherMain {
     private static final Pattern[] HIVE2_JOB_IDS_PATTERNS = {
@@ -43,7 +41,6 @@ public class Hive2Main extends LauncherMain {
     };
     private static final Set<String> DISALLOWED_BEELINE_OPTIONS = new HashSet<String>();
     private static final String MAPRSASL = "auth=maprsasl";
-    private static final String KERBEROS = "auth=kerberos";
 
     static {
         DISALLOWED_BEELINE_OPTIONS.add("-u");
@@ -191,15 +188,13 @@ public class Hive2Main extends LauncherMain {
         arguments.add("-f");
         arguments.add(scriptPath);
 
-        // Added MapR SASL or Kerberos security argument
-        if (jdbcUrl.toLowerCase().contains(MAPRSASL) || jdbcUrl.toLowerCase().contains(KERBEROS)) {
-            arguments.add("-a");
-            UserGroupInformation.getCurrentUser().setAuthenticationMethod(UserGroupInformation.AuthenticationMethod.CUSTOM);
-            if (jdbcUrl.toLowerCase().contains(MAPRSASL)) {
-                arguments.add("maprsasl");
-            } else {
-                arguments.add("delegationToken");
-            }
+        // This tells BeeLine to look for a delegation token; otherwise it won't and will fail in secure mode because there are no
+        // Kerberos credentials.  In non-secure mode, this argument is ignored so we can simply always pass it.
+        arguments.add("-a");
+        if (jdbcUrl.toLowerCase().contains(MAPRSASL)) {
+            arguments.add("maprsasl");   // only if uses MapRSasl secure
+        } else {
+            arguments.add("delegationToken");  // if uses Kerberos or not secure cluster
         }
 
         String[] beelineArgs = MapReduceMain.getStrings(actionConf, Hive2ActionExecutor.HIVE2_ARGS);

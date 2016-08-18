@@ -189,13 +189,6 @@ if [ -e ${hadoopVersionFile} ]; then
   addBothHadoopJars=true
 fi
 
-if [ -e "${CATALINA_PID}" ]; then
-  ${BASEDIR}/bin/oozied.sh stop
-  if [ -f "${CATALINA_PID}" ]; then
-    rm -f "${CATALINA_PID}"
-  fi
-fi
-
 while [ $# -gt 0 ]
 do
   if [ "$1" = "sharelib" ] || [ "$1" = "db" ]; then
@@ -277,6 +270,13 @@ do
   shift
 done
 
+if [ -e "${CATALINA_PID}" ]; then
+  ${BASEDIR}/bin/oozied.sh stop
+  if [ -f "${CATALINA_PID}" ]; then
+    rm -f "${CATALINA_PID}"
+  fi
+fi
+
 if [ "${prepareWar}${addHadoopJars}" == "" ]; then
   echo "no arguments given"
   printUsage
@@ -293,6 +293,12 @@ else
   libext=${OOZIE_HOME}/libext
   if [ "${additionalDir}" != "" ]; then
     libext=${additionalDir}
+  fi
+
+  # MAPR-21606 Automate installing extjs
+  if [ ! -f "${libext}/ext-2.2.zip" ]; then
+    cd ${libext}
+    wget -q -c http://dev.sencha.com/deploy/ext-2.2.zip || echo "ExtJS could not be downloaded! Oozie UI will be disabled!"
   fi
 
   if [ -d "${libext}" ]; then

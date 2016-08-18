@@ -125,7 +125,8 @@ OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_SSL_OPTS}"
 if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
 fi
-
+#MAPR 21848 - Disable retry HTTP POST command
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dsun.net.http.retryPost=false"
 while [[ ${1} =~ ^\-D ]]; do
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${1}"
   shift

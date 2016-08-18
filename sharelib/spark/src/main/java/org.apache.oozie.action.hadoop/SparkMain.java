@@ -63,14 +63,33 @@ public class SparkMain extends LauncherMain {
             sparkArgs.add(CLASS_NAME_OPTION);
             sparkArgs.add(className);
         }
-
-        String sparkOpts = actionConf.get(SparkActionExecutor.SPARK_OPTS);
-        if (StringUtils.isNotEmpty(sparkOpts)) {
-            String[] sparkOptions = sparkOpts.split(DELIM);
-            for (String opt : sparkOptions) {
-                sparkArgs.add(opt);
-            }
-        }
+String sparkOpts = actionConf.get(SparkActionExecutor.SPARK_OPTS);
+          if (StringUtils.isNotEmpty(sparkOpts)) {
+              String[] sparkOptions = sparkOpts.split(DELIM);
+              boolean quoted = false;
+              String quotedOpt = null;
+              for (String opt : sparkOptions) {
+                  //if (!quoted) sparkArgs.add(opt);
+                  if (!quoted && opt.charAt(0) == '"' && opt.charAt(opt.length()-1) == '"') {
+                    quotedOpt = opt.substring(1, opt.length()-1);
+                    sparkArgs.add(quotedOpt);
+                  }
+                  else if (!quoted && opt.charAt(0) == '"' && opt.charAt(opt.length()-1) != '"') {
+                      quotedOpt = opt;
+                      quoted = true;
+                  }
+                  else if (quoted && opt.charAt(opt.length()-1) != '"') {
+                      quotedOpt += " " + opt;
+                  }
+                  else if (quoted && opt.charAt(opt.length()-1) == '"') {
+                      quotedOpt += " " + opt;
+                      quotedOpt = quotedOpt.substring(1, quotedOpt.length() - 1);
+                      sparkArgs.add(quotedOpt);
+                      quoted = false;
+                  }
+                  else if (!quoted) sparkArgs.add(opt);
+              }
+          }
 
         if (!sparkArgs.contains(VERBOSE_OPTION)) {
             sparkArgs.add(VERBOSE_OPTION);
