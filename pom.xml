@@ -91,7 +91,9 @@
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
          <sqoop.version>1.4.6-mapr-1607</sqoop.version>
-         <spark.version>1.6.1-mapr-1607</spark.version>
+         <spark.version>2.0.0-mapr-SNAPSHOT</spark.version>
+         <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
+         <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
          <sqoop.classifier>hadoop100</sqoop.classifier>
          <streaming.version>${hadoop.version}</streaming.version>
@@ -1996,6 +1998,28 @@
                 <release-repo-id>mapr.staging.https</release-repo-id>
                 <release-repo-name>MapR Release Repo</release-repo-name>
                 <release-repo-url>${env.MAPR_MAVEN_REPO}</release-repo-url>
+            </properties>
+        </profile>
+        <profile>
+            <id>spark-1</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <spark.version>1.6.1-mapr</spark.version>
+                <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
+                <spark.bagel.version>1.6.1</spark.bagel.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>spark-2</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spark.version>2.0.0-mapr-SNAPSHOT</spark.version>
+                <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
+                <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>
         </profile>
     </profiles>
