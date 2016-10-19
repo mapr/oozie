@@ -87,7 +87,7 @@
          <!-- Sharelib component versions -->
         <!-- Pig and Hive version must be changed after release -->
          <hive.version>1.2.0-mapr-1607</hive.version>
-         <pig.version>0.15.0-mapr-1608</pig.version>
+         <pig.version>0.16.0</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
          <sqoop.version>1.4.6-mapr-1607</sqoop.version>
@@ -234,11 +234,6 @@
             <dependency>
                 <groupId>org.apache.oozie</groupId>
                 <artifactId>oozie-sharelib-pig</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.oozie</groupId>
-                <artifactId>oozie-sharelib-pig2</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
