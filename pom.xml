@@ -100,6 +100,7 @@
          <distcp.version>${hadoop.version}</distcp.version>
          <hadoop.auth.version>${hadoop.version}</hadoop.auth.version>
          <kite.version>1.1.0</kite.version>
+         <teradata.version>1.5.1</teradata.version>
          <avro.version>1.7.5</avro.version>
 
          <!-- Tomcat version -->
@@ -349,6 +350,23 @@
                 <groupId>org.kitesdk</groupId>
                 <artifactId>kite-data-hive</artifactId>
                 <version>${kite.version}</version>
+            </dependency>
+
+            <!-- teradata -->
+            <dependency>
+                <groupId>com.teradata</groupId>
+                <artifactId>tdgssconfig</artifactId>
+                <version>${teradata.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.teradata</groupId>
+                <artifactId>connector</artifactId>
+                <version>${teradata.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.teradata</groupId>
+                <artifactId>jdbc</artifactId>
+                <version>${teradata.version}</version>
             </dependency>
 
             <!-- avro -->
