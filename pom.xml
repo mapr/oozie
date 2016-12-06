@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.2.0-mapr</version>
+    <version>4.2.0-mapr-1611</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -86,12 +86,12 @@
 
          <!-- Sharelib component versions -->
         <!-- Pig and Hive version must be changed after release -->
-         <hive.version>1.2.0-mapr-1607</hive.version>
-         <pig.version>0.16.0</pig.version>
+         <hive.version>1.2.0-mapr-1611</hive.version>
+         <pig.version>0.16.0-mapr-1611</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
-         <sqoop.version>1.4.6-mapr-1607</sqoop.version>
-         <spark.version>2.0.1-mapr-SNAPSHOT</spark.version>
+         <sqoop.version>1.4.6-mapr-1611</sqoop.version>
+         <spark.version>2.0.1-mapr-1611</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
@@ -2030,7 +2030,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>2.0.1-mapr-SNAPSHOT</spark.version>
+                <spark.version>2.0.1-mapr-1611</spark.version>
                 <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
                 <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>
