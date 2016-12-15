@@ -101,6 +101,10 @@
                     <groupId>org.spark-project.hive</groupId>
                     <artifactId>hive-shims</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                    <artifactId>javax.servlet</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -210,6 +214,12 @@
             <artifactId>spark-bagel_${spark.scala.binary.version}</artifactId>
             <version>${spark.bagel.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
