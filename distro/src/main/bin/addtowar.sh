@@ -254,6 +254,10 @@ secureWeb=false
 secureWebPath=""
 maprLib=/opt/mapr/lib
 maprJars=""
+basemapr=/opt/mapr
+hadoopVersionFile="${basemapr}/conf/hadoop_version"
+yarn_version=`cat ${hadoopVersionFile} | grep yarn_version | cut -d '=' -f 2`
+yarn_home="${basemapr}/hadoop/hadoop-${yarn_version}"
 
 while [ $# -gt 0 ]
 do
@@ -333,6 +337,8 @@ do
       fi
     secureWebPath=$1
     secureWeb=true
+  elif [ "$1" = "-addYarnSite" ]; then
+    addYarnSite=true
   fi
     shift
 done
@@ -453,6 +459,12 @@ if [ "${secureWeb}" = "true" ]; then
   #Inject the SSL version of web.xml in oozie war
   cp ${secureWebPath} ${tmpWarDir}/WEB-INF/web.xml
   checkExec "Injecting secure web.xml file into staging"
+fi
+
+if [ "${addYarnSite}" = "true" ]; then
+  #copy yarn-site in oozie war
+  cp "${yarn_home}/etc/hadoop/yarn-site.xml" ${tmpWarDir}/WEB-INF/classes
+  checkExec "copying yarn-site.xml to staging"
 fi
 
 #Creating new Oozie WAR

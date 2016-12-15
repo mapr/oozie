@@ -417,7 +417,7 @@ else
     # Build oozie war with Hadoop1
     ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${oozie_hadoop1_war} ${OPTIONS} -hadoop ${classic_version} ${hadoop1Path}
     # Build oozie war with Hadoop2
-    ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${oozie_hadoop2_war} ${OPTIONS} -hadoop ${yarn_version} ${hadoop2Path}
+    ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${oozie_hadoop2_war} ${OPTIONS} -hadoop ${yarn_version} ${hadoop2Path} -addYarnSite
   fi
 
   if [ "$?" != "0" ]; then
