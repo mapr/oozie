@@ -461,10 +461,11 @@ if [ "${secureWeb}" = "true" ]; then
   checkExec "Injecting secure web.xml file into staging"
 fi
 
-if [ "${addYarnSite}" = "true" ]; then
-  #copy yarn-site in oozie war
-  cp "${yarn_home}/etc/hadoop/yarn-site.xml" ${tmpWarDir}/WEB-INF/classes
-  checkExec "copying yarn-site.xml to staging"
+yarn_site_file="${yarn_home}/etc/hadoop/yarn-site.xml"
+if [ "${addYarnSite}" = "true" ] && [ -f ${yarn_site_file} ]; then
+    #copy yarn-site in oozie war
+    cp "${yarn_site_file}" ${tmpWarDir}/WEB-INF/classes
+    checkExec "copying yarn-site.xml to staging"
 fi
 
 #Creating new Oozie WAR
