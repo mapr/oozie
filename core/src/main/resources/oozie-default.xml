@@ -2167,15 +2167,6 @@ will be the requeue interval for the actions which are waiting for a long time w
     </property>
 
     <!-- Oozie Authentication -->
-
-    <property>
-        <name>oozie.service.HadoopAccessorService.supported.filesystems</name>
-        <value>maprfs</value>
-        <decscription>
-            MapR fs suppport
-        </decscription>
-    </property>
-
     <property>
         <name>oozie.authentication.type</name>
         <value>${mapr_sec_type}</value>
@@ -2295,7 +2286,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
 	<property>
 		<name>oozie.service.HadoopAccessorService.supported.filesystems</name>
-		<value>hdfs,hftp,webhdfs</value>
+		<value>hdfs,hftp,webhdfs,maprfs</value>
 		<description>
 			Enlist the different filesystems supported for federation. If wildcard "*" is specified,
 			then ALL file schemes will be allowed.
