@@ -205,9 +205,9 @@ function getHadoopJars() {
     maprJars=$maprJars:libprotodefs*.jar
   fi
 
- # MapR change - add json*.jar to the hadoopJars list.
- if [[ -n $(find ${maprLib} -name "json-*.jar" -print) ]]; then
-    maprJars=$maprJars:json-*.jar
+ # MapR change - add json-smart*.jar to the hadoopJars list.
+ if [[ -n $(find ${maprLib} -name "json-smart*.jar" -print) ]]; then
+    maprJars=$maprJars:json-smart*.jar
   fi
   # MapR change - add zookeeper*.jar to the hadoopJars list.
   if [[ -n $(find ${maprLib} -name "zookeeper-*.jar" -print) ]]; then
@@ -384,13 +384,13 @@ components=""
 if [ "${addHadoop}" = "true" ]; then
   components="Hadoop JARs";
   ## adding hadoop
-    echo "Injecting following Hadoop JARs"
-    echo
+   # echo "Injecting following Hadoop JARs"
+   # echo
     for jar in ${hadoopJars//:/$'\n'}
     do
       findFile ${hadoopHome} ${jar}
       jar=${RET}
-      echo ${jar}
+    #  echo ${jar}
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
       checkExec "copying jar ${jar} to staging"
     done
@@ -403,7 +403,7 @@ if [ "${addHadoop}" = "true" ]; then
         findFileIgnoreError ${hadoopHome} ${jar}
         jar=${RET}
         if [ ! "${jar}" = "" ]; then
-          echo ${jar}
+      #    echo ${jar}
           cp ${jar} ${tmpWarDir}/WEB-INF/lib/
         fi
         checkExec "copying jar ${jar} to staging"
@@ -415,7 +415,7 @@ if [ "${addHadoop}" = "true" ]; then
     do
       findFile ${maprLib} ${jar}
       jar=${RET}
-      echo ${jar}
+    #  echo ${jar}
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
       checkExec "copying jar ${jar} to staging"
     done
