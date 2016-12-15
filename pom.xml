@@ -78,7 +78,7 @@
         </oozie.test.default.config.file>
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
-        <hadoop.version>2.4.0</hadoop.version>
+        <hadoop.version>2.7.0-mapr-1607</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
         <oozie.hadoop-utils.version>hadoop-${hadoop.majorversion}-${project.version}</oozie.hadoop-utils.version>

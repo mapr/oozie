@@ -43,6 +43,7 @@ public class Hive2Main extends LauncherMain {
             Pattern.compile("Submitted application (application[0-9_]*)")
     };
     private static final Set<String> DISALLOWED_BEELINE_OPTIONS = new HashSet<String>();
+    private static final String MAPRSASL = "auth=maprsasl";
 
     static {
         DISALLOWED_BEELINE_OPTIONS.add("-u");
@@ -202,7 +203,11 @@ public class Hive2Main extends LauncherMain {
         // This tells BeeLine to look for a delegation token; otherwise it won't and will fail in secure mode because there are no
         // Kerberos credentials.  In non-secure mode, this argument is ignored so we can simply always pass it.
         arguments.add("-a");
-        arguments.add("delegationToken");
+        if (jdbcUrl.toLowerCase().contains(MAPRSASL)) {
+            arguments.add("maprsasl");   // only if uses MapRSASL secure
+        } else {
+            arguments.add("delegationToken");  // if uses Kerberos or not secure cluster
+        }
 
         String[] beelineArgs = MapReduceMain.getStrings(actionConf, Hive2ActionExecutor.HIVE2_ARGS);
         for (String beelineArg : beelineArgs) {
