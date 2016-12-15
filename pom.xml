@@ -327,6 +327,71 @@
                 <version>${jackson.version}</version>
             </dependency>
 
+            <!-- kite -->
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-mapreduce</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-maprfs</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-hive</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+
+            <!-- avro -->
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-mapred</artifactId>
+                <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- core -->
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
