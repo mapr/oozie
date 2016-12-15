@@ -82,6 +82,11 @@
             <artifactId>oozie-sharelib-oozie</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
     </dependencies>
 
     <build>
