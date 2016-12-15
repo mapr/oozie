@@ -22,11 +22,11 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.0-mapr</version>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-webapp</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.0-mapr</version>
     <description>Apache Oozie WebApp</description>
     <name>Apache Oozie WebApp</name>
     <packaging>war</packaging>
@@ -39,6 +39,90 @@
                 <exclusion>
                     <groupId>org.apache.oozie</groupId>
                     <artifactId>oozie-hadoop-auth</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hive.hcatalog</groupId>
+            <artifactId>hive-webhcat-java-client</artifactId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-exec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-metastore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-mapreduce-client-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hive.hcatalog</groupId>
+            <artifactId>hive-hcatalog-core</artifactId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-shims</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-metastore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-exec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-exec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-auth</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-mapreduce-client-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -132,6 +216,64 @@
         </dependency>
     </dependencies>
 
+    <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-beeline</artifactId>
+        <scope>compile</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-exec</artifactId>
+        <scope>compile</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-common</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-server-applicationhistoryservice</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-server-annotations</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-server-common</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-server-web-proxy</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-jdbc</artifactId>
+        <scope>compile</scope>
+    </dependency>
+
     <build>
         <plugins>
             <plugin>
@@ -157,61 +299,6 @@
                         <descriptor>../src/main/assemblies/empty.xml</descriptor>
                     </descriptors>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-sharelib</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-pig</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-hive</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-sqoop</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-streaming</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-oozie</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-hcatalog</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-distcp</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-hive2</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.oozie</groupId>
-                                    <artifactId>oozie-sharelib-spark</artifactId>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/oozie-webapp-${project.version}/WEB-INF/lib</outputDirectory>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                       </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -284,6 +371,73 @@
                     <scope>compile</scope>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>hadoop-2</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-sharelib</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-pig</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-hive</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-sqoop</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-streaming</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-oozie</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-hcatalog</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-distcp</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-hive2</artifactId>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.oozie</groupId>
+                                            <artifactId>oozie-sharelib-spark</artifactId>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>
+                                        ${project.build.directory}/oozie-webapp-${project.version}/WEB-INF/lib
+                                    </outputDirectory>
+                                    <overWriteIfNewer>true</overWriteIfNewer>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

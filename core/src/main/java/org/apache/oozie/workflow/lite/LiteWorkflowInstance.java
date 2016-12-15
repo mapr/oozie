@@ -41,6 +41,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.apache.oozie.service.LiteWorkflowStoreService.LiteActionHandler;
+import org.apache.oozie.service.LiteWorkflowStoreService.LiteControlNodeHandler;
 
 //TODO javadoc
 public class LiteWorkflowInstance implements Writable, WorkflowInstance {
@@ -51,6 +54,7 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
     private static String PATH_SEPARATOR = "/";
     private static String ROOT = PATH_SEPARATOR;
     private static String TRANSITION_SEPARATOR = "#";
+    public static final String OK = "OK";
 
     // Using unique string to indicate version. This is to make sure that it
     // doesn't match with user data.
@@ -152,10 +156,9 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
     private Configuration conf;
     private String instanceId;
     private Status status;
-    private Map<String, NodeInstance> executionPaths = new HashMap<String, NodeInstance>();
-    private Map<String, String> persistentVars = new HashMap<String, String>();
-    private Map<String, Object> transientVars = new HashMap<String, Object>();
-
+    private Map<String, NodeInstance> executionPaths = new ConcurrentHashMap<String, NodeInstance>();
+    private Map<String, String> persistentVars = new ConcurrentHashMap<String, String>();
+    private Map<String, Object> transientVars = new ConcurrentHashMap<String, Object>();
     protected LiteWorkflowInstance() {
         log = XLog.getLog(getClass());
     }
@@ -231,7 +234,20 @@ public class LiteWorkflowInstance implements Writable, WorkflowInstance {
             if (exiting) {
                 List<String> pathsToStart = new ArrayList<String>();
                 List<String> fullTransitions;
+                final List<String> transitions = context.getNodeDef().getTransitions();
                 try {
+                    if (!transitions.contains(signalValue) && !transitions.isEmpty() &&
+                            !context.getNodeDef().getHandlerClass().equals(LiteControlNodeHandler.class) && OK.equals(signalValue)) {
+                        nodeHandler = new LiteActionHandler();
+                        log.debug(XLog.STD, "Reinitialize Action Handler");
+                    }
+                    // This is additional log if bug will reproduce again
+                    for (Map.Entry<String, NodeInstance> entry : executionPaths.entrySet()) {
+                        log.debug(XLog.STD, "Execution paths: path [{0}], node name [{1}]", entry.getKey(), entry.getValue().nodeName);
+                    }
+                    log.debug(XLog.STD, "Current context transitions: [{0}]", transitions);
+                    log.debug(XLog.STD, "Name of current process node: [{0}]", nodeJob.nodeName);
+                    log.debug(XLog.STD, "NodeHandler class for this node: [{0}]", nodeHandler.getClass().getCanonicalName());
                     fullTransitions = nodeHandler.multiExit(context);
                     int last = fullTransitions.size() - 1;
                     // TEST THIS

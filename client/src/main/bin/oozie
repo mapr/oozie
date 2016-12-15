@@ -33,6 +33,17 @@ done
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
 
+MAPR_HOME_DIR="/opt/mapr"
+MAPR_CONF_DIR=${MAPR_HOME_DIR}/conf
+MAPR_LIB_DIR=${MAPR_HOME_DIR}/lib
+
+ENV_FILE=env.sh
+
+# MapR change. Source env.sh if it exists
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+  source ${MAPR_CONF_DIR}/env.sh
+fi
+
 if [ -r "${BASEDIR}/conf/oozie-client-env.sh" ]; then
   source "${BASEDIR}/conf/oozie-client-env.sh"
 fi
@@ -58,6 +69,43 @@ for i in "${BASEDIR}/libext/"*.jar; do
   OOZIECPPATH="${OOZIECPPATH}:$i"
 done
 
+# For Oozie client to authenticate to Oozie server using Mapr ticket
+# Add the JAR's in /opt/mapr/lib to its classpath
+OOZIECPPATH="${OOZIECPPATH}:${MAPR_LIB_DIR}/*"
+
+if [ -f ${MAPR_HOME_DIR}/conf/hadoop_version ]; then
+  hadoop_mode=`cat ${MAPR_HOME_DIR}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
+  if [ "$hadoop_mode" = "yarn" ]; then
+    version=`cat ${MAPR_HOME_DIR}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
+    HADOOP_VERSION="hadoop-$version"
+  elif [ "$hadoop_mode" = "classic" ]; then
+    version=`cat ${MAPR_HOME_DIR}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
+    HADOOP_VERSION="hadoop-$version"
+  else
+    echo 'Unknown hadoop version'
+  fi
+else
+  CMD="hadoop version"
+  res=`eval $CMD`
+  HADOOP_VERSION=`readlink \`which hadoop\` | awk -F "/" '{print$5}'`
+  version=`echo ${HADOOP_VERSION} | cut -d'-' -f 2`
+fi
+# Check if HADOOP_HOME is not set
+if [[ ${HADOOP_HOME} = "" ]]; then
+  export HADOOP_HOME=${MAPR_HOME_DIR}/hadoop/${HADOOP_VERSION}/
+fi
+
+# Find the hadoop core JAR and add it to the classpath
+version=`echo ${HADOOP_VERSION} | cut -d'-' -f 2`
+case $version in
+  1.* ) POST_YARN="0" ;;
+  0.20* ) POST_YARN="0";;
+  2.* ) POST_YARN="1";;
+  *) echo "Unknown hadoop version";;
+esac
+if [ "$POST_YARN" = "0" ]; then
+  hadoopCoreJar=$(find ${HADOOP_HOME} -name "hadoop*core*jar" -print 2>/dev/null)
+fi
 
 if test -z ${JAVA_HOME}
 then
@@ -66,8 +114,21 @@ else
     JAVA_BIN=${JAVA_HOME}/bin/java
 fi
 
+JAVA_PROPERTIES="${JAVA_PROPERTIES} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib"
+
 # Prime OOZIE_CLIENT_OPTS with JAVA_PROPERTIES for backwards compatibility
 OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
+
+# Add MAPR_SSL_OPTS for SSL truststore location
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_SSL_OPTS}"
+
+#If you wish to use Kerberos to authenticate to Oozie server comment the below IF block
+#where we pass MaprAuthenticator as the method of authentication
+if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+  OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
+fi
+#MAPR 21848 - Disable retry HTTP POST command
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dsun.net.http.retryPost=false"
 
 while [[ ${1} =~ ^\-D ]]; do
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${1}"

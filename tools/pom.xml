@@ -22,11 +22,11 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.0-mapr</version>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-tools</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.0-mapr</version>
     <description>Apache Oozie Tools</description>
     <name>Apache Oozie Tools</name>
     <packaging>jar</packaging>
@@ -83,7 +83,27 @@
             <artifactId>gson</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.htrace</groupId>
+            <artifactId>htrace-core</artifactId>
+            <version>3.1.0-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+        </dependency>
     </dependencies>
 
     <build>

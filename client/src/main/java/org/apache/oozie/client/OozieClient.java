@@ -89,6 +89,8 @@ public class OozieClient {
 
     public static final String USER_NAME = "user.name";
 
+    public static final String REAL_USER_NAME = "real.user.name";
+
     @Deprecated
     public static final String GROUP_NAME = "group.name";
 
@@ -419,6 +421,7 @@ public class OozieClient {
         String userName = USER_NAME_TL.get();
         if (userName == null) {
             userName = System.getProperty("user.name");
+            conf.setProperty(REAL_USER_NAME, userName);
         }
         conf.setProperty(USER_NAME, userName);
         return conf;

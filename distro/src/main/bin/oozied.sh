@@ -18,7 +18,7 @@
 #
 
 if [ $# -le 0 ]; then
-  echo "Usage: oozied.sh (start|stop|run) [<catalina-args...>]"
+  echo "Usage: oozied.sh (start|stop|run|status) [<catalina-args...>]"
   exit 1
 fi
 
@@ -40,10 +40,73 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+BASEMAPR=/opt/mapr
+PID_LINK=${BASEMAPR}/pid/oozie.pid
+MAPR_CONF_DIR=/opt/mapr/conf
+ENV_FILE=env.sh
+HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
 
 source ${BASEDIR}/bin/oozie-sys.sh
 
 CATALINA=${OOZIE_CATALINA_HOME:-${BASEDIR}/oozie-server}/bin/catalina.sh
+
+# Find hadoop conf directory, to be passed to oozie-site.xml
+# Find hadoop home
+function real_script_name() {
+        local base=$1
+        local real
+        if readlink -f $base >/dev/null 2>&1; then
+                # Darwin/Mac OS X
+                real=`readlink -f $base`
+        fi
+        if [[ "$?" != "0" || -z "$real" ]]; then
+                # Linux
+                local bin=$(cd -P -- "$(dirname -- "$base")">/dev/null && pwd -P)
+                local script="$(basename -- "$base")"
+                real="$bin/$script"
+        fi
+        echo "$real"
+}
+# MapR change
+if [ -e ${MAPR_CONF_DIR}/hadoop_version ]; then
+  # MapR version >= 4.0.1
+  mapreduce_mode=
+  [ ! -z "${MAPR_MAPREDUCE_MODE}" ] && mapreduce_mode=${MAPR_MAPREDUCE_MODE}
+  [ -z "${mapreduce_mode}" ] && source ${MAPR_CONF_DIR}/hadoop_version && mapreduce_mode=$default_mode
+
+  if [ "${mapreduce_mode}" = "classic" ]; then
+    # Classic
+    mode=1
+  else
+    # Yarn
+    mode=2
+  fi
+  else
+    mode=""
+fi
+
+confDir="hadoop-conf"
+hadoopVersionFile="${MAPR_CONF_DIR}/hadoop_version"
+if [ -f ${hadoopVersionFile} ]
+then
+    hadoop_mode=`cat ${hadoopVersionFile} | grep default_mode | cut -d '=' -f 2`
+    if [ "$hadoop_mode" = "yarn" ]; then
+	    version_hadoop=`cat ${hadoopVersionFile} | grep yarn_version | cut -d '=' -f 2`
+	    confDir=${HADOOP_BASE_DIR}${version_hadoop}/etc/hadoop/
+    elif [ "$hadoop_mode" = "classic" ]; then
+    	version_hadoop=`cat ${hadoopVersionFile} | grep classic_version | cut -d '=' -f 2`
+    	confDir=${HADOOP_BASE_DIR}${version_hadoop}/conf/
+    else
+	    echo 'Unknown hadoop version'
+    fi
+
+else
+    version_cmd="hadoop version"
+    res=`eval $CMD`
+    HADOOP_VERSION_PATH=`readlink \`which hadoop\` | awk -F "/" '{print$5}'`
+    version_hadoop=`echo ${HADOOP_VERSION_PATH} | cut -d'-' -f 2`
+    confDir=${HADOOP_BASE_DIR}${version_hadoop}/conf/
+fi
 
 setup_catalina_opts() {
   # The Java System properties 'oozie.http.port' and 'oozie.https.port' are not
@@ -69,16 +132,85 @@ setup_catalina_opts() {
   catalina_opts="${catalina_opts} -Doozie.base.url=${OOZIE_BASE_URL}";
   catalina_opts="${catalina_opts} -Doozie.https.keystore.file=${OOZIE_HTTPS_KEYSTORE_FILE}";
   catalina_opts="${catalina_opts} -Doozie.https.keystore.pass=${OOZIE_HTTPS_KEYSTORE_PASS}";
+  catalina_opts="${catalina_opts} -Dmapr.library.flatclass=true";
+  catalina_opts="${catalina_opts} ${MAPR_AUTH_CLIENT_OPTS}";
+  catalina_opts="${catalina_opts} -Dhadoop_conf_directory=${confDir}";
 
   # add required native libraries such as compression codecs
-  catalina_opts="${catalina_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}";
+  # MAPR CHANGE: Add mapr lib to the java library path
+  catalina_opts="${catalina_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib";
+  # MAPR Change: Set parameters in oozie-site.xml based on if MapR security is enabled or not
+  if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+    catalina_opts="${catalina_opts} -Dmapr_sec_type=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler"
+    catalina_opts="${catalina_opts} -Dmapr_sec_enabled=true"
+    catalina_opts="${catalina_opts} -Dmapr_signature_secret=com.mapr.security.maprauth.MaprSignatureSecretFactory"
+  else
+    catalina_opts="${catalina_opts} -Dmapr_sec_type=simple"
+    catalina_opts="${catalina_opts} -Dmapr_sec_enabled=false"
+    catalina_opts="${catalina_opts} -Dmapr_signature_secret=oozie"
+  fi
 
   echo "Adding to CATALINA_OPTS:     ${catalina_opts}"
 
   export CATALINA_OPTS="${CATALINA_OPTS} ${catalina_opts}"
 }
 
+setup_oozie_sharelib() {
+  if [ "${mode}" == "1" ]; then
+    ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
+  else
+    ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+  fi
+}
+
 setup_oozie() {
+  if [ "${mode}" != "" ]; then
+    # This means we are operating with MapR >= 4.0.0 and need to copy over correct war before startup.
+   if [ ! -e "${OOZIE_HOME}/oozie-hadoop${mode}.war" ]; then
+      echo "WARN: Oozie WAR has not been set up at ''${OOZIE_HOME}'', doing default set up"
+      ${BASEDIR}/bin/oozie-setup.sh
+      if [ "$?" != "0" ]; then
+        exit -1
+      fi
+    fi
+    oozie_hadoop_version=""
+    oozie_hadoop_version_file=${OOZIE_HOME}/oozie-hadoop-version
+    # Determine the current war's hadoop version.
+    if [ -f ${oozie_hadoop_version_file} ]; then
+      source ${oozie_hadoop_version_file}
+    fi
+
+    #replace lib to correct
+    rm -rf ${BASEDIR}/lib
+    mkdir ${BASEDIR}/lib
+    unzip ${BASEDIR}/oozie-hadoop${mode}.war WEB-INF/lib/*.jar -d ${BASEDIR}/lib > /dev/null
+    mv ${BASEDIR}/lib/WEB-INF/lib/*.jar ${BASEDIR}/lib/
+    rmdir ${BASEDIR}/lib/WEB-INF/lib
+    rmdir ${BASEDIR}/lib/WEB-INF
+
+    # If needed, copy the correct oozie war over.
+    if [ ! -e ${CATALINA_BASE}/webapps/oozie.war -o "${mode}" != "${oozie_hadoop_version}" -o ${OOZIE_HOME}/oozie-hadoop${mode}.war -nt ${CATALINA_BASE}/webapps/oozie.war ]; then
+      setup_oozie_sharelib
+      cp ${OOZIE_HOME}/oozie-hadoop${mode}.war ${CATALINA_BASE}/webapps/oozie.war
+      rm -rf ${CATALINA_BASE}/webapps/oozie
+      echo "oozie_hadoop_version=${mode}" > ${oozie_hadoop_version_file}
+    fi
+
+    # default share dir
+    directory=/oozie/share
+    hadoop fs -test -d ${directory}
+    if [ $? != 0 ]
+    then
+      hadoop fs -mkdir -p $directory
+      setup_oozie_sharelib
+    fi
+
+  fi
+  if [ "${CATALINA_PID}" = "" ]; then
+    ln -sf ${OOZIE_HOME}/oozie-server/temp/oozie.pid ${PID_LINK}
+  else
+    ln -sf ${CATALINA_PID} ${PID_LINK}
+  fi
   if [ ! -e "${CATALINA_BASE}/webapps/oozie.war" ]; then
     echo "WARN: Oozie WAR has not been set up at '${CATALINA_BASE}/webapps', doing default set up"
     ${BASEDIR}/bin/oozie-setup.sh prepare-war
@@ -106,10 +238,34 @@ case $actionCmd in
     #TODO setup default oozie sharelib
     ;;
   (stop)
+    if [[ $@ != "-force" ]]; then
+      actionCmd=${actionCmd}" -force"
+    fi
+    if [ -h "${PID_LINK}" ]; then
+      rm -rf ${PID_LINK}
+    fi
     setup_catalina_opts
 
     # A bug in catalina.sh script does not use CATALINA_OPTS for stopping the server
     export JAVA_OPTS=${CATALINA_OPTS}
+    ;;
+  (status)
+    if [ ! -z "$CATALINA_PID" ]; then
+      if [ -f "$CATALINA_PID" ]; then
+        if [ -s "$CATALINA_PID" ]; then
+          if [ -r "$CATALINA_PID" ]; then
+            PID=`cat "$CATALINA_PID"`
+            ps -p $PID >/dev/null 2>&1
+            if [ $? -eq 0 ] ; then
+              echo "Tomcat is running with PID $PID."
+              exit 0
+            fi
+          fi
+        fi
+      fi
+    fi
+    echo "Most likely Tomcat is not running"
+    exit 1
     ;;
 esac
 

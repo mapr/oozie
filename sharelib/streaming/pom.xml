@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.0-mapr</version>
         <relativePath>../..</relativePath>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-sharelib-streaming</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.0-mapr</version>
     <description>Apache Oozie Share Lib Streaming</description>
     <name>Apache Oozie Share Lib Streaming</name>
     <packaging>jar</packaging>
@@ -81,6 +81,11 @@
             <groupId>org.apache.oozie</groupId>
             <artifactId>oozie-sharelib-oozie</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
         </dependency>
     </dependencies>
 

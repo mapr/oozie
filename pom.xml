@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.0-mapr</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -78,7 +78,7 @@
         </oozie.test.default.config.file>
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
-        <hadoop.version>2.4.0</hadoop.version>
+        <hadoop.version>2.7.0-mapr-1607</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
         <oozie.hadoop-utils.version>hadoop-${hadoop.majorversion}-${project.version}</oozie.hadoop-utils.version>
@@ -134,6 +134,27 @@
     </modules>
 
     <repositories>
+        <!-- Temporary repo -->
+        <repository>
+            <id>mapr.release</id>
+            <url>${env.MAPR_MAVEN_REPO}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>repository.mapr.com</id>
+            <url>http://repository.mapr.com/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>central</id>
             <url>http://repo1.maven.org/maven2</url>
@@ -306,6 +327,71 @@
                 <version>${jackson.version}</version>
             </dependency>
 
+            <!-- kite -->
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-mapreduce</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-maprfs</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-hive</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+
+            <!-- avro -->
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-mapred</artifactId>
+                <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- core -->
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
@@ -469,6 +555,19 @@
                 <artifactId>oozie-hadoop-distcp</artifactId>
                 <version>${hadooplib.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive.hcatalog</groupId>
+                <artifactId>hive-hcatalog-core</artifactId>
+                <version>${hive.version}</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-cli</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -1332,7 +1431,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.1</version>
+                <version>2.4</version>
             </dependency>
 
             <dependency>
@@ -1949,6 +2048,28 @@
                 <spark.version>2.0.0</spark.version>
                 <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
                 <spark.bagel.version>1.6.2</spark.bagel.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>deployReleasesToApache</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <release-repo-id>apache.staging.https</release-repo-id>
+                <release-repo-name>Apache Release Distribution Repository</release-repo-name>
+                <release-repo-url>https://repository.apache.org/service/local/staging/deploy/maven2</release-repo-url>
+            </properties>
+        </profile>
+        <profile>
+            <id>deployReleasesToMapr</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <release-repo-id>mapr.staging.https</release-repo-id>
+                <release-repo-name>MapR Release Repo</release-repo-name>
+                <release-repo-url>${env.MAPR_MAVEN_REPO}</release-repo-url>
             </properties>
         </profile>
     </profiles>
