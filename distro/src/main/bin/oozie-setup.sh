@@ -179,6 +179,28 @@ if [ -e ${hadoopVersionFile} ]; then
   addBothHadoopJars=true
 fi
 
+HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
+confDir="hadoop-conf"
+if [ -f ${hadoopVersionFile} ]
+then
+  hadoop_mode=`cat ${hadoopVersionFile} | grep default_mode | cut -d '=' -f 2`
+  if [ "$hadoop_mode" = "yarn" ]; then
+    version_hadoop=`cat ${hadoopVersionFile} | grep yarn_version | cut -d '=' -f 2`
+    confDir=${HADOOP_BASE_DIR}${version_hadoop}/etc/hadoop/
+  elif [ "$hadoop_mode" = "classic" ]; then
+    version_hadoop=`cat ${hadoopVersionFile} | grep classic_version | cut -d '=' -f 2`
+    confDir=${HADOOP_BASE_DIR}${version_hadoop}/conf/
+  else
+    echo 'Unknown hadoop version'
+  fi
+else
+  echo "Unknown hadoop version"
+fi
+
+if [ -e ${hadoopVersionFile} ]; then
+  addBothHadoopJars=true
+fi
+
 while [ $# -gt 0 ]
 do
   if [ "$1" = "sharelib" ] || [ "$1" = "db" ] || [ "$1" = "export" ] || [ "$1" = "import" ]; then
@@ -187,6 +209,7 @@ do
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.log.dir=${OOZIE_LOG}";
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.data.dir=${OOZIE_DATA}";
     OOZIE_OPTS="${OOZIE_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
+    OOZIE_OPTS="${OOZIE_OPTS} -Dhadoop_conf_directory=${confDir}"
 
     #Create lib directory from war if lib doesn't exist
     if [ ! -d "${BASEDIR}/lib" ]; then
@@ -269,8 +292,6 @@ if [ -e "${CATALINA_PID}" ]; then
     rm -f "${CATALINA_PID}"
   fi
 fi
-
-echo
 
 if [ "${prepareWar}${addHadoopJars}" == "" ]; then
   echo "no arguments given"
