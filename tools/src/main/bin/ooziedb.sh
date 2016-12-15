@@ -32,7 +32,7 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
-
+HADOOP_CLASSPATH=`hadoop classpath`
 source ${BASEDIR}/bin/oozie-sys.sh -silent
 
 OOZIEDB_OPTS="-Doozie.home.dir=${OOZIE_HOME}";
