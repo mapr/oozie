@@ -16,7 +16,7 @@ import java.io.DataInputStream;
 import java.io.DataInput;
 
 
-+public class MaprSubmitJob {
+public class MaprSubmitJob {
 
     static void usage() {
         System.out.println("Args: <jobconf input file> <jobid output file>");
