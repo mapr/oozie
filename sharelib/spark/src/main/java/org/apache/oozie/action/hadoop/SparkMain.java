@@ -65,10 +65,8 @@ public class SparkMain extends LauncherMain {
     private static final String SPARK_LOG4J_PROPS = "spark-log4j.properties";
     private static final Pattern[] SPARK_JOB_IDS_PATTERNS = {
             Pattern.compile("Submitted application (application[0-9_]*)") };
-    public static final Pattern SPARK_ASSEMBLY_JAR_PATTERN = Pattern
-            .compile("^spark-assembly((?:(-|_|(\\d+\\.))\\d+(?:\\.\\d+)*))*\\.jar$");
-    public static final Pattern SPARK_YARN_JAR_PATTERN = Pattern
-            .compile("^spark-yarn((?:(-|_|(\\d+\\.))\\d+(?:\\.\\d+)*))*\\.jar$");
+    public static final Pattern SPARK_ASSEMBLY_JAR_PATTERN = Pattern.compile("spark-assembly\\S*.jar");
+    public static final Pattern SPARK_YARN_JAR_PATTERN = Pattern.compile("spark-yarn\\S*.jar");
     private static final Pattern SPARK_VERSION_1 = Pattern.compile("^1.*");
     private static final String SPARK_YARN_JAR = "spark.yarn.jar";
     private static final String SPARK_YARN_JARS = "spark.yarn.jars";
@@ -438,7 +436,7 @@ public class SparkMain extends LauncherMain {
             // This will avoid an extra copy of files which already exists on
             // same hdfs.
             if (!fileUri.toString().equals(jarPath) && fs.getUri().getScheme().equals(fileUri.getScheme())
-                    && (fs.getUri().getHost().equals(fileUri.getHost()) || fileUri.getHost() == null)
+                    && (fileUri.getHost() == null || fs.getUri().getHost().equals(fileUri.getHost()))
                     && (fs.getUri().getPort() == -1 || fileUri.getPort() == -1
                             || fs.getUri().getPort() == fileUri.getPort())) {
                 URI uri = new URI(fs.getUri().getScheme(), fileUri.getUserInfo(), fs.getUri().getHost(),
