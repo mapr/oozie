@@ -42,7 +42,6 @@
             <groupId>org.apache.sqoop</groupId>
             <artifactId>sqoop</artifactId>
             <scope>compile</scope>
-            <classifier>${sqoop.classifier}</classifier>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
@@ -180,6 +179,51 @@
         <dependency>
             <groupId>org.kitesdk</groupId>
             <artifactId>kite-data-hive</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Teradata dependencies-->
+        <dependency>
+            <groupId>org.apache.sqoop.connector</groupId>
+            <artifactId>sqoop-connector-tdch</artifactId>
+            <version>1.0-mapr-1611</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-mapreduce-client-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-auth</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-minicluster</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.teradata</groupId>
+            <artifactId>tdgssconfig</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.teradata</groupId>
+            <artifactId>connector</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.teradata</groupId>
+            <artifactId>jdbc</artifactId>
             <scope>compile</scope>
         </dependency>
 
