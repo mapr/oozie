@@ -32,6 +32,13 @@
                 <include>**</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/../client/src/main/conf/</directory>
+            <outputDirectory>/conf</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
         <!-- Distro files, readme, licenses, etc -->
         <fileSet>
             <directory>${basedir}/../</directory>
