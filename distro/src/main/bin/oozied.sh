@@ -47,6 +47,10 @@ ENV_FILE=env.sh
 HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
 
 source ${BASEDIR}/bin/oozie-sys.sh
+# MapR change. Source env.sh if it exists
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+    source ${MAPR_CONF_DIR}/env.sh
+fi
 
 CATALINA=${OOZIE_CATALINA_HOME:-${BASEDIR}/oozie-server}/bin/catalina.sh
 
