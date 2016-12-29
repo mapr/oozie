@@ -98,7 +98,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.hive</groupId>
-                    <artifactId>hive-exec</artifactId>
+                    <artifactId>hive-common</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
@@ -221,6 +221,22 @@
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-metastore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-shims</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.datanucleus</groupId>
+                    <artifactId>datanucleus-core</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-auth</artifactId>
                 </exclusion>
@@ -265,6 +281,38 @@
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-yarn-server-web-proxy</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-ant</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-llap-tez</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-shims</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.calcite</groupId>
+                    <artifactId>calcite-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.calcite</groupId>
+                    <artifactId>calcite-avatica</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.datanucleus</groupId>
+                    <artifactId>datanucleus-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-1.2-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -272,6 +320,32 @@
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-jdbc</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-auth</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-service</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-serde</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-metastore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-service-rpc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive.maprminicluster</groupId>
+                    <artifactId>mapr-mini-cluster</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
