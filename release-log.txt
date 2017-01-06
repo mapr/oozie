@@ -1,4 +1,5 @@
 -- Oozie backported
+OOZIE-2748 NPE in LauncherMapper.printArgs() (pbacsko via rkanter)
 OOZIE-3147 Misleading documentation of oozie.service.PurgeService.purge.limit configuration property (okalinin via andras.piros)
 OOZIE-1401 PurgeCommand should purge the workflow jobs w/o end_time (asasvari)
 OOZIE-2807 Oozie gets RM delegation token even for checking job status (satishsaley)
