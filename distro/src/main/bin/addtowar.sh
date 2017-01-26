@@ -468,6 +468,13 @@ if [ "${addYarnSite}" = "true" ] && [ -f ${yarn_site_file} ]; then
     checkExec "copying yarn-site.xml to staging"
 fi
 
+hive_site_file="${OOZIE_HOME}/conf/action-conf/hive-site.xml"
+if [ -f ${hive_site_file} ]; then
+    #copy hive-site in oozie war
+    cp "${hive_site_file}" ${tmpWarDir}/WEB-INF/classes
+    checkExec "copying hive-site.xml to staging"
+fi
+
 #Creating new Oozie WAR
 currentDir=`pwd`
 cd ${tmpWarDir}
