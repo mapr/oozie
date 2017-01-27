@@ -184,6 +184,9 @@ setup_oozie() {
       source ${oozie_hadoop_version_file}
     fi
 
+    #MAPR-23180: cleanup old tmp files
+    find /tmp/oozieTmp/ -maxdepth 1 -ctime +14 -exec rm -rf {} \; 2>/dev/null
+
     #replace lib to correct
     rm -rf ${BASEDIR}/lib
     mkdir ${BASEDIR}/lib

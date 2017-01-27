@@ -128,7 +128,11 @@ public class Services {
 
     private String createRuntimeDir() throws ServiceException {
         try {
-            File file = File.createTempFile(getSystemId(), ".dir");
+            File tmpDir = new File(System.getProperty("java.io.tmpdir") + "/oozieTmp");
+            if (!tmpDir.exists()) {
+                tmpDir.mkdir();
+            }
+            File file = File.createTempFile(getSystemId(), ".dir", tmpDir);
             file.delete();
             if (!file.mkdir()) {
                 ServiceException ex = new ServiceException(ErrorCode.E0001, file.getAbsolutePath());

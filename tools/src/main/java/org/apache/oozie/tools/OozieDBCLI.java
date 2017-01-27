@@ -119,9 +119,13 @@ public class OozieDBCLI {
                     throw new Exception("'-sqlfile <FILE>' or '-run' options must be specified");
                 }
                 CommandLine commandLine = command.getCommandLine();
+                File tmpDir = new File(System.getProperty("java.io.tmpdir") + "/oozieTmp");
+                if (!tmpDir.exists()) {
+                    tmpDir.mkdir();
+                }
                 String sqlFile = (commandLine.hasOption(SQL_FILE_OPT))
-                                 ? commandLine.getOptionValue(SQL_FILE_OPT)
-                                 : File.createTempFile("ooziedb-", ".sql").getAbsolutePath();
+                        ? commandLine.getOptionValue(SQL_FILE_OPT)
+                        : File.createTempFile("ooziedb-", ".sql", tmpDir).getAbsolutePath();
                 boolean run = commandLine.hasOption(RUN_OPT);
                 if (command.getName().equals(CREATE_CMD)) {
                     createDB(sqlFile, run);
