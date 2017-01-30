@@ -53,9 +53,9 @@ function printUsage() {
 
 #Creating temporary directory
 function prepare() {
-  tmpDir=/tmp/oozie-war-packing-$$
+  tmpDir=/tmp/oozieTmp/oozie-war-packing-$$
   rm -rf ${tmpDir}
-  mkdir ${tmpDir}
+  mkdir -p ${tmpDir}
   tmpWarDir=${tmpDir}/oozie-war
   mkdir ${tmpWarDir}
   checkExec "creating staging directory ${tmpDir}"

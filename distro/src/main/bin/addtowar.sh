@@ -19,9 +19,9 @@
 
 #Creating temporary directory
 function prepare() {
-  tmpDir=/tmp/oozie-war-packing-$$
+  tmpDir=/tmp/oozieTmp/oozie-war-packing-$$
   rm -rf ${tmpDir}
-  mkdir ${tmpDir}
+  mkdir -p ${tmpDir}
   tmpWarDir=${tmpDir}/oozie-war
   mkdir ${tmpWarDir}
   checkExec "creating staging directory ${tmpDir}"
@@ -466,6 +466,13 @@ if [ "${addYarnSite}" = "true" ] && [ -f ${yarn_site_file} ]; then
     #copy yarn-site in oozie war
     cp "${yarn_site_file}" ${tmpWarDir}/WEB-INF/classes
     checkExec "copying yarn-site.xml to staging"
+fi
+
+hive_site_file="${OOZIE_HOME}/conf/action-conf/hive-site.xml"
+if [ -f ${hive_site_file} ]; then
+    #copy hive-site in oozie war
+    cp "${hive_site_file}" ${tmpWarDir}/WEB-INF/classes
+    checkExec "copying hive-site.xml to staging"
 fi
 
 #Creating new Oozie WAR

@@ -134,7 +134,11 @@ public class OozieSharelibCLI {
                 srcFile = files.iterator().next();
             }
 
-            File temp = File.createTempFile("oozie", ".dir");
+            File tmpDir = new File(System.getProperty("java.io.tmpdir") + "/oozieTmp");
+            if (!tmpDir.exists()) {
+                tmpDir.mkdir();
+            }
+            File temp = File.createTempFile("oozie", ".dir", tmpDir);
             temp.delete();
             temp.mkdir();
             temp.deleteOnExit();
