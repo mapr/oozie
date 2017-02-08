@@ -106,7 +106,7 @@
          <kite.version>1.1.0</kite.version>
          <avro.version>1.7.5</avro.version>
          <teradata.version>1.5.1</teradata.version>
-         <tez.version>0.8.4</tez.version>
+         <tez.version>0.8.4-mapr</tez.version>
 
          <!-- Tomcat version -->
          <tomcat.version>6.0.47</tomcat.version>
