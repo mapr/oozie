@@ -28,9 +28,9 @@
             <master>${master}</master>
             <name>Spark-FileCopy</name>
             <class>org.apache.oozie.example.SparkFileCopy</class>
-            <jar>${nameNode}/user/${wf:user()}/${examplesRoot}/apps/spark/lib/oozie-examples.jar</jar>
-            <arg>${nameNode}/user/${wf:user()}/${examplesRoot}/input-data/text/data.txt</arg>
-            <arg>${nameNode}/user/${wf:user()}/${examplesRoot}/output-data/spark</arg>
+            <jar>maprfs:/user/${wf:user()}/${examplesRoot}/apps/spark/lib/oozie-examples.jar</jar>
+            <arg>maprfs:/user/${wf:user()}/${examplesRoot}/input-data/text/data.txt</arg>
+            <arg>maprfs:/user/${wf:user()}/${examplesRoot}/output-data/spark</arg>
         </spark>
         <ok to="end" />
         <error to="fail" />
