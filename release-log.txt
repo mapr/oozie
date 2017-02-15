@@ -1,5 +1,6 @@
 -- Oozie backported
 
+OOZIE-2799 Setting log location for spark sql on hive (satishsaley)
 OOZIE-2787 Oozie distributes application jar twice making the spark job fail (satishsaley)
 
 -- Oozie 4.3.0 release
