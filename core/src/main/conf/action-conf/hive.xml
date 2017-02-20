@@ -32,4 +32,16 @@
       <value>/etc/hadoop/conf</value>
    </property>
    -->
+
+   <property>
+      <name>tez.lib.uris</name>
+      <value>maprfs:///apps/tez/tez-0.8,maprfs:///apps/tez/tez-0.8/lib</value>
+   </property>
+
+   <!-- To able to run on mapr cluster, tez.use.cluster.hadoop-libs has to be true -->
+   <property>
+      <name>tez.use.cluster.hadoop-libs</name>
+      <value>true</value>
+   </property>
+
 </configuration>
