@@ -43,6 +43,8 @@ public class AuthUrlClient {
 
     public static final String SERVER_SERVER_AUTH_TYPE = "oozie.server.authentication.type";
 
+    public static final String MAPR_SERVER_SERVER_AUTH_CLASS_NAME = "com.mapr.security.maprauth.MaprAuthenticator";
+
     private static XLog LOG = XLog.getLog(AuthUrlClient.class);
 
     static private Class<? extends Authenticator> AuthenticatorClass = null;
@@ -99,6 +101,9 @@ public class AuthUrlClient {
         }
         else if (authName.equals("kerberos")) {
             authClassName = KerberosAuthenticator.class.getName();
+        }
+        else if (authName.equals("org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler")) {
+            authClassName = MAPR_SERVER_SERVER_AUTH_CLASS_NAME;
         }
         else {
             authClassName = authName;
