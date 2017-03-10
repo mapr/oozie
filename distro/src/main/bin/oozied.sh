@@ -185,7 +185,7 @@ setup_oozie() {
     fi
 
     #MAPR-23180: cleanup old tmp files
-    find /tmp/oozieTmp/ -maxdepth 1 -ctime +14 -exec rm -rf {} \; 2>/dev/null
+    find /tmp/oozieTmp/ -maxdepth 1 -mtime +14 -exec rm -rf {} \; 2>/dev/null
 
     #replace lib to correct
     rm -rf ${BASEDIR}/lib
