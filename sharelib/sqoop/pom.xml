@@ -179,6 +179,12 @@
             <groupId>org.kitesdk</groupId>
             <artifactId>kite-data-hive</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>parquet-hive-bundle</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Teradata dependencies-->
         <dependency>
