@@ -42,6 +42,16 @@
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-beeline</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-auth</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
