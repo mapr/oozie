@@ -146,10 +146,6 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.hive</groupId>
-                    <artifactId>hive-service</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.hive</groupId>
                     <artifactId>hive-serde</artifactId>
                 </exclusion>
                 <exclusion>
@@ -163,6 +159,14 @@
                 <exclusion>
                     <groupId>org.apache.hive.maprminicluster</groupId>
                     <artifactId>mapr-mini-cluster</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.aggregate</groupId>
+                    <artifactId>jetty-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.jpam</groupId>
+                    <artifactId>jpam</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
