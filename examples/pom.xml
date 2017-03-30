@@ -22,11 +22,11 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.2.0-mapr</version>
+        <version>4.2.0-mapr-1703</version>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-examples</artifactId>
-    <version>4.2.0-mapr</version>
+    <version>4.2.0-mapr-1703</version>
     <description>Apache Oozie Examples</description>
     <name>Apache Oozie Examples</name>
     <packaging>jar</packaging>
