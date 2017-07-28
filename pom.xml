@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.2.0-mapr</version>
+    <version>4.2.0-mapr-1707</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -86,12 +86,12 @@
 
          <!-- Sharelib component versions -->
         <!-- Pig and Hive version must be changed after release -->
-         <hive.version>1.2.0-mapr-1703</hive.version>
+         <hive.version>1.2.0-mapr-1707</hive.version>
          <pig.version>0.16.0-mapr-1703</pig.version>
          <pig.classifier></pig.classifier>
          <pig-2.classifier>h2</pig-2.classifier>
-         <sqoop.version>1.4.6-mapr-1703</sqoop.version>
-         <spark.version>2.0.1-mapr-1703</spark.version>
+         <sqoop.version>1.4.6-mapr-1707</sqoop.version>
+         <spark.version>2.0.1-mapr-1707</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
@@ -100,7 +100,7 @@
          <distcp.version>${hadoop.version}</distcp.version>
          <hadoop.auth.version>${hadoop.version}</hadoop.auth.version>
          <kite.version>1.1.0</kite.version>
-         <teradata.version>1.5.1</teradata.version>
+         <teradata.version>1.5.2</teradata.version>
          <avro.version>1.7.5</avro.version>
 
          <!-- Tomcat version -->
