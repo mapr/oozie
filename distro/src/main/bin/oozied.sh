@@ -160,11 +160,16 @@ setup_catalina_opts() {
 }
 
 setup_oozie_sharelib() {
-  if [ "${mode}" == "1" ]; then
-    ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
+  if [ -d ${BASEDIR}/share ]; then
+    ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share
   else
-    ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+    if [ "${mode}" == "1" ]; then
+      ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share1
+    else
+      ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share2
+    fi
   fi
+
 }
 
 setup_oozie() {
