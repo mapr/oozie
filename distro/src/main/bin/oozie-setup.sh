@@ -142,6 +142,28 @@ function getKeyStoreLocationAndPassword() {
   echo "Keystore location successfully added"
 }
 
+function changeOoziePermission() {
+  if [ -f "$DAEMON_CONF" ]; then
+    MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' "$DAEMON_CONF")
+    MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' "$DAEMON_CONF")
+  else
+    MAPR_USER=`logname`
+    MAPR_GROUP="$MAPR_USER"
+  fi
+
+  #
+  # change permissions
+  #
+  if [ ! -z "$MAPR_USER" ]; then
+    chown -R "$MAPR_USER" "$MapRHomeDir/oozie"
+    chown -R "$MAPR_USER" "$OOZIE_TMP_DIR"
+  fi
+  if [ ! -z "$MAPR_GROUP" ]; then
+    chgrp -R "$MAPR_GROUP" "$MapRHomeDir/oozie"
+    chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
+  fi
+}
+
 
 # resolve links - $0 may be a softlink
 PRG="${0}"
@@ -175,6 +197,8 @@ secure=""
 secureConfigsDir="${CATALINA_BASE}/conf/ssl"
 MapRHomeDir=/opt/mapr
 hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
+DAEMON_CONF="$MapRHomeDir/conf/daemon.conf"
+OOZIE_TMP_DIR=/tmp/oozieTmp
 
 if [ -e ${hadoopVersionFile} ]; then
   addBothHadoopJars=true
@@ -426,6 +450,8 @@ else
   if [ "$?" != "0" ]; then
     exit -1
   fi
+  #fix oozie permission if oozie-setup.sh executing from root
+  changeOoziePermission
 
   echo
 

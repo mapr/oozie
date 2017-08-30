@@ -11,6 +11,8 @@ OOZIE_TMP_DIR=/tmp/oozieTmp
 HADOOP_VER=$(cat "$MAPR_HOME/hadoop/hadoopversion")
 OOZIE_SSL=$(cat "$OOZIE_HOME/conf/ooziessl")
 secureCluster=0
+MAPR_USER=""
+MAPR_GROUP=""
 
 # isSecure is set in server/configure.sh
 if [ -n "$isSecure" ]; then
@@ -20,18 +22,12 @@ if [ -n "$isSecure" ]; then
 fi
 
 changeOoziePermission() {
-  if [ -z "$MAPR_USER" ] ; then
+  if [ -f "$DAEMON_CONF" ]; then
     MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' "$DAEMON_CONF")
-  fi
-  if [ -z "$MAPR_GROUP" ] ; then
     MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' "$DAEMON_CONF")
-  fi
-
-  if [ -z "$MAPR_USER" ] ; then
-    MAPR_USER=mapr
-  fi
-  if [ -z "$MAPR_GROUP" ] ; then
-    MAPR_GROUP=mapr
+  else
+    MAPR_USER=`logname`
+    MAPR_GROUP="$MAPR_USER"
   fi
 
 #
@@ -39,15 +35,13 @@ changeOoziePermission() {
 #
   chmod 755 -R $OOZIE_HOME"/oozie-server"
   chmod 777 -R "$OOZIE_TMP_DIR"
-  if [ -f "$DAEMON_CONF" ]; then
-    if [ ! -z "$MAPR_USER" ]; then
-      chown -R "$MAPR_USER" "$OOZIE_HOME"
-      chown -R "$MAPR_USER" "$OOZIE_TMP_DIR"
-    fi
-    if [ ! -z "$MAPR_GROUP" ]; then
-      chgrp -R "$MAPR_GROUP" "$OOZIE_HOME"
-      chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
-    fi
+  if [ ! -z "$MAPR_USER" ]; then
+    chown -R "$MAPR_USER" "$MAPR_HOME/oozie"
+    chown -R "$MAPR_USER" "$OOZIE_TMP_DIR"
+  fi
+  if [ ! -z "$MAPR_GROUP" ]; then
+    chgrp -R "$MAPR_GROUP" "$MAPR_HOME/oozie"
+    chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
   fi
 }
 
@@ -73,9 +67,7 @@ setupWardenConfFile() {
   fi
 
   # Install warden file
-  if [ ! -e ${MAPR_CONF_DIR}/warden.oozie.conf ]; then
-    cp ${WARDEN_OOZIE_CONF} ${MAPR_CONF_DIR}
-  fi
+  cp ${WARDEN_OOZIE_CONF} ${MAPR_CONF_DIR}
 }
 
 #
@@ -85,10 +77,6 @@ setupWardenConfFile() {
 #
 
 usage="usage: $0 [--secure|--unsecure|--help"
-if [ ${#} -gt 1 ]; then
-  echo "$USAGE"
-  return 1 2>/dev/null || exit 1
-fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -110,11 +98,6 @@ while [ $# -gt 0 ]; do
     ;;
   esac
 done
-
-#
-# Create oozieversion file
-#
-echo "$OOZIE_VERSION" > "$MAPR_HOME"/oozie/oozieversion
 
 #
 #create tmp directory if need
