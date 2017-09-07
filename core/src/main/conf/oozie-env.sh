@@ -58,11 +58,11 @@ export CATALINA_OPTS="$CATALINA_OPTS -Xmx1024m"
 
 # The location of the keystore for the Oozie server if using SSL (HTTPS)
 #
-# export OOZIE_HTTPS_KEYSTORE_FILE=${HOME}/.keystore
+# export OOZIE_HTTPS_KEYSTORE_FILE=/opt/mapr/conf/ssl_keystore
 
 # The password of the keystore for the Oozie server if using SSL (HTTPS)
 #
-# export OOZIE_HTTPS_KEYSTORE_PASS=password
+# export OOZIE_HTTPS_KEYSTORE_PASS=mapr123
 
 # The Oozie Instance ID
 #
