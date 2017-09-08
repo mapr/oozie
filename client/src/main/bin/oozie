@@ -119,9 +119,6 @@ JAVA_PROPERTIES="${JAVA_PROPERTIES} -Djava.library.path=${JAVA_LIBRARY_PATH}:/op
 # Prime OOZIE_CLIENT_OPTS with JAVA_PROPERTIES for backwards compatibility
 OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
 
-# Add MAPR_SSL_OPTS for SSL truststore location
-OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_SSL_OPTS}"
-
 #If you wish to use Kerberos to authenticate to Oozie server comment the below IF block
 #where we pass MaprAuthenticator as the method of authentication
 if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
