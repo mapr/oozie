@@ -76,11 +76,15 @@ setupWardenConfFile() {
 # typically called from core configure.sh
 #
 
-usage="usage: $0 [--secure|--unsecure|--help"
+usage="usage: $0 [--secure|--customSecure|--unsecure|--help"
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --secure)
+    secureCluster=1
+    shift
+    ;;
+    --customSecure)
     secureCluster=1
     shift
     ;;
@@ -104,6 +108,11 @@ done
 #
 if [ ! -d ${OOZIE_TMP_DIR} ]; then
   mkdir -p ${OOZIE_TMP_DIR}
+fi
+
+# remove state file
+if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
+    rm -f "$OOZIE_HOME/conf/.not_configured_yet"
 fi
 
 
