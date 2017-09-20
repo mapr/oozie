@@ -400,9 +400,10 @@ else
       chmod -f u+w ${oozie_hadoop2_war}
       rm -rf ${oozie_hadoop2_war}
     fi
-
-    # Build oozie war with Hadoop1
-    ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${oozie_hadoop1_war} ${OPTIONS} -hadoop ${classic_version} ${hadoop1Path}
+    if [ -d ${hadoop1Path} ];then
+      # Build oozie war with Hadoop1
+      ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${oozie_hadoop1_war} ${OPTIONS} -hadoop ${classic_version} ${hadoop1Path}
+    fi
     # Build oozie war with Hadoop2
     ${OOZIE_HOME}/bin/addtowar.sh -inputwar ${inputWar} -outputwar ${oozie_hadoop2_war} ${OPTIONS} -hadoop ${yarn_version} ${hadoop2Path} -addYarnSite
   fi
