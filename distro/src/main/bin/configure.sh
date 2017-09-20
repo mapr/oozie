@@ -76,32 +76,42 @@ setupWardenConfFile() {
 # typically called from core configure.sh
 #
 
-usage="usage: $0 [--secure|--customSecure|--unsecure|--help"
-
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --secure)
-    secureCluster=1
-    shift
-    ;;
-    --customSecure)
-    secureCluster=1
-    shift
-    ;;
-    --unsecure)
-    secureCluster=0
-    shift
-    ;;
-    --help)
+usage="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help"
+if [ ${#} -gt 1 ]; then
+  for i in "$@" ; do
+    case "$i" in
+      --secure)
+        secureCluster=1
+        shift
+        ;;
+      --customSecure|-cs)
+        secureCluster=1
+        shift
+        ;;
+      --unsecure)
+        secureCluster=0
+        shift
+        ;;
+      --help)
+        echo "$USAGE"
+        return 0 2>/dev/null || exit 0
+        ;;
+      -EC|--EC)
+         shift
+         ;;
+       -R|--R)
+         shift
+         ;;
+       --)
+        echo "$USAGE"
+        return 1 2>/dev/null || exit 1
+        ;;
+    esac
+  done
+else
     echo "$USAGE"
-    return 0 2>/dev/null || exit 0
-    ;;
-    *)
-      echo "$USAGE"
-      return 1 2>/dev/null || exit 1
-    ;;
-  esac
-done
+    return 1 2>/dev/null || exit 1
+fi
 
 #
 #create tmp directory if need
