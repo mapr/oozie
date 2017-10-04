@@ -45,15 +45,25 @@ changeOoziePermission() {
   fi
 }
 
+configDefaultSsl() {
+    #enable SSL if ssl was disabled and cluster is secure
+    if [ "$OOZIE_SSL" == false -a ${secureCluster} == 1 ]; then
+        sed -i '/OOZIE_HTTPS_KEYSTORE_FILE/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
+        sed -i '/OOZIE_HTTPS_KEYSTORE_PASS/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
+        sed -i '/OOZIE_HTTPS_PORT/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
+        sed -i '/OOZIE_CLIENT_OPTS/s/^#*//g' $OOZIE_HOME/conf/oozie-client-env.sh
+    fi
+}
+
 #
 # Build Oozie war
 #
 buildOozieWar() {
   # Construct the oozie-setup command.
-  if [ "$OOZIE_SSL" == true ]; then
+  if [ ${secureCluster} == 1 -o "$OOZIE_SSL" == true ]; then
     cmd="$OOZIE_HOME/bin/oozie-setup.sh -hadoop "${HADOOP_VER}" "${MAPR_HOME}/hadoop/hadoop-${HADOOP_VER}" -secure"
   else
-    cmd="$OOZIE_HOME/bin/oozie-setup.sh -hadoop "${HADOOP_VER}" "${MAPR_HOME}/hadoop/hadoop-${HADOOP_VER}""
+    cmd="$OOZIE_HOME/bin/oozie-setup.sh -hadoop "${HADOOP_VER}" "${MAPR_HOME}/hadoop/hadoop-${HADOOP_VER}
   fi
   $cmd > /dev/null
 }
@@ -68,6 +78,7 @@ setupWardenConfFile() {
 
   # Install warden file
   cp ${WARDEN_OOZIE_CONF} ${MAPR_CONF_DIR}
+  chown $MAPR_USER:$MAPR_GROUP ${MAPR_CONF_DIR}/warden.oozie.conf
 }
 
 #
@@ -76,7 +87,7 @@ setupWardenConfFile() {
 # typically called from core configure.sh
 #
 
-usage="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help"
+USAGE="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help"
 if [ ${#} -gt 1 ]; then
   for i in "$@" ; do
     case "$i" in
@@ -125,7 +136,7 @@ if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
     rm -f "$OOZIE_HOME/conf/.not_configured_yet"
 fi
 
-
+configDefaultSsl
 #build oozie war file
 buildOozieWar
 changeOoziePermission

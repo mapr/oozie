@@ -36,5 +36,5 @@
 # Oozie client java options
 # Use this to set specific JVM options for the Oozie client
 #
-# export OOZIE_CLIENT_OPTS=
+# export OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Djavax.net.ssl.trustStore=/opt/mapr/conf/ssl_truststore"
 
