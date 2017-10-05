@@ -54,8 +54,6 @@ function printUsage() {
 #Creating temporary directory
 function prepare() {
   tmpDir=/tmp/oozieTmp/oozie-war-packing-$$
-  #remove old war packaging dir
-  rm -rf /tmp/oozieTmp/oozie-war-packing-*
   mkdir -p ${tmpDir}
   tmpWarDir=${tmpDir}/oozie-war
   mkdir ${tmpWarDir}

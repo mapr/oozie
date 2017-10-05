@@ -59,6 +59,8 @@ configDefaultSsl() {
 # Build Oozie war
 #
 buildOozieWar() {
+  #remove old war packaging dir
+  rm -rf ${OOZIE_TMP_DIR}/oozie-war-packing-*
   # Constructing the oozie-setup command.
   if [ ${secureCluster} == 1 -o "$OOZIE_SSL" == true ]; then
     cmd="$OOZIE_HOME/bin/oozie-setup.sh -hadoop "${HADOOP_VER}" "${MAPR_HOME}/hadoop/hadoop-${HADOOP_VER}" -secure"

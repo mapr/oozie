@@ -112,6 +112,9 @@ else
     confDir=${HADOOP_BASE_DIR}${version_hadoop}/conf/
 fi
 
+MAPR_VERSION_MAJOR=$(cut -d '.' -f 1 ${BASEMAPR}/MapRBuildVersion)
+
+
 setup_catalina_opts() {
   # The Java System properties 'oozie.http.port' and 'oozie.https.port' are not
   # used by Oozie, they are used in Tomcat's server.xml configuration file
@@ -176,11 +179,8 @@ setup_oozie() {
   if [ "${mode}" != "" ]; then
     # This means we are operating with MapR >= 4.0.0 and need to copy over correct war before startup.
    if [ ! -e "${OOZIE_HOME}/oozie-hadoop${mode}.war" ]; then
-      echo "WARN: Oozie WAR has not been set up at ''${OOZIE_HOME}'', doing default set up"
-      ${BASEDIR}/bin/oozie-setup.sh
-      if [ "$?" != "0" ]; then
-        exit -1
-      fi
+      echo "ERROR: Oozie WAR has not been set up at ''${OOZIE_HOME}''. Rebuild Oozie WAR."
+      exit -1
     fi
     oozie_hadoop_version=""
     oozie_hadoop_version_file=${OOZIE_HOME}/oozie-hadoop-version
@@ -202,7 +202,9 @@ setup_oozie() {
 
     # If needed, copy the correct oozie war over.
     if [ ! -e ${CATALINA_BASE}/webapps/oozie.war -o "${mode}" != "${oozie_hadoop_version}" -o ${OOZIE_HOME}/oozie-hadoop${mode}.war -nt ${CATALINA_BASE}/webapps/oozie.war ]; then
-      setup_oozie_sharelib
+      if [ "$MAPR_VERSION_MAJOR" -lt 6 ]; then
+        setup_oozie_sharelib
+      fi
       cp ${OOZIE_HOME}/oozie-hadoop${mode}.war ${CATALINA_BASE}/webapps/oozie.war
       rm -rf ${CATALINA_BASE}/webapps/oozie
       echo "oozie_hadoop_version=${mode}" > ${oozie_hadoop_version_file}
