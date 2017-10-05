@@ -54,6 +54,9 @@ function printUsage() {
 #Creating temporary directory
 function prepare() {
   tmpDir=/tmp/oozieTmp/oozie-war-packing-$$
+  if [ "$MAPR_VERSION_MAJOR" -lt 6 ]; then
+    rm -rf /tmp/oozieTmp/oozie-war-packing-* > /dev/null 2>&1
+  fi
   mkdir -p ${tmpDir}
   tmpWarDir=${tmpDir}/oozie-war
   mkdir ${tmpWarDir}
@@ -181,6 +184,7 @@ then
 else
   echo "Unknown hadoop version"
 fi
+MAPR_VERSION_MAJOR=$(cut -d '.' -f 1 ${MapRHomeDir}/MapRBuildVersion)
 
 if [ -e ${hadoopVersionFile} ]; then
   addBothHadoopJars=true
