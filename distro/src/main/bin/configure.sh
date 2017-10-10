@@ -9,7 +9,6 @@ DAEMON_CONF="$MAPR_HOME/conf/daemon.conf"
 WARDEN_OOZIE_CONF="$OOZIE_HOME"/conf/warden.oozie.conf
 OOZIE_TMP_DIR=/tmp/oozieTmp
 HADOOP_VER=$(cat "$MAPR_HOME/hadoop/hadoopversion")
-OOZIE_SSL=$(cat "$OOZIE_HOME/conf/ooziessl")
 secureCluster=0
 MAPR_USER=""
 MAPR_GROUP=""
@@ -47,12 +46,18 @@ changeOoziePermission() {
 
 configDefaultSsl() {
   #enable SSL if ssl was disabled and cluster is secure
-  if [ "$OOZIE_SSL" == false -a ${secureCluster} == 1 ]; then
-    sed -i '/OOZIE_HTTPS_KEYSTORE_FILE/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
-    sed -i '/OOZIE_HTTPS_KEYSTORE_PASS/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
-    sed -i '/OOZIE_HTTPS_PORT/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
-    sed -i '/OOZIE_CLIENT_OPTS/s/^#*//g' $OOZIE_HOME/conf/oozie-client-env.sh
-  fi
+  sed -i '/OOZIE_HTTPS_KEYSTORE_FILE/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
+  sed -i '/OOZIE_HTTPS_KEYSTORE_PASS/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
+  sed -i '/OOZIE_HTTPS_PORT/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
+  sed -i '/OOZIE_CLIENT_OPTS/s/^#*//g' $OOZIE_HOME/conf/oozie-client-env.sh
+  echo "true" > "$OOZIE_HOME/conf/ooziessl"
+}
+
+disableSsl(){
+  sed -i '/OOZIE_HTTPS_KEYSTORE_FILE/s/^#*/#/g' $OOZIE_HOME/conf/oozie-env.sh
+  sed -i '/OOZIE_HTTPS_KEYSTORE_PASS/s/^#*/#/g' $OOZIE_HOME/conf/oozie-env.sh
+  sed -i '/OOZIE_HTTPS_PORT/s/^#*/#/g' $OOZIE_HOME/conf/oozie-env.sh
+  echo "false" > "$OOZIE_HOME/conf/ooziessl"
 }
 
 #
@@ -61,8 +66,9 @@ configDefaultSsl() {
 buildOozieWar() {
   #remove old war packaging dir
   rm -rf ${OOZIE_TMP_DIR}/oozie-war-packing-*
+  OOZIE_SSL=$(cat "$OOZIE_HOME/conf/ooziessl")
   # Constructing the oozie-setup command.
-  if [ ${secureCluster} == 1 -o "$OOZIE_SSL" == true ]; then
+  if [ "$OOZIE_SSL" == true ]; then
     cmd="$OOZIE_HOME/bin/oozie-setup.sh -hadoop "${HADOOP_VER}" "${MAPR_HOME}/hadoop/hadoop-${HADOOP_VER}" -secure"
   else
     cmd="$OOZIE_HOME/bin/oozie-setup.sh -hadoop "${HADOOP_VER}" "${MAPR_HOME}/hadoop/hadoop-${HADOOP_VER}
@@ -95,14 +101,19 @@ if [ ${#} -gt 1 ]; then
     case "$i" in
       --secure)
         secureCluster=1
+        configDefaultSsl
         shift
         ;;
       --customSecure|-cs)
         secureCluster=1
+        if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
+          configDefaultSsl
+        fi
         shift
         ;;
       --unsecure)
         secureCluster=0
+        disableSsl
         shift
         ;;
       --help)
@@ -138,7 +149,6 @@ if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
     rm -f "$OOZIE_HOME/conf/.not_configured_yet"
 fi
 
-configDefaultSsl
 #build oozie war file
 buildOozieWar
 changeOoziePermission
