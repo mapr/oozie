@@ -71,7 +71,7 @@
 
     <property>
         <name>oozie.jmx_monitoring.enable</name>
-        <value>false</value>
+        <value>true</value>
         <description>
             If the oozie functional metrics needs to be exposed via JMX interface, set it to true.
         </description>
