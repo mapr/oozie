@@ -290,6 +290,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <artifactId>hsqldb</artifactId>
             <groupId>hsqldb</groupId>
             <scope>compile</scope>
