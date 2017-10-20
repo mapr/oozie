@@ -227,10 +227,17 @@ setup_oozie() {
   fi
   if [ ! -e "${CATALINA_BASE}/webapps/oozie.war" ]; then
     echo "WARN: Oozie WAR has not been set up at '${CATALINA_BASE}/webapps', doing default set up"
-    ${BASEDIR}/bin/oozie-setup.sh prepare-war
+    OOZIE_SSL=$(cat "$BASEDIR/conf/ooziessl")
+    if [ "$OOZIE_SSL" == true ]; then
+      $BASEDIR/bin/oozie-setup.sh -hadoop "${version_hadoop}" "${BASEMAPR}/hadoop/hadoop-${version_hadoop}" -secure
+    else
+      $BASEDIR/bin/oozie-setup.sh -hadoop "${version_hadoop}" "${BASEMAPR}/hadoop/hadoop-${version_hadoop}"
+    fi
     if [ "$?" != "0" ]; then
       exit -1
     fi
+    cp ${BASEDIR}/oozie-hadoop${mode}.war ${CATALINA_BASE}/webapps/oozie.war
+    rm -rf ${CATALINA_BASE}/webapps/oozie
   fi
   echo
 }
