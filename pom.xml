@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.3.0-mapr</version>
+    <version>4.3.0-mapr-mep-3.x-1710</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -95,7 +95,7 @@
          <pig.version>0.16.0-mapr-1703</pig.version>
          <pig.classifier></pig.classifier>
          <sqoop.version>1.4.6-mapr-1710</sqoop.version>
-         <spark.version>2.1.0-mapr-1710</spark.version>
+         <spark.version>2.1.0-mapr-mep-3.x-1710</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
