@@ -7,6 +7,7 @@ OOZIE_BIN="$OOZIE_HOME"/bin
 MAPR_CONF_DIR="${MAPR_HOME}/conf/conf.d"
 DAEMON_CONF="$MAPR_HOME/conf/daemon.conf"
 WARDEN_OOZIE_CONF="$OOZIE_HOME"/conf/warden.oozie.conf
+WARDEN_OOZIE_DEST="$MAPR_CONF_DIR/warden.oozie.conf"
 OOZIE_TMP_DIR=/tmp/oozieTmp
 HADOOP_VER=$(cat "$MAPR_HOME/hadoop/hadoopversion")
 secureCluster=0
@@ -86,8 +87,21 @@ setupWardenConfFile() {
 
   # Install warden file
   cp ${WARDEN_OOZIE_CONF} ${MAPR_CONF_DIR}
-  chown $MAPR_USER:$MAPR_GROUP ${MAPR_CONF_DIR}/warden.oozie.conf
+  chown $MAPR_USER:$MAPR_GROUP $WARDEN_OOZIE_DEST
+  checkWardenPort
 }
+
+
+checkWardenPort() {
+  if [[ "$secureCluster" == "1" ]]; then
+      sed -i 's/\(service.port=\)\(.*\)/\111443/' $WARDEN_OOZIE_DEST
+      sed -i 's/\(service.ui.port=\)\(.*\)/\111443/' $WARDEN_OOZIE_DEST
+  else
+      sed -i 's/\(service.port=\)\(.*\)/\111000/' $WARDEN_OOZIE_DEST
+      sed -i 's/\(service.ui.port=\)\(.*\)/\111000/' $WARDEN_OOZIE_DEST
+  fi
+}
+
 
 #
 # main
