@@ -93,7 +93,8 @@ setupWardenConfFile() {
 
 
 checkWardenPort() {
-  if [[ "$secureCluster" == "1" ]]; then
+  OOZIE_SSL=$(cat "$OOZIE_HOME/conf/ooziessl")
+  if [ "$OOZIE_SSL" == true ]; then
       sed -i 's/\(service.port=\)\(.*\)/\111443/' $WARDEN_OOZIE_DEST
       sed -i 's/\(service.ui.port=\)\(.*\)/\111443/' $WARDEN_OOZIE_DEST
   else
