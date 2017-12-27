@@ -4,10 +4,11 @@ MAPR_HOME=${MAPR_HOME:-/opt/mapr}
 OOZIE_VERSION="4.3.0"
 OOZIE_HOME="$MAPR_HOME"/oozie/oozie-"$OOZIE_VERSION"
 OOZIE_BIN="$OOZIE_HOME"/bin
-MAPR_CONF_DIR="${MAPR_HOME}/conf/conf.d"
+MAPR_CONF_DIR="${MAPR_HOME}/conf/"
+MAPR_WARDEN_CONF_DIR="${MAPR_HOME}/conf/conf.d"
 DAEMON_CONF="$MAPR_HOME/conf/daemon.conf"
 WARDEN_OOZIE_CONF="$OOZIE_HOME"/conf/warden.oozie.conf
-WARDEN_OOZIE_DEST="$MAPR_CONF_DIR/warden.oozie.conf"
+WARDEN_OOZIE_DEST="$MAPR_WARDEN_CONF_DIR/warden.oozie.conf"
 OOZIE_TMP_DIR=/tmp/oozieTmp
 HADOOP_VER=$(cat "$MAPR_HOME/hadoop/hadoopversion")
 secureCluster=0
@@ -77,16 +78,35 @@ buildOozieWar() {
   $cmd > /dev/null
 }
 
+createRestartFile(){
+  if ! [ -d ${MAPR_CONF_DIR}/restart ]; then
+    mkdir -p ${MAPR_CONF_DIR}/restart
+  fi
+
+cat > "${MAPR_CONF_DIR}/restart/oozie-${OOZIE_VERSION}.restart" <<'EOF'
+  #!/bin/bash
+  isSecured=$(head -1 ${MAPR_HOME}/conf/mapr-clusters.conf | grep -o 'secure=\w*' | cut -d= -f2)
+  if [ "${isSecured}" = "true" ] && [ -f "${MAPR_HOME}/conf/mapruserticket" ]; then
+    export MAPR_TICKETFILE_LOCATION="${MAPR_HOME}/conf/mapruserticket"
+    fi
+  maprcli node services -action restart -name oozie -nodes $(hostname)
+EOF
+
+  chmod +x "${MAPR_CONF_DIR}/restart/oozie-$OOZIE_VERSION.restart"
+  chown -R $MAPR_USER:$MAPR_GROUP "${MAPR_CONF_DIR}/restart/oozie-$OOZIE_VERSION.restart"
+
+}
+
 #
 # Copying the warden service config file
 #
 setupWardenConfFile() {
-  if ! [ -d ${MAPR_CONF_DIR} ]; then
-    mkdir -p ${MAPR_CONF_DIR} > /dev/null 2>&1
+  if ! [ -d ${MAPR_WARDEN_CONF_DIR} ]; then
+    mkdir -p ${MAPR_WARDEN_CONF_DIR} > /dev/null 2>&1
   fi
 
   # Install warden file
-  cp ${WARDEN_OOZIE_CONF} ${MAPR_CONF_DIR}
+  cp ${WARDEN_OOZIE_CONF} ${MAPR_WARDEN_CONF_DIR}
   chown $MAPR_USER:$MAPR_GROUP $WARDEN_OOZIE_DEST
   checkWardenPort
 }
@@ -167,6 +187,7 @@ fi
 #build oozie war file
 buildOozieWar
 changeOoziePermission
+createRestartFile
 setupWardenConfFile
 
 true
