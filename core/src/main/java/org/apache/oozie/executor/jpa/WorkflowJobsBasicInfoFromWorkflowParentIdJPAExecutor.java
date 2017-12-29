@@ -79,6 +79,9 @@ public class WorkflowJobsBasicInfoFromWorkflowParentIdJPAExecutor implements JPA
             if(arr[2] != null) {
                 wfBean.setEndTime(DateUtils.toDate((Timestamp) arr[2]));
             }
+            if(arr[3] != null) {
+                wfBean.setLastModifiedTime(DateUtils.toDate((Timestamp) arr[3]));
+            }
             wfActionBeanList.add(wfBean);
         }
 
