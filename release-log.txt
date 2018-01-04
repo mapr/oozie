@@ -1,4 +1,5 @@
 -- Oozie backported
+OOZIE-3147 Misleading documentation of oozie.service.PurgeService.purge.limit configuration property (okalinin via andras.piros)
 OOZIE-1401 PurgeCommand should purge the workflow jobs w/o end_time (asasvari)
 OOZIE-2802 Spark action failure on Spark 2.1.0 due to duplicate sharelibs (gezapeti via rkanter)
 OOZIE-2799 Setting log location for spark sql on hive (satishsaley)

@@ -283,7 +283,7 @@
     </property>
 
     <!--  AuthorizationService -->
-    
+
     <property>
         <name>oozie.service.AuthorizationService.authorization.enabled</name>
         <value>false</value>
@@ -320,7 +320,7 @@
             Completed workflow jobs older than this value, in days, will be purged by the PurgeService.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.PurgeService.coord.older.than</name>
         <value>7</value>
@@ -328,7 +328,7 @@
             Completed coordinator jobs older than this value, in days, will be purged by the PurgeService.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.PurgeService.bundle.older.than</name>
         <value>7</value>
@@ -346,15 +346,16 @@
             specified in oozie.service.PurgeService.older.than.
         </description>
     </property>
-    
+
     <property>
-		<name>oozie.service.PurgeService.purge.limit</name>
-		<value>100</value>
-		<description>
-			Completed Actions purge - limit each purge to this value
+        <name>oozie.service.PurgeService.purge.limit</name>
+        <value>100</value>
+        <description>
+            Batch size of individual DB operations used for building the list of items
+            to be purged and performing actual purge.
         </description>
 	</property>
-	
+
     <property>
         <name>oozie.service.PurgeService.purge.interval</name>
         <value>3600</value>
@@ -362,7 +363,7 @@
             Interval at which the purge service will run, in seconds.
         </description>
     </property>
-    
+
     <!-- RecoveryService -->
 
     <property>
@@ -448,7 +449,7 @@
             the action type as the callable type.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.CallableQueueService.callable.next.eligible</name>
         <value>true</value>
@@ -572,7 +573,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 		<name>oozie.service.coord.default.throttle
 		</name>
 		<value>12</value>
-		<description>Default throttle for a coordinator job to determine how many maximum action should 
+		<description>Default throttle for a coordinator job to determine how many maximum action should
 		be in WAITING state at the same time.</description>
 	</property>
 
@@ -580,7 +581,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 		<name>oozie.service.coord.materialization.throttling.factor
 		</name>
 		<value>0.05</value>
-		<description>Determine how many maximum actions should be in WAITING state for a single job at any time. The value is calculated by 
+		<description>Determine how many maximum actions should be in WAITING state for a single job at any time. The value is calculated by
 		this factor X the total queue size.</description>
 	</property>
 
@@ -1225,7 +1226,7 @@ will be the requeue interval for the actions which are waiting for a long time w
             include all the built in ones.
         </description>
     </property>
-    
+
         <!-- Resolve SLA information during Action creation/materialization -->
 	<property>
         <name>oozie.service.ELService.constants.coord-sla-create</name>
@@ -1420,17 +1421,17 @@ will be the requeue interval for the actions which are waiting for a long time w
             If the 'oozie.service.JPAService.create.db.schema' property is set to true, this property is ignored.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.JPAService.validate.db.connection.eviction.interval</name>
         <value>300000</value>
         <description>
             Validates DB connections from the DB connection pool.
-            When validate db connection 'TestWhileIdle' is true, the number of milliseconds to sleep 
+            When validate db connection 'TestWhileIdle' is true, the number of milliseconds to sleep
             between runs of the idle object evictor thread.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.JPAService.validate.db.connection.eviction.num</name>
         <value>10</value>
@@ -1723,7 +1724,7 @@ will be the requeue interval for the actions which are waiting for a long time w
             The frequency in seconds at which the StatusTransitService will run.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.StatusTransitService.backward.support.for.coord.status</name>
         <value>false</value>
@@ -1736,7 +1737,7 @@ will be the requeue interval for the actions which are waiting for a long time w
             4. PREPSUSPENDED becomes SUSPENDED in coordinator job
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.StatusTransitService.backward.support.for.states.without.error</name>
         <value>true</value>
@@ -1942,7 +1943,7 @@ will be the requeue interval for the actions which are waiting for a long time w
             Used when the ouptut of the ssh action is captured.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.action.ssh.allow.user.at.host</name>
         <value>true</value>
@@ -2148,7 +2149,7 @@ will be the requeue interval for the actions which are waiting for a long time w
             ALL is the any kind of error in action executor.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.LiteWorkflowStoreService.user.retry.error.code.ext</name>
         <value> </value>
@@ -2157,7 +2158,7 @@ will be the requeue interval for the actions which are waiting for a long time w
             ALL is the any kind of error in action executor.
         </description>
     </property>
-    
+
     <property>
         <name>oozie.service.LiteWorkflowStoreService.node.def.version</name>
         <value>_oozie_inst_v_2</value>
