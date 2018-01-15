@@ -123,6 +123,12 @@ checkWardenPort() {
   fi
 }
 
+copyExtraLib(){
+  if [ ! -f $OOZIE_HOME/libext/mysql* ]; then
+      cp $MAPR_HOME/lib/mysql* $OOZIE_HOME/libext/
+  fi
+}
+
 
 #
 # main
@@ -184,6 +190,7 @@ if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
     rm -f "$OOZIE_HOME/conf/.not_configured_yet"
 fi
 
+copyExtraLib
 #build oozie war file
 buildOozieWar
 changeOoziePermission
