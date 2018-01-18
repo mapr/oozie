@@ -185,16 +185,19 @@ if [ ! -d ${OOZIE_TMP_DIR} ]; then
   mkdir -p ${OOZIE_TMP_DIR}
 fi
 
-# remove state file
-if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
-    rm -f "$OOZIE_HOME/conf/.not_configured_yet"
-fi
 
 copyExtraLib
 #build oozie war file
 buildOozieWar
 changeOoziePermission
-createRestartFile
+if [ ! -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
+    createRestartFile
+fi
 setupWardenConfFile
+
+# remove state file
+if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
+    rm -f "$OOZIE_HOME/conf/.not_configured_yet"
+fi
 
 true
