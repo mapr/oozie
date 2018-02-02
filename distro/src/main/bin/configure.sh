@@ -44,7 +44,7 @@ changeOoziePermission() {
     chgrp -R "$MAPR_GROUP" "$MAPR_HOME/oozie"
     chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
   fi
-  chmod 600 "$OOZIE_HOME/conf/oozie-env.sh"
+  chmod 600 "$OOZIE_HOME/conf/oozie-env.sh" "$OOZIE_HOME/conf/oozie-site.xml"
 }
 
 configDefaultSsl() {
