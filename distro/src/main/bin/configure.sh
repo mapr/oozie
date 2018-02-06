@@ -62,6 +62,15 @@ disableSsl(){
   echo "false" > "$OOZIE_HOME/conf/ooziessl"
 }
 
+configureClientImpersonation() {
+    if ! grep -q oozie.service.ProxyUserService.proxyuser.$MAPR_USER.hosts $OOZIE_HOME/conf/oozie-site.xml; then
+        sed -i -e "s|</configuration>|  <property>\n    <name>oozie.service.ProxyUserService.proxyuser.$MAPR_USER.hosts</name>\n    <value>*</value>\n  </property>\n</configuration>|" $OOZIE_HOME/conf/oozie-site.xml
+    fi
+    if ! grep -q oozie.service.ProxyUserService.proxyuser.$MAPR_USER.groups $OOZIE_HOME/conf/oozie-site.xml; then
+        sed -i -e "s|</configuration>|  <property>\n    <name>oozie.service.ProxyUserService.proxyuser.$MAPR_USER.groups</name>\n    <value>*</value>\n  </property>\n</configuration>|" $OOZIE_HOME/conf/oozie-site.xml
+    fi
+}
+
 #
 # Build Oozie war
 #
@@ -190,6 +199,7 @@ copyExtraLib
 #build oozie war file
 buildOozieWar
 changeOoziePermission
+configureClientImpersonation
 if [ ! -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
     createRestartFile
 fi
