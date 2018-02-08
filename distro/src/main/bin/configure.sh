@@ -137,6 +137,9 @@ copyExtraLib(){
   if [ ! -f $OOZIE_HOME/libext/mysql* ]; then
       cp $MAPR_HOME/lib/mysql* $OOZIE_HOME/libext/
   fi
+  if [ ! -f $OOZIE_HOME/share\*/lib/spark/maprbuildversion-*.jar ]; then
+      find $OOZIE_HOME/share* -maxdepth 0 -type d -exec cp $MAPR_HOME/lib/maprbuildversion-*.jar {}/lib/spark/ \;
+  fi
 }
 
 
