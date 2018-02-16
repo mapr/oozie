@@ -425,6 +425,11 @@ if [ "${addHadoop}" = "true" ]; then
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
       checkExec "copying jar ${jar} to staging"
     done
+    if [[ "${version}" =~ 0.20* ]]; then
+      cp ${OOZIE_HOME}/utils/oozie-hadoop-utils-hadoop-1-*.jar ${tmpWarDir}/WEB-INF/lib/
+    else
+      cp ${OOZIE_HOME}/utils/oozie-hadoop-utils-hadoop-2-*.jar ${tmpWarDir}/WEB-INF/lib/
+    fi
 fi
 
 if [ "${addExtjs}" = "true" ]; then

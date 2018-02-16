@@ -207,6 +207,12 @@
             <groupId>org.apache.oozie</groupId>
             <artifactId>oozie-sharelib-oozie</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.oozie</groupId>
+                    <artifactId>oozie-hadoop-utils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
