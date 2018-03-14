@@ -522,6 +522,15 @@
     </property>
 
     <property>
+        <name>oozie.service.CoordMaterializeTriggerService.skip.past.job</name>
+        <value>false</value>
+        <description>
+            When true, Oozie will skip all materializing for coordinator jobs which must be set status to "SKIPPED",
+            when execution is LAST_ONLY.
+        </description>
+    </property>
+
+    <property>
         <name>oozie.service.coord.normal.default.timeout
         </name>
         <value>120</value>
