@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>4.3.0-mapr</version>
+    <version>4.3.0-mapr-1803</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -94,8 +94,8 @@
          <hive.classifier>core</hive.classifier>
          <pig.version>0.16.0-mapr-1703</pig.version>
          <pig.classifier></pig.classifier>
-         <sqoop.version>1.4.6-mapr-1710</sqoop.version>
-         <spark.version>2.1.0-mapr-1710</spark.version>
+         <sqoop.version>1.4.6-mapr-1803</sqoop.version>
+         <spark.version>2.1.0-mapr-1803</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
@@ -106,7 +106,7 @@
          <kite.version>1.1.0</kite.version>
          <avro.version>1.7.5</avro.version>
          <teradata.version>1.5.2</teradata.version>
-         <tez.version>0.8.4-mapr-1710</tez.version>
+         <tez.version>0.8.4-mapr-1803</tez.version>
 
          <!-- Tomcat version -->
          <tomcat.version>6.0.47</tomcat.version>
@@ -2541,7 +2541,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>2.1.0-mapr-1710</spark.version>
+                <spark.version>2.1.0-mapr-1803</spark.version>
                 <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
                 <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>
