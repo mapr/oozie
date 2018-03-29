@@ -261,7 +261,7 @@ public class HadoopAccessorService implements Service {
             File f = new File(dir, file);
             if (f.exists()) {
                 InputStream is = new FileInputStream(f);
-                Configuration conf = new XConfiguration(is, false);
+                Configuration conf = new XConfiguration(is);
                 is.close();
                 XConfiguration.copy(conf, hadoopConf);
             }

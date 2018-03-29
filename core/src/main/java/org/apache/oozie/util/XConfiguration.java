@@ -50,8 +50,6 @@ public class XConfiguration extends Configuration {
 
     public static final String CONFIGURATION_SUBSTITUTE_DEPTH = "oozie.configuration.substitute.depth";
 
-    private boolean restrictSystemProperties = true;
-    private boolean restrictParser = true;
     /**
      * Create an empty configuration. <p> Default values are not loaded.
      */
@@ -64,36 +62,11 @@ public class XConfiguration extends Configuration {
      * Create a configuration from an InputStream. <p> Code canibalized from <code>Configuration.loadResource()</code>.
      *
      * @param is inputstream to read the configuration from.
-     * @param restrictParser whether to restrict the parser
-     * @throws IOException thrown if the configuration could not be read.
-     */
-    public XConfiguration(InputStream is, boolean restrictParser) throws IOException {
-        this();
-        this.restrictParser = restrictParser;
-        parse(is);
-    }
-
-    /**
-     * Create a configuration from an InputStream. <p> Code canibalized from <code>Configuration.loadResource()</code>.
-     *
-     * @param is inputstream to read the configuration from.
      * @throws IOException thrown if the configuration could not be read.
      */
     public XConfiguration(InputStream is) throws IOException {
-        this(is, true);
-    }
-
-    /**
-     * Create a configuration from an Reader. <p> Code canibalized from <code>Configuration.loadResource()</code>.
-     *
-     * @param reader reader to read the configuration from.
-     * @param restrictParser whether to restrict the parser
-     * @throws IOException thrown if the configuration could not be read.
-     */
-    public XConfiguration(Reader reader, boolean restrictParser) throws IOException {
         this();
-        this.restrictParser = restrictParser;
-        parse(reader);
+        parse(is);
     }
 
     /**
@@ -103,7 +76,8 @@ public class XConfiguration extends Configuration {
      * @throws IOException thrown if the configuration could not be read.
      */
     public XConfiguration(Reader reader) throws IOException {
-        this(reader, true);
+        this();
+        parse(reader);
     }
 
     /**
@@ -116,6 +90,7 @@ public class XConfiguration extends Configuration {
         for (Map.Entry entry : props.entrySet()) {
             set((String) entry.getKey(), (String) entry.getValue());
         }
+
     }
 
     /**
@@ -148,7 +123,7 @@ public class XConfiguration extends Configuration {
      */
     @Override
     public String get(String name) {
-        return substituteVars(getRaw(name));
+      return substituteVars(getRaw(name));
     }
 
     /**
@@ -198,9 +173,8 @@ public class XConfiguration extends Configuration {
             var = var.substring(2, var.length() - 1); // remove ${ .. }
 
             String val = getRaw(var);
-
-            if (val == null && !this.restrictSystemProperties) {
-                val =  System.getProperty(var);
+            if (val == null) {
+                val = System.getProperty(var);
             }
 
             if (val == null) {
@@ -279,7 +253,16 @@ public class XConfiguration extends Configuration {
     // Canibalized from Hadoop <code>Configuration.loadResource()</code>.
     private void parse(InputStream is) throws IOException {
         try {
-            Document doc = getDocumentBuilder().parse(is);
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            // support for includes in the xml file
+            docBuilderFactory.setNamespaceAware(true);
+            docBuilderFactory.setXIncludeAware(true);
+            // ignore all comments inside the xml file
+            docBuilderFactory.setIgnoringComments(true);
+            docBuilderFactory.setExpandEntityReferences(false);
+            docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            DocumentBuilder builder = docBuilderFactory.newDocumentBuilder();
+            Document doc = builder.parse(is);
             parseDocument(doc);
 
         }
@@ -294,7 +277,16 @@ public class XConfiguration extends Configuration {
     // Canibalized from Hadoop <code>Configuration.loadResource()</code>.
     private void parse(Reader reader) throws IOException {
         try {
-            Document doc = getDocumentBuilder().parse(new InputSource(reader));
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            // support for includes in the xml file
+            docBuilderFactory.setNamespaceAware(true);
+            docBuilderFactory.setXIncludeAware(true);
+            // ignore all comments inside the xml file
+            docBuilderFactory.setIgnoringComments(true);
+            docBuilderFactory.setExpandEntityReferences(false);
+            docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            DocumentBuilder builder = docBuilderFactory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(reader));
             parseDocument(doc);
         }
         catch (SAXException e) {
@@ -314,7 +306,7 @@ public class XConfiguration extends Configuration {
         processNodes(root);
     }
 
-    // Cannibalized from Hadoop <code>Configuration.loadResource()</code>.
+    // Canibalized from Hadoop <code>Configuration.loadResource()</code>.
     private void processNodes(Element root) throws IOException {
         try {
             NodeList props = root.getChildNodes();
@@ -400,48 +392,4 @@ public class XConfiguration extends Configuration {
         }
         return values;
     }
-
-    private DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-        docBuilderFactory.setXIncludeAware(true);
-        if(this.restrictParser) {
-            docBuilderFactory.setXIncludeAware(false);
-            //Redundant with disallow-doctype, but just in case
-            docBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            docBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            docBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        }
-        docBuilderFactory.setExpandEntityReferences(false);
-        // ignore all comments inside the xml file
-        docBuilderFactory.setIgnoringComments(true);
-        return docBuilderFactory.newDocumentBuilder();
-    }
-
-    /**
-     * Restrict the parser
-     * @param restrictParser
-     */
-    public void setRestrictParser(boolean restrictParser) {
-     this.restrictParser = restrictParser;
-    }
-
-    public boolean getRestrictParser() {
-        return restrictParser;
-    }
-    /**
-     * Restrict reading property from System.getProperty()
-     * @param restrictSystemProperties
-     */
-    public void setRestrictSystemProperties(boolean restrictSystemProperties) {
-        this.restrictSystemProperties = restrictSystemProperties;
-    }
-
-    public boolean getRestrictSystemProperties() {
-        return restrictSystemProperties;
-    }
-
-
-
 }
