@@ -102,7 +102,7 @@ oozie_config=${OOZIE_CONFIG}
 if [ -e "${OOZIE_CONFIG}/oozie-env.sh" ]; then
   print "Sourcing:                    ${OOZIE_CONFIG}/oozie-env.sh"
   source ${OOZIE_CONFIG}/oozie-env.sh
-  grep "^ *export " ${OOZIE_CONFIG}/oozie-env.sh | sed 's/ *export/  setting/'
+  #grep "^ *export " ${OOZIE_CONFIG}/oozie-env.sh | sed 's/ *export/  setting/'
 fi
 
 # verify that the sourced env file didn't change OOZIE_HOME
