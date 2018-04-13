@@ -168,6 +168,7 @@ public class OozieDBCLI {
     private Map<String, String> getJdbcConf() throws Exception {
         Services services = new Services();
         Configuration conf = services.getConf();
+        conf.addResource(new Configuration());
         Map<String, String> jdbcConf = new HashMap<String, String>();
         jdbcConf.put("driver", conf.get(JPAService.CONF_DRIVER));
         String url = conf.get(JPAService.CONF_URL);
