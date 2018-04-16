@@ -211,11 +211,9 @@ setup_oozie() {
     fi
 
     # default share dir
-    directory=/oozie/share
-    hadoop fs -test -d ${directory}
+    hadoop fs -test -d /oozie/share/lib
     if [ $? != 0 ]
     then
-      hadoop fs -mkdir -p $directory
       setup_oozie_sharelib
     fi
 
