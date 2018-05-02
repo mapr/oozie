@@ -658,6 +658,16 @@
                 <artifactId>hadoop-client</artifactId>
                 <version>${hadoop.version}</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-digester</groupId>
+                        <artifactId>commons-digester</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-beanutils</groupId>
+                        <artifactId>commons-beanutils-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -1571,6 +1581,10 @@
                         <groupId>org.apache.hadoop</groupId>
                         <artifactId>hadoop-common</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.orc</groupId>
+                        <artifactId>orc-core</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1627,6 +1641,18 @@
                         <groupId>org.apache.logging.log4j</groupId>
                         <artifactId>log4j-slf4j-impl</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.calcite</groupId>
+                        <artifactId>calcite-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.calcite</groupId>
+                        <artifactId>calcite-druid</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.calcite.avatica</groupId>
+                        <artifactId>avatica</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1675,6 +1701,10 @@
                         <groupId>tomcat</groupId>
                         <artifactId>jasper-runtime</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.mapr.hadoop</groupId>
+                        <artifactId>maprfs</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1699,6 +1729,10 @@
                         <groupId>co.cask.tephra</groupId>
                         <artifactId>tephra-hbase-compat-1.0</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.zaxxer</groupId>
+                        <artifactId>HikariCP</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1706,6 +1740,12 @@
                 <groupId>org.apache.hive</groupId>
                 <artifactId>hive-serde</artifactId>
                 <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>c3p0</groupId>
+                        <artifactId>c3p0</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -2003,6 +2043,10 @@
                     <exclusion>
                         <groupId>org.apache.hive</groupId>
                         <artifactId>hive-llap-tez</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-vector-code-gen</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
