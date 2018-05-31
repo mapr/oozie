@@ -205,14 +205,17 @@ copyExtraLib
 buildOozieWar
 changeOoziePermission
 configureClientImpersonation
-if [ ! -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
+if [ ! -f "$OOZIE_HOME/conf/.first_start" ]; then
     createRestartFile
 fi
 setupWardenConfFile
 
-# remove state file
+# remove state and start files
 if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
     rm -f "$OOZIE_HOME/conf/.not_configured_yet"
+fi
+if [ -f "$OOZIE_HOME/conf/.first_start" ]; then
+    rm -f "$OOZIE_HOME/conf/.first_start"
 fi
 
 true
