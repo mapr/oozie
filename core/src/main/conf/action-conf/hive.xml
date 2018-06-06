@@ -35,7 +35,7 @@
 
    <property>
       <name>tez.lib.uris</name>
-      <value>maprfs:///apps/tez/tez-0.8,maprfs:///apps/tez/tez-0.8/lib</value>
+      <value>maprfs:///apps/tez/tez-0.9,maprfs:///apps/tez/tez-0.9/lib</value>
    </property>
 
    <!-- To able to run on mapr cluster, tez.use.cluster.hadoop-libs has to be true -->
