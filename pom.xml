@@ -107,6 +107,7 @@
          <avro.version>1.8.1</avro.version>
          <teradata.version>1.5.4</teradata.version>
          <tez.version>0.9.1-mapr</tez.version>
+         <mapr.version>6.1.0-mapr-SNAPSHOT</mapr.version>
 
          <!-- Tomcat version -->
          <tomcat.version>6.0.53</tomcat.version>

@@ -192,7 +192,7 @@ fi
 
 while [ $# -gt 0 ]
 do
-  if [ "$1" = "sharelib" ] || [ "$1" = "db" ] || [ "$1" = "export" ] || [ "$1" = "import" ]; then
+  if [ "$1" = "sharelib" ] || [ "$1" = "db" ] || [ "$1" = "export" ] || [ "$1" = "import" ] || [ "$1" = "updateSSl" ] ; then
     OOZIE_OPTS="-Doozie.home.dir=${OOZIE_HOME}";
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.config.dir=${OOZIE_CONFIG}";
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.log.dir=${OOZIE_LOG}";
@@ -228,6 +228,11 @@ do
       ${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieDBExportCLI "${@}"
     elif [ "$1" = "import" ]; then
       ${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieDBImportCLI "${@}"
+    elif [ "$1" = "updateSSl" ]; then
+      keystoreFile=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieSSLVariablesCLI keystoreFile 2>/dev/null`
+      keystorePass=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieSSLVariablesCLI keystorePass 2>/dev/null`
+      sed -i -e "/export OOZIE_HTTPS_KEYSTORE_PASS=/s|=.*|=$keystorePass|" ${OOZIE_HOME}/conf/oozie-env.sh
+      sed -i -e "/export OOZIE_HTTPS_KEYSTORE_FILE=/s|=.*|=$keystoreFile|" ${OOZIE_HOME}/conf/oozie-env.sh
     fi
     exit $?
     elif [ "$1" = "-hadoop" ]; then

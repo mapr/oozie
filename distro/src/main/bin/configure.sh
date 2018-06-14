@@ -49,6 +49,9 @@ changeOoziePermission() {
 }
 
 configDefaultSsl() {
+  #update SSL configuration
+  cmd="$OOZIE_HOME/bin/oozie-setup.sh updateSSl"
+  $cmd > /dev/null
   #enable SSL if ssl was disabled and cluster is secure
   sed -i '/OOZIE_HTTPS_KEYSTORE_FILE/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
   sed -i '/OOZIE_HTTPS_KEYSTORE_PASS/s/^#*//g' $OOZIE_HOME/conf/oozie-env.sh
@@ -150,7 +153,7 @@ copyExtraLib(){
 # typically called from core configure.sh
 #
 
-USAGE="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help"
+USAGE="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help]"
 if [ ${#} -gt 1 ]; then
   for i in "$@" ; do
     case "$i" in
