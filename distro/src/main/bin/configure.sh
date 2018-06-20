@@ -22,15 +22,15 @@ if [ -n "$isSecure" ]; then
   fi
 fi
 
-changeOoziePermission() {
-  if [ -f "$DAEMON_CONF" ]; then
-    MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' "$DAEMON_CONF")
-    MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' "$DAEMON_CONF")
-  else
-    MAPR_USER=`logname`
-    MAPR_GROUP="$MAPR_USER"
-  fi
+if [ -f "$DAEMON_CONF" ]; then
+  MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' "$DAEMON_CONF")
+  MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' "$DAEMON_CONF")
+else
+  MAPR_USER=`logname`
+  MAPR_GROUP="$MAPR_USER"
+fi
 
+changeOoziePermission() {
   #
   # change permissions
   #
@@ -49,6 +49,9 @@ changeOoziePermission() {
 }
 
 configDefaultSsl() {
+  if [ $secureCluster = 1 ] && [ -f "${MAPR_HOME}/conf/mapruserticket" ]; then
+    export MAPR_TICKETFILE_LOCATION="${MAPR_HOME}/conf/mapruserticket"
+  fi
   #update SSL configuration
   cmd="$OOZIE_HOME/bin/oozie-setup.sh updateSSl"
   $cmd > /dev/null
@@ -99,10 +102,13 @@ createRestartFile(){
 
 cat > "${MAPR_CONF_DIR}/restart/oozie-${OOZIE_VERSION}.restart" <<'EOF'
   #!/bin/bash
-  isSecured=$(head -1 ${MAPR_HOME}/conf/mapr-clusters.conf | grep -o 'secure=\w*' | cut -d= -f2)
+  isSecured="false"
+  if [ -f "${MAPR_HOME}/conf/mapr-clusters.conf" ]; then
+    isSecured=$(head -1 ${MAPR_HOME}/conf/mapr-clusters.conf | grep -o 'secure=\w*' | cut -d= -f2)
+  fi
   if [ "${isSecured}" = "true" ] && [ -f "${MAPR_HOME}/conf/mapruserticket" ]; then
     export MAPR_TICKETFILE_LOCATION="${MAPR_HOME}/conf/mapruserticket"
-    fi
+  fi
   maprcli node services -action restart -name oozie -nodes $(hostname)
 EOF
 
