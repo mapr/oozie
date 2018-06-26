@@ -217,6 +217,11 @@ setup_oozie() {
       setup_oozie_sharelib
     fi
 
+    #update SSL configuration
+    if [ ! -f "${BASEDIR}/conf/.custom_ssl_config" ]; then
+      ${BASEDIR}/bin/oozie-setup.sh updateSSl
+    fi
+
   fi
   if [ "${CATALINA_PID}" = "" ]; then
     ln -sf ${OOZIE_HOME}/oozie-server/temp/oozie.pid ${PID_LINK}
