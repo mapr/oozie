@@ -185,11 +185,6 @@ function getHadoopJars() {
     hadoopJars=$hadoopJars:protobuf-java*.jar
   fi
 
-  # MapR change - Add guava*jar to oozie.war
-  if [[ -n $(find ${hadoopHome} -name "guava-[0-9]*[0-9].jar" -print) ]]; then
-    hadoopJars=$hadoopJars:guava-[0-9]*[0-9].jar
-  fi
-
   # MapR change - add JPam*.jar to the maprJars list.
   if [[ -n $(find ${maprLib} -name "JPam*.jar" -print) ]]; then
     maprJars=$maprJars:JPam*.jar

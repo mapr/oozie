@@ -229,8 +229,8 @@ do
     elif [ "$1" = "import" ]; then
       ${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieDBImportCLI "${@}"
     elif [ "$1" = "updateSSl" ]; then
-      keystoreFile=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieSSLVariablesCLI keystoreFile 2>>${BASEDIR}/logs/oozie-ssl.log`
-      keystorePass=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieSSLVariablesCLI keystorePass 2>>${BASEDIR}/logs/oozie-ssl.log`
+      keystoreFile=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH}:$MapRHomeDir/lib/'*' org.apache.oozie.tools.OozieSSLVariablesCLI keystoreFile 2>>${BASEDIR}/logs/oozie-ssl.log`
+      keystorePass=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH}:$MapRHomeDir/lib/'*' org.apache.oozie.tools.OozieSSLVariablesCLI keystorePass 2>>${BASEDIR}/logs/oozie-ssl.log`
       sed -i -e "/export OOZIE_HTTPS_KEYSTORE_PASS=/s|=.*|=$keystorePass|" ${OOZIE_HOME}/conf/oozie-env.sh
       sed -i -e "/export OOZIE_HTTPS_KEYSTORE_FILE=/s|=.*|=$keystoreFile|" ${OOZIE_HOME}/conf/oozie-env.sh
     fi

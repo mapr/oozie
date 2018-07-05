@@ -46,6 +46,10 @@ MAPR_CONF_DIR=/opt/mapr/conf
 ENV_FILE=env.sh
 HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
 
+#update SSL configuration
+if [ ! -f "${BASEDIR}/conf/.custom_ssl_config" ] && [ $actionCmd == "start" -o $actionCmd == "run" ]; then
+  ${BASEDIR}/bin/oozie-setup.sh updateSSl
+fi
 source ${BASEDIR}/bin/oozie-sys.sh
 # MapR change. Source env.sh if it exists
 if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
@@ -217,10 +221,6 @@ setup_oozie() {
       setup_oozie_sharelib
     fi
 
-    #update SSL configuration
-    if [ ! -f "${BASEDIR}/conf/.custom_ssl_config" ]; then
-      ${BASEDIR}/bin/oozie-setup.sh updateSSl
-    fi
 
   fi
   if [ "${CATALINA_PID}" = "" ]; then
