@@ -17,10 +17,10 @@ public class OozieSSLVariablesCLI {
         try (SslConfig sslConfig = WebSecurityManager.getSslConfig()) {
             switch (args [0]) {
                 case "keystoreFile":
-                    System.out.println(sslConfig.getServerKeystoreLocation());
+                    System.out.println(sslConfig.getClientKeystoreLocation());
                     break;
                 case "keystorePass":
-                    System.out.println(sslConfig.getServerKeystorePassword());
+                    System.out.println(sslConfig.getClientKeystorePassword());
                     break;
                 default:
                     System.err.println("Unknown option.");
