@@ -159,11 +159,15 @@ if [ ${#} -gt 1 ]; then
     case "$i" in
       --secure)
         secureCluster=1
+        if [ -f "$OOZIE_HOME/conf/.custom_ssl_config" ]; then
+          rm -f "$OOZIE_HOME/conf/.custom_ssl_config"
+        fi
         configDefaultSsl
         shift
         ;;
       --customSecure|-cs)
         secureCluster=1
+        touch "$OOZIE_HOME/conf/.custom_ssl_config"
         if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
           configDefaultSsl
         fi
@@ -216,9 +220,6 @@ setupWardenConfFile
 # remove state and start files
 if [ -f "$OOZIE_HOME/conf/.not_configured_yet" ]; then
     rm -f "$OOZIE_HOME/conf/.not_configured_yet"
-fi
-if [ -f "$OOZIE_HOME/conf/.first_start" ]; then
-    rm -f "$OOZIE_HOME/conf/.first_start"
 fi
 
 true

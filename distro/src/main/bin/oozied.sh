@@ -47,10 +47,15 @@ ENV_FILE=env.sh
 HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
 
 #update SSL configuration
-if [ ! -f "${BASEDIR}/conf/.custom_ssl_config" ] && [ $actionCmd == "start" -o $actionCmd == "run" ]; then
+if [ ! -f "${BASEDIR}/conf/.custom_ssl_config" -o -f "${BASEDIR}/conf/.first_start" ] && [ $actionCmd == "start" -o $actionCmd == "run" ]; then
   ${BASEDIR}/bin/oozie-setup.sh updateSSl
 fi
 source ${BASEDIR}/bin/oozie-sys.sh
+
+if [ -f "${BASEDIR}/conf/.first_start" ] && [ $actionCmd == "start" -o $actionCmd == "run" ]; then
+    rm -f "${BASEDIR}/conf/.first_start"
+fi
+
 # MapR change. Source env.sh if it exists
 if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
     source ${MAPR_CONF_DIR}/env.sh
