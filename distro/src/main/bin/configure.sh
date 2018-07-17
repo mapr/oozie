@@ -44,7 +44,8 @@ changeOoziePermission() {
     chgrp -R "$MAPR_GROUP" "$MAPR_HOME/oozie"
     chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
   fi
-  chmod 600 "$OOZIE_HOME/conf/oozie-env.sh" "$OOZIE_HOME/conf/oozie-site.xml"
+  find $OOZIE_HOME/conf \( -name "oozie-site.xml*" -o -name "oozie-env.sh*" \) \
+      -exec bash -c 'chmod 600 {}' \;
   chmod 700 -R "$OOZIE_HOME/conf/action-conf"
 }
 
