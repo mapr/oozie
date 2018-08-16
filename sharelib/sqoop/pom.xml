@@ -188,6 +188,18 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.mapr.security</groupId>
+            <artifactId>mapr-security-web</artifactId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Teradata dependencies-->
         <dependency>
             <groupId>org.apache.sqoop.connector</groupId>
