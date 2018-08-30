@@ -22,11 +22,11 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0-mapr</version>
+        <version>4.3.0-mapr-mep-3.x-1808</version>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-zookeeper-security-tests</artifactId>
-    <version>4.3.0-mapr</version>
+    <version>4.3.0-mapr-mep-3.x-1808</version>
     <description>Apache Oozie ZooKeeper Security Tests</description>
     <name>Apache Oozie ZooKeeper Security Tests</name>
     <packaging>jar</packaging>
