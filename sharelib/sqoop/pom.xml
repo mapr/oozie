@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0-mapr</version>
+        <version>4.3.0-mapr-1808</version>
         <relativePath>../..</relativePath>
     </parent>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-sharelib-sqoop</artifactId>
-    <version>4.3.0-mapr</version>
+    <version>4.3.0-mapr-1808</version>
     <description>Apache Oozie Share Lib Sqoop</description>
     <name>Apache Oozie Share Lib Sqoop</name>
     <packaging>jar</packaging>
@@ -204,7 +204,7 @@
         <dependency>
             <groupId>org.apache.sqoop.connector</groupId>
             <artifactId>sqoop-connector-tdch</artifactId>
-            <version>1.2-mapr</version>
+            <version>1.2-mapr-1808</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
