@@ -135,12 +135,21 @@ checkWardenPort() {
   fi
 }
 
+extractSharelib(){
+  if [ -f $OOZIE_HOME/oozie-sharelib-*.tar.gz  -a ! -d $OOZIE_HOME/share ]; then
+      tar xfz $OOZIE_HOME/oozie-sharelib-*.tar.gz -C $OOZIE_HOME/
+  fi
+}
+
 copyExtraLib(){
   if [ ! -f $OOZIE_HOME/libext/mysql* ]; then
       cp $MAPR_HOME/lib/mysql* $OOZIE_HOME/libext/
   fi
-  if [ ! -f $OOZIE_HOME/share\*/lib/spark/maprbuildversion-*.jar ]; then
-      find $OOZIE_HOME/share* -maxdepth 0 -type d -exec cp $MAPR_HOME/lib/maprbuildversion-*.jar {}/lib/spark/ \;
+  if [ ! -f $OOZIE_HOME/share/lib/spark/maprbuildversion-*.jar ]; then
+      find $OOZIE_HOME/share -maxdepth 0 -type d -exec cp $MAPR_HOME/lib/maprbuildversion-*.jar {}/lib/spark/ \;
+  fi
+  if [ ! -f $OOZIE_HOME/utils/oozie-hadoop-utils-hadoop*.jar ]; then
+    cp $OOZIE_HOME/share/lib/oozie/oozie-hadoop-utils-hadoop*.jar $OOZIE_HOME/utils
   fi
 }
 
@@ -200,7 +209,7 @@ if [ ! -d ${OOZIE_TMP_DIR} ]; then
   mkdir -p ${OOZIE_TMP_DIR}
 fi
 
-
+extractSharelib
 copyExtraLib
 #build oozie war file
 buildOozieWar
