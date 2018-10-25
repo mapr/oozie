@@ -34,7 +34,6 @@ changeOoziePermission() {
   #
   # change permissions
   #
-  chmod 755 -R $OOZIE_HOME"/oozie-server"
   chmod 777 -R "$OOZIE_TMP_DIR"
   if [ ! -z "$MAPR_USER" ]; then
     chown -R "$MAPR_USER" "$MAPR_HOME/oozie"
