@@ -43,8 +43,8 @@ changeOoziePermission() {
     chgrp -R "$MAPR_GROUP" "$MAPR_HOME/oozie"
     chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
   fi
-  chmod 600 "$OOZIE_HOME/conf/oozie-env.sh" "$OOZIE_HOME/conf/oozie-site.xml"
-  chmod 700 -R "$OOZIE_HOME/conf/action-conf"
+  find $OOZIE_HOME/conf \( -name "oozie-site.xml*" \) \
+      -exec bash -c 'chmod 600 {}' \;
 }
 
 configDefaultSsl() {
@@ -158,7 +158,7 @@ copyExtraLib(){
 # typically called from core configure.sh
 #
 
-USAGE="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help"
+USAGE="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help]"
 if [ ${#} -gt 1 ]; then
   for i in "$@" ; do
     case "$i" in
