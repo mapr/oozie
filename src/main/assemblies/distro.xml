@@ -54,6 +54,7 @@
                 <exclude>oozie-env.sh</exclude>
                 <exclude>action-conf</exclude>
             </excludes>
+            <fileMode>644</fileMode>
             <directoryMode>0755</directoryMode>
         </fileSet>
         <fileSet>
