@@ -83,6 +83,8 @@ public class CoordMaterializeTransitionXCommand extends MaterializeTransitionXCo
 
     static final private int lookAheadWindow = ConfigurationService.getInt(CoordMaterializeTriggerService
             .CONF_LOOKUP_INTERVAL);
+    static final private boolean skipLastJob = ConfigurationService.getBoolean(CoordMaterializeTriggerService
+            .SKIP_PAST_JOB);
 
     /**
      * Default MAX timeout in minutes, after which coordinator input check will timeout
@@ -436,6 +438,8 @@ public class CoordMaterializeTransitionXCommand extends MaterializeTransitionXCo
         }
 
         boolean firstMater = true;
+        Date lastTime = effStart.getTime();
+        CoordinatorActionBean lastActionBean = null;
 
         while (effStart.compareTo(end) < 0 && (ignoreMaxActions || maxActionToBeCreated-- > 0)) {
             if (pause != null && effStart.compareTo(pause) >= 0) {
@@ -457,26 +461,34 @@ public class CoordMaterializeTransitionXCommand extends MaterializeTransitionXCo
 
             if (effStart.compareTo(end) < 0) {
 
-                if (pause != null && effStart.compareTo(pause) >= 0) {
-                    break;
-                }
-                CoordinatorActionBean actionBean = new CoordinatorActionBean();
-                lastActionNumber++;
-
                 int timeout = coordJob.getTimeout();
-                LOG.debug("Materializing action for time=" + DateUtils.formatDateOozieTZ(effStart.getTime())
-                        + ", lastactionnumber=" + lastActionNumber + " timeout=" + timeout + " minutes");
-                Date actualTime = new Date();
-                action = CoordCommandUtils.materializeOneInstance(jobId, dryrun, (Element) eJob.clone(),
-                        nextTime, actualTime, lastActionNumber, jobConf, actionBean);
-                actionBean.setTimeOut(timeout);
-                if (!dryrun) {
-                    storeToDB(actionBean, action, jobConf); // Storing to table
+                if(skipLastJob && ignoreMaxActions){
+                    lastActionNumber++;
+                    LOG.info("Skip materializing action for time=" + DateUtils.formatDateOozieTZ(effStart.getTime())
+                            + ", lastactionnumber=" + lastActionNumber + " timeout=" + timeout + " minutes");
+                    lastTime = nextTime;
+                    lastActionBean = new CoordinatorActionBean();
+                    lastActionBean.setTimeOut(timeout);
+                } else {
+                    if (pause != null && effStart.compareTo(pause) >= 0) {
+                        break;
+                    }
+                    CoordinatorActionBean actionBean = new CoordinatorActionBean();
+                    lastActionNumber++;
 
-                }
-                else {
-                    actionStrings.append("action for new instance");
-                    actionStrings.append(action);
+                    LOG.debug("Materializing action for time=" + DateUtils.formatDateOozieTZ(effStart.getTime())
+                            + ", lastactionnumber=" + lastActionNumber + " timeout=" + timeout + " minutes");
+                    Date actualTime = new Date();
+                    action = CoordCommandUtils.materializeOneInstance(jobId, dryrun, (Element) eJob.clone(),
+                            nextTime, actualTime, lastActionNumber, jobConf, actionBean);
+                    actionBean.setTimeOut(timeout);
+                    if (!dryrun) {
+                        storeToDB(actionBean, action, jobConf); // Storing to table
+
+                    } else {
+                        actionStrings.append("action for new instance");
+                        actionStrings.append(action);
+                    }
                 }
             }
             else {
@@ -486,6 +498,18 @@ public class CoordMaterializeTransitionXCommand extends MaterializeTransitionXCo
             if (!isCronFrequency) {
                 effStart = (Calendar) origStart.clone();
                 effStart.add(freqTU.getCalendarUnit(), lastActionNumber * Integer.parseInt(coordJob.getFrequency()));
+            }
+        }
+
+        if (skipLastJob && ignoreMaxActions) {
+            Date actualTime = new Date();
+            action = CoordCommandUtils.materializeOneInstance(jobId, dryrun, (Element) eJob.clone(),
+                    lastTime, actualTime, lastActionNumber, jobConf, lastActionBean);
+            if (!dryrun) {
+                storeToDB(lastActionBean, action, jobConf); // Storing to table
+            } else {
+                actionStrings.append("action for new instance");
+                actionStrings.append(action);
             }
         }
 

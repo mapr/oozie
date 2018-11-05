@@ -32,6 +32,8 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+HADOOP_CLASSPATH=`hadoop classpath`
+
 
 source ${BASEDIR}/bin/oozie-sys.sh -silent
 
@@ -73,5 +75,7 @@ while [[ ${1} =~ ^\-D ]]; do
   JAVA_PROPERTIES="${JAVA_PROPERTIES} ${1}"
   shift
 done
-
-${JAVA_BIN} ${OOZIEDB_OPTS} ${JAVA_PROPERTIES} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieDBCLI "${@}"
+echo "===========================================================" >> ${BASEDIR}/logs/ooziedb.log
+date >> ${BASEDIR}/logs/ooziedb.log
+${JAVA_BIN} ${OOZIEDB_OPTS} ${JAVA_PROPERTIES} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieDBCLI "${@}" 2>> ${BASEDIR}/logs/ooziedb.log
+echo "Oozie DB log can be find in ${BASEDIR}/logs/ooziedb.log"

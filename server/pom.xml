@@ -23,11 +23,11 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>5.1.0</version>
+        <version>5.1.0-mapr</version>
     </parent>
 
     <artifactId>oozie-server</artifactId>
-    <version>5.1.0</version>
+    <version>5.1.0-mapr</version>
     <description>Apache Oozie Server</description>
     <name>Apache Oozie Server</name>
     <packaging>jar</packaging>
@@ -134,6 +134,11 @@
                     <artifactId>jsp-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.mapr.security</groupId>
+            <artifactId>mapr-security-web</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>

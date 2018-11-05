@@ -31,8 +31,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.security.Credentials;
@@ -84,6 +86,7 @@ public class LauncherAM {
     public static final String ACTION_DATA_NEW_ID = "newId";
     public static final String ACTION_DATA_ERROR_PROPS = "error.properties";
     public static final String CONF_OOZIE_ACTION_MAIN_CLASS = "oozie.launcher.action.main.class";
+    static final String JOB_ID_REGEX = "^job_\\d+_\\d+$";
 
     // TODO: OYA: more unique file names?  action.xml may be stuck for backwards compat though
     public static final String LAUNCHER_JOB_CONF_XML = "launcher.xml";
@@ -475,7 +478,10 @@ public class LauncherAM {
             } else {
                 final String id = hdfsOperations.readFileContents(path, launcherConf);
 
-                if (id == null || id.isEmpty()) {
+                if (id == null || id.isEmpty() || !Pattern.matches(JOB_ID_REGEX, id)) {
+                    System.out.printf("Malformed jobId %s. Attempt to recover with jobId '%s'\n", id, applicationIdStr);
+                    FileSystem fs = FileSystem.get(path.toUri(), launcherConf);
+                    fs.delete(path, true);
                     hdfsOperations.writeStringToFile(path, launcherConf, applicationIdStr);
                 } else if (!applicationIdStr.equals(id)) {
                     throw new LauncherException(MessageFormat.format(

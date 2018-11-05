@@ -21,6 +21,9 @@ package org.apache.oozie.server;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.mapr.web.security.SslConfig;
+import com.mapr.web.security.WebSecurityManager;
+import com.mapr.web.security.SslConfig.SslConfigScope;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.oozie.service.ConfigurationService;
 import org.eclipse.jetty.http.HttpVersion;
@@ -131,12 +134,20 @@ class SSLServerConnectorFactory {
 
     private void setKeystorePass() {
         String keystorePass = ConfigurationService.getPassword(conf, OOZIE_HTTPS_KEYSTORE_PASS);
+        if (keystorePass == null || keystorePass.equals("")) {
+            SslConfig sslConfig = WebSecurityManager.getSslConfig(SslConfigScope.SCOPE_CLIENT_ONLY);
+            keystorePass = new String(sslConfig.getClientKeystorePassword());
+        }
         Preconditions.checkNotNull(keystorePass, "keystorePass is null");
         sslContextFactory.setKeyManagerPassword(keystorePass);
     }
 
     private void setKeyStoreFile() {
         String keystoreFile = conf.get(OOZIE_HTTPS_KEYSTORE_FILE);
+        if (keystoreFile == null || keystoreFile.equals("")) {
+            SslConfig sslConfig = WebSecurityManager.getSslConfig(SslConfigScope.SCOPE_CLIENT_ONLY);
+            keystoreFile = sslConfig.getClientKeystoreLocation();
+        }
         Preconditions.checkNotNull(keystoreFile, "keystoreFile is null");
         sslContextFactory.setKeyStorePath(keystoreFile);
     }

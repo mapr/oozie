@@ -32,6 +32,7 @@ setup_jetty_log_and_pid() {
   else
     print "Using   JETTY_PID_FILE:        ${JETTY_PID_FILE}"
   fi
+  ln -sf ${JETTY_PID_FILE} ${PID_LINK}
 }
 
 setup_java_opts() {
@@ -68,6 +69,15 @@ setup_java_opts() {
 }
 
 setup_jetty_opts() {
+  confDir="hadoop-conf"
+  hadoopVersionFile=/opt/mapr/conf/hadoop_version
+  if [ -f ${hadoopVersionFile} ]
+  then
+    hadoopVersion=`cat ${hadoopVersionFile} | grep yarn_version | cut -d '=' -f 2`
+    confDir=/opt/mapr/hadoop/hadoop-${hadoopVersion}/etc/hadoop/
+  else
+    echo "Unknown hadoop version"
+  fi
   echo "Using   JETTY_OPTS:       ${JETTY_OPTS}"
   jetty_opts="-Doozie.home.dir=${OOZIE_HOME}";
   jetty_opts="${jetty_opts} -Doozie.config.dir=${OOZIE_CONFIG}";
@@ -78,10 +88,30 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Doozie.log4j.file=${OOZIE_LOG4J_FILE}";
   jetty_opts="${jetty_opts} -Doozie.log4j.reload=${OOZIE_LOG4J_RELOAD}";
   # add required native libraries such as compression codecs
-  jetty_opts="${jetty_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}";
+  jetty_opts="${jetty_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib";
+  #MapR opts
+  jetty_opts="${jetty_opts} -Dmapr.library.flatclass=true";
+  jetty_opts="${jetty_opts} ${MAPR_AUTH_CLIENT_OPTS}";
+  jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
+
+  # MapR Change: Set parameters in oozie-site.xml based on if MapR security is enabled or not
+  if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+    jetty_opts="${jetty_opts} -Dmapr_sec_type=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler"
+    jetty_opts="${jetty_opts} -Dmapr_sec_enabled=true"
+    jetty_opts="${jetty_opts} -Dmapr_signature_secret=com.mapr.security.maprauth.MaprSignatureSecretFactory"
+    jetty_opts="${jetty_opts} -Dhttps_enabled=true"
+  else
+    jetty_opts="${jetty_opts} -Dmapr_sec_type=simple"
+    jetty_opts="${jetty_opts} -Dmapr_sec_enabled=false"
+    jetty_opts="${jetty_opts} -Dhttps_enabled=false"
+    jetty_opts="${jetty_opts} -Dmapr_signature_secret=oozie"
+  fi
 
   jetty_opts="${jetty_opts} -cp ${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}"
   echo "Adding to JETTY_OPTS:     ${jetty_opts}"
+
+  #MAPR-23180: cleanup old tmp files
+  find /tmp/oozieTmp/ -maxdepth 1 -mtime +14 -exec rm -rf {} \; 2>/dev/null
 
   export JETTY_OPTS="${JETTY_OPTS} ${jetty_opts}"
 }
@@ -126,6 +156,11 @@ start_jetty() {
       fi
     fi
   fi
+
+  if [ -f "${BASEDIR}/conf/.first_start" ]; then
+    rm -f "${BASEDIR}/conf/.first_start"
+  fi
+
 
   ${JAVA_BIN} ${JETTY_OPTS} org.apache.oozie.server.EmbeddedOozieServer >> "${JETTY_OUT}" 2>&1 &
   PID=$!
@@ -172,6 +207,9 @@ stop_jetty() {
       while [ $RETRY_COUNT -ge 0 ]; do
         kill -0 "$(cat ${JETTY_PID_FILE})" >/dev/null 2>&1
         if [ $? -gt 0 ]; then
+          if [ -h "${PID_LINK}" ]; then
+            rm -f ${PID_LINK}
+          fi
           rm -f "${JETTY_PID_FILE}" >/dev/null 2>&1
           if [ $? != 0 ]; then
             if [ -w "${JETTY_PID_FILE}" ]; then
@@ -198,8 +236,20 @@ symlink_lib() {
   test -e ${BASEDIR}/lib || ln -s ${JETTY_DIR}/webapp/WEB-INF/lib ${BASEDIR}/lib
 }
 
+prepare_sharelib() {
+  # default share dir
+  hadoop fs -test -d /oozie/share/lib
+  if [ $? != 0 -o -f "${BASEDIR}/conf/.first_start" ] && [ -d ${BASEDIR}/share ]; then
+    ${BASEDIR}/bin/oozie-setup.sh sharelib create -fs maprfs:/// -locallib ${BASEDIR}/share
+  fi
+}
+
 jetty_main() {
   source ${BASEDIR}/bin/oozie-sys.sh
+  # MapR change. Source env.sh if it exists
+  if [[ -f ${BASEMAPR}/conf/env.sh ]]; then
+    source ${BASEMAPR}/conf/env.sh
+  fi
   JETTY_DIR=${BASEDIR}/embedded-oozie-server
 
   setup_jetty_log_and_pid
@@ -211,17 +261,37 @@ jetty_main() {
     (run)
        ${BASEDIR}/bin/oozie-setup.sh
        symlink_lib
+       prepare_sharelib
        setup_ooziedb
        run_jetty
       ;;
     (start)
        ${BASEDIR}/bin/oozie-setup.sh
        symlink_lib
+       prepare_sharelib
        setup_ooziedb
        start_jetty
       ;;
     (stop)
       stop_jetty
+      ;;
+    (status)
+      if [ ! -z "$JETTY_PID_FILE" ]; then
+        if [ -f "$JETTY_PID_FILE" ]; then
+          if [ -s "$JETTY_PID_FILE" ]; then
+            if [ -r "$JETTY_PID_FILE" ]; then
+              PID=`cat "$JETTY_PID_FILE"`
+              ps -p $PID >/dev/null 2>&1
+              if [ $? -eq 0 ] ; then
+                echo "JETTY is running with PID $PID."
+                exit 0
+              fi
+            fi
+          fi
+        fi
+      fi
+      echo "Most likely JETTY is not running"
+      exit 1
       ;;
   esac
 }
