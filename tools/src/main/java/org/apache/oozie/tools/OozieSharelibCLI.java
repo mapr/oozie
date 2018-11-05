@@ -178,8 +178,12 @@ public class OozieSharelibCLI {
                 String[] param = command.getCommandLine().getOptionValues(EXTRALIBS);
                 extraLibs = getExtraLibs(param);
             }
+            File tmpDir = new File(System.getProperty("java.io.tmpdir") + "/oozieTmp");
+            if (!tmpDir.exists()) {
+                tmpDir.mkdir();
+            }
 
-            File temp = File.createTempFile("oozie", ".dir");
+            File temp = File.createTempFile("oozie", ".dir", tmpDir);
             temp.delete();
             temp.mkdir();
             temp.deleteOnExit();

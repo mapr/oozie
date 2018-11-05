@@ -80,7 +80,7 @@
         </oozie.test.default.config.file>
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
-        <hadoop.version>2.6.0</hadoop.version>
+        <hadoop.version>2.7.0-mapr-1808</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
         <hbase.version>1.2.3</hbase.version>
@@ -91,21 +91,24 @@
 
 
          <!-- Sharelib component versions -->
-         <hive.version>1.2.2</hive.version>
+         <hive.version>2.3.3-mapr</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
-         <pig.version>0.16.0</pig.version>
+         <pig.version>0.16.0-mapr-1703</pig.version>
          <pig.classifier>h2</pig.classifier>
          <hive.classifier>core</hive.classifier>
-         <sqoop.version>1.4.7</sqoop.version>
-         <spark.version>1.6.1</spark.version>
+         <sqoop.version>1.4.7-mapr</sqoop.version>
+         <spark.version>2.3.1-mapr-SNAPSHOT</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
-         <spark.scala.binary.version>2.10</spark.scala.binary.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
-         <tez.version>0.8.4</tez.version>
          <joda.time.version>2.9.9</joda.time.version>
          <avro.version>1.8.2</avro.version>
+         <spark.scala.binary.version>2.11</spark.scala.binary.version>
+         <kite.version>1.1.0</kite.version>
+         <teradata.version>1.5.4</teradata.version>
+         <tez.version>0.9.1-mapr</tez.version>
+         <mapr.version>6.1.0-mapr-SNAPSHOT</mapr.version>
 
          <jetty.version>9.3.27.v20190418</jetty.version>
          <apache.jsp.version>8.0.33</apache.jsp.version>
@@ -344,6 +347,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-math3</artifactId>
+                <version>3.1.1</version>
+            </dependency>
+
+            <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.10</version>
@@ -392,11 +401,103 @@
                 <version>${jackson.version}</version>
             </dependency>
 
+            <!-- kite -->
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-mapreduce</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-maprfs</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kitesdk</groupId>
+                <artifactId>kite-data-hive</artifactId>
+                <version>${kite.version}</version>
+            </dependency>
+
+            <!-- teradata -->
+            <dependency>
+                <groupId>com.teradata</groupId>
+                <artifactId>tdgssconfig</artifactId>
+                <version>${teradata.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.teradata</groupId>
+                <artifactId>connector</artifactId>
+                <version>${teradata.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.teradata</groupId>
+                <artifactId>jdbc</artifactId>
+                <version>${teradata.version}</version>
+            </dependency>
+
+            <!-- avro -->
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-mapred</artifactId>
+                <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- core -->
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-client</artifactId>
                 <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-digester</groupId>
+                        <artifactId>commons-digester</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-beanutils</groupId>
+                        <artifactId>commons-beanutils-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -410,6 +511,12 @@
                 <artifactId>hadoop-minicluster</artifactId>
                 <version>${hadoop.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.java.dev.eval</groupId>
+                        <artifactId>eval</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -569,6 +676,26 @@
                         <groupId>joda-time</groupId>
                         <artifactId>joda-time</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-exec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-auth</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-1.2-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -613,6 +740,35 @@
                     <exclusion>
                         <groupId>javax.jms</groupId>
                         <artifactId>jms</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-1.2-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-auth</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-common</artifactId>
+                <version>${hbase.version}</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -879,6 +1035,71 @@
             </dependency>
 
             <dependency>
+                <groupId>com.mapr.security</groupId>
+                <artifactId>mapr-security-web</artifactId>
+                <version>${mapr.version}</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.mapr.hadoop</groupId>
+                        <artifactId>maprfs</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework.security</groupId>
+                        <artifactId>spring-security-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework.security</groupId>
+                        <artifactId>spring-security-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework.security.kerberos</groupId>
+                        <artifactId>spring-security-kerberos-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.jsonwebtoken</groupId>
+                        <artifactId>jjwt</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-util</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.kohsuke</groupId>
+                        <artifactId>libpam4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>javax.servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-streaming</artifactId>
                 <version>${hadoop.version}</version>
@@ -1034,6 +1255,14 @@
                         <groupId>hadoop</groupId>
                         <artifactId>core</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-auth</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-llap-server</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1142,6 +1371,10 @@
                         <artifactId>zookeeper</artifactId>
                         <groupId>org.apache.zookeeper</groupId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-auth</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1157,6 +1390,10 @@
                     <exclusion>
                         <artifactId>ant</artifactId>
                         <groupId>org.apache.ant</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>ant</artifactId>
+                        <groupId>ant</groupId>
                     </exclusion>
                     <exclusion>
                         <artifactId>avro-ipc</artifactId>
@@ -1241,6 +1478,202 @@
                     <exclusion>
                         <artifactId>zookeeper</artifactId>
                         <groupId>org.apache.zookeeper</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-auth</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-1.2-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-common</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.orc</groupId>
+                        <artifactId>orc-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-exec</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-llap-tez</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-vector-code-gen</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-server-applicationhistoryservice</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-server-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-server-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-server-web-proxy</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-auth</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-1.2-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.pentaho</groupId>
+                        <artifactId>pentaho-aggdesigner-algorithm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-service-rpc</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>tomcat</groupId>
+                        <artifactId>jasper-compiler</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>tomcat</groupId>
+                        <artifactId>jasper-runtime</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>jsp-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-service</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-exec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>hive-llap-server</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.jetty.aggregate</groupId>
+                        <artifactId>jetty-all</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>tomcat</groupId>
+                        <artifactId>jasper-compiler</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.mapr.hadoop</groupId>
+                        <artifactId>maprfs</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-metastore</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hbase</groupId>
+                        <artifactId>hbase-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>co.cask.tephra</groupId>
+                        <artifactId>tephra-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>co.cask.tephra</groupId>
+                        <artifactId>tephra-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>co.cask.tephra</groupId>
+                        <artifactId>tephra-hbase-compat-1.0</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.zaxxer</groupId>
+                        <artifactId>HikariCP</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-serde</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>c3p0</groupId>
+                        <artifactId>c3p0</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive.maprminicluster</groupId>
+                        <artifactId>mapr-mini-cluster</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1442,7 +1875,6 @@
                 <groupId>org.apache.sqoop</groupId>
                 <artifactId>sqoop</artifactId>
                 <version>${sqoop.version}</version>
-                <classifier>${sqoop.classifier}</classifier>
             </dependency>
 
             <dependency>
@@ -1487,12 +1919,24 @@
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
                 <version>${curator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-x-discovery</artifactId>
                 <version>${curator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -1517,13 +1961,6 @@
                 <groupId>com.esotericsoftware.kryo</groupId>
                 <artifactId>kryo</artifactId>
                 <version>${kyro.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hive</groupId>
-                <artifactId>hive-exec</artifactId>
-                <version>${hive.version}</version>
-                <classifier>${hive.classifier}</classifier>
             </dependency>
 
             <!-- examples -->
@@ -1905,7 +2342,7 @@
             </plugin>
 
             <!-- spotbugs plugin. Execute 'mvn verify' and look for target/spotbugs/spotbugsXml.html under each module -->
-            <plugin>
+     <!--       <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <configuration>
@@ -1941,9 +2378,9 @@
                     </goals>
                  </execution>
              </executions>
-            </plugin>
+            </plugin> -->
             <!-- xml plugin is used for transforming the spotbugs xml output into a friendlier html page -->
-            <plugin>
+         <!--   <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>xml-maven-plugin</artifactId>
                 <configuration>
@@ -1980,10 +2417,10 @@
                         <version>${spotbugs.version}</version>
                     </dependency>
                 </dependencies>
-            </plugin>
+            </plugin> -->
 
             <!-- checkstyle plugin. Execute 'mvn verify' and look for target/checkstyle-result.xml under each module -->
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.17</version>
@@ -2000,7 +2437,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -2145,7 +2582,7 @@
         <profile>
             <id>spark-1</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <spark.version>1.6.1</spark.version>
@@ -2156,10 +2593,10 @@
         <profile>
             <id>spark-2</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>2.1.0</spark.version>
+                <spark.version>2.3.1-mapr-SNAPSHOT</spark.version>
                 <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
                 <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>

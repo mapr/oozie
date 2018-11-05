@@ -124,9 +124,13 @@ public class OozieDBCLI {
                     throw new Exception("'-sqlfile <FILE>' or '-run' options must be specified");
                 }
                 CommandLine commandLine = command.getCommandLine();
+                File tmpDir = new File(System.getProperty("java.io.tmpdir") + "/oozieTmp");
+                if (!tmpDir.exists()) {
+                    tmpDir.mkdir();
+                }
                 String sqlFile =  commandLine.getOptionValue(SQL_FILE_OPT);
                 if (sqlFile == null || sqlFile.isEmpty()) {
-                    File tempFile = File.createTempFile("ooziedb-", ".sql");
+                    File tempFile = File.createTempFile("ooziedb-", ".sql", tmpDir);
                     tempFile.deleteOnExit();
                     sqlFile = tempFile.getAbsolutePath();
                 }
@@ -172,6 +176,7 @@ public class OozieDBCLI {
     protected Map<String, String> getJdbcConf() throws Exception {
         Services services = new Services();
         Configuration conf = services.getConf();
+        conf.addResource(new Configuration());
         Map<String, String> jdbcConf = new HashMap<String, String>();
         jdbcConf.put("driver", conf.get(JPAService.CONF_DRIVER));
         String url = conf.get(JPAService.CONF_URL);

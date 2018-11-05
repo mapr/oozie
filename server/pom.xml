@@ -136,6 +136,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.mapr.security</groupId>
+            <artifactId>mapr-security-web</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>

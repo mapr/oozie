@@ -27,6 +27,7 @@ import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.client.api.YarnClient;
+import org.apache.hadoop.yarn.conf.HAUtil;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.oozie.ErrorCode;
 import org.apache.oozie.action.ActionExecutor;
@@ -42,6 +43,8 @@ public class HadoopTokenHelper {
     /** The Kerberos principal for the resource manager.*/
     protected static final String RM_PRINCIPAL = "yarn.resourcemanager.principal";
     protected static final String HADOOP_YARN_RM = "yarn.resourcemanager.address";
+    protected static final String DEFAULT_YARN_RM_ADDRESS = "0.0.0.0:8032";
+    protected static final int DEFAULT_YARN_RM_PORT = 8032;
     private XLog LOG = XLog.getLog(getClass());
 
     private String getServicePrincipal(final Configuration configuration) {
@@ -68,8 +71,15 @@ public class HadoopTokenHelper {
                 String.format("configuration entry %s has to be filled", HADOOP_YARN_RM));
 
         String serverPrincipal;
-        final String target = configuration.get(HADOOP_YARN_RM);
-
+        final String target;
+        if (HAUtil.isCustomRMHAEnabled(configuration)) {
+            target = HAUtil.getCurrentRMAddress(configuration,
+                    HADOOP_YARN_RM,
+                    DEFAULT_YARN_RM_ADDRESS,
+                    DEFAULT_YARN_RM_PORT);
+        } else {
+            target = configuration.get(HADOOP_YARN_RM);
+        }
         try {
             final String addr = NetUtils.createSocketAddr(target).getHostName();
             serverPrincipal = SecurityUtil.getServerPrincipal(servicePrincipal, addr);

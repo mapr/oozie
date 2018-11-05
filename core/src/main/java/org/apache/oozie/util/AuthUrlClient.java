@@ -42,6 +42,7 @@ public class AuthUrlClient {
 
     public static final String SERVER_SERVER_AUTH_TYPE = "oozie.server.authentication.type";
     public static final String SERVER_SERVER_CONNECTION_TIMEOUT_SECONDS = "oozie.server.connection.timeout.seconds";
+    public static final String MAPR_SERVER_SERVER_AUTH_CLASS_NAME = "com.mapr.security.maprauth.MaprAuthenticator";
 
     private static XLog LOG = XLog.getLog(AuthUrlClient.class);
 
@@ -94,6 +95,9 @@ public class AuthUrlClient {
                 break;
             case "kerberos":
                 authClassName = KerberosAuthenticator.class.getName();
+                break;
+            case "org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler":
+                authClassName = MAPR_SERVER_SERVER_AUTH_CLASS_NAME;
                 break;
             default:
                 authClassName = authName;

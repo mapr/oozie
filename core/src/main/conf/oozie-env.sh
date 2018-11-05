@@ -27,7 +27,7 @@
 #
 # export OOZIE_CONFIG_FILE=oozie-site.xml
 
-# Oozie logs directory
+# Oozie logs directoryo
 #
 # export OOZIE_LOG=${OOZIE_HOME}/logs
 

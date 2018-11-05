@@ -32,6 +32,16 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+MAPR_HOME_DIR="/opt/mapr"
+MAPR_CONF_DIR=${MAPR_HOME_DIR}/conf
+MAPR_LIB_DIR=${MAPR_HOME_DIR}/lib
+
+ENV_FILE=env.sh
+
+# MapR change. Source env.sh if it exists
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+  source ${MAPR_CONF_DIR}/env.sh
+fi
 
 if [ -r "${BASEDIR}/conf/oozie-client-env.sh" ]; then
   source "${BASEDIR}/conf/oozie-client-env.sh"
@@ -57,6 +67,9 @@ done
 for i in "${BASEDIR}/libext/"*.jar; do
   OOZIECPPATH="${OOZIECPPATH}:$i"
 done
+for i in "${MAPR_LIB_DIR}/"*.jar; do
+  OOZIECPPATH="${OOZIECPPATH}:$i"
+done
 
 
 if test -z ${JAVA_HOME}
@@ -66,8 +79,16 @@ else
     JAVA_BIN=${JAVA_HOME}/bin/java
 fi
 
+JAVA_PROPERTIES="${JAVA_PROPERTIES} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib"
+
 # Prime OOZIE_CLIENT_OPTS with JAVA_PROPERTIES for backwards compatibility
 OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
+
+if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+  OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
+fi
+#MAPR 21848 - Disable retry HTTP POST command
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dsun.net.http.retryPost=false"
 
 while [[ ${1} =~ ^\-D ]]; do
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${1}"

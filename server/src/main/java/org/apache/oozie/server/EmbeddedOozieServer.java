@@ -22,6 +22,9 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
+import com.mapr.web.security.SslConfig;
+import com.mapr.web.security.WebSecurityManager;
+import com.mapr.web.security.SslConfig.SslConfigScope;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.oozie.server.guice.OozieGuiceModule;
 import org.apache.oozie.service.ConfigurationService;
@@ -153,7 +156,11 @@ public class EmbeddedOozieServer {
      */
     private void setTrustStore() {
         if (System.getProperty(TRUSTSTORE_PATH_SYSTEM_PROPERTY) == null) {
-            final String trustStorePath = conf.get(OOZIE_HTTPS_TRUSTSTORE_FILE);
+            String trustStorePath = conf.get(OOZIE_HTTPS_TRUSTSTORE_FILE);
+            if (trustStorePath == null || trustStorePath.equals("")) {
+                SslConfig sslConfig = WebSecurityManager.getSslConfig(SslConfigScope.SCOPE_CLIENT_ONLY);
+                trustStorePath = sslConfig.getClientTruststoreLocation();
+            }
             if (trustStorePath != null) {
                 LOG.info("Setting javax.net.ssl.trustStore from config file");
                 System.setProperty(TRUSTSTORE_PATH_SYSTEM_PROPERTY, trustStorePath);

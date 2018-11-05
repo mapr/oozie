@@ -50,9 +50,11 @@ function printUsage() {
 
 #Creating temporary directory
 function prepare() {
-  tmpDir=/tmp/oozie-war-packing-$$
-  rm -rf ${tmpDir}
-  mkdir ${tmpDir}
+  tmpDir=/tmp/oozieTmp/oozie-war-packing-$$
+  if [ "$MAPR_VERSION_MAJOR" -lt 6 ]; then
+    rm -rf /tmp/oozieTmp/oozie-war-packing-* > /dev/null 2>&1
+  fi
+  mkdir -p ${tmpDir}
   tmpWarDir=${tmpDir}/oozie-war
   mkdir ${tmpWarDir}
   checkExec "creating staging directory ${tmpDir}"
@@ -123,6 +125,22 @@ additionalDir=""
 extjsHome=""
 jarsPath=""
 prepareWar=""
+MAPR_HOME=/opt/mapr
+HADOOP_VERSION_FILE="${MAPR_HOME}/conf/hadoop_version"
+MAPR_VERSION_MAJOR=$(cut -d '.' -f 1 ${MAPR_HOME}/MapRBuildVersion)
+DAEMON_CONF="$MAPR_HOME/conf/daemon.conf"
+OOZIE_TMP_DIR=/tmp/oozieTmp
+
+HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
+HADOOP_CONF_DIR="hadoop-conf"
+if [ -f ${HADOOP_VERSION_FILE} ]
+then
+  HADOOP_VERSION=`cat ${HADOOP_VERSION_FILE} | grep yarn_version | cut -d '=' -f 2`
+  HADOOP_CONF_DIR=${HADOOP_BASE_DIR}${HADOOP_VERSION}/etc/hadoop/
+else
+  echo "Unknown hadoop version"
+fi
+
 
 while [ $# -gt 0 ]
 do
@@ -132,6 +150,8 @@ do
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.log.dir=${OOZIE_LOG}";
     OOZIE_OPTS="${OOZIE_OPTS} -Doozie.data.dir=${OOZIE_DATA}";
     OOZIE_OPTS="${OOZIE_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
+    OOZIE_OPTS="${OOZIE_OPTS} -Dhadoop_conf_directory=${HADOOP_CONF_DIR}"
+    OOZIE_OPTS="${OOZIE_OPTS} -Djava.security.auth.login.config=${MAPR_HOME}/conf/mapr.login.conf"
 
     #Create lib directory from war if lib doesn't exist
     if [ ! -d "${BASEDIR}/lib" ]; then
@@ -172,6 +192,28 @@ done
 
 echo
 
+changeOoziePermission() {
+  if [ -f "$DAEMON_CONF" ]; then
+    MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' "$DAEMON_CONF")
+    MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' "$DAEMON_CONF")
+  else
+    MAPR_USER=`logname`
+    MAPR_GROUP="$MAPR_USER"
+  fi
+
+  #
+  # change permissions
+  #
+  if [ ! -z "$MAPR_USER" ]; then
+    chown -R "$MAPR_USER" "$MAPR_HOME/oozie"
+    chown -R "$MAPR_USER" "$OOZIE_TMP_DIR"
+  fi
+  if [ ! -z "$MAPR_GROUP" ]; then
+    chgrp -R "$MAPR_GROUP" "$MAPR_HOME/oozie"
+    chgrp -R "$MAPR_GROUP" "$OOZIE_TMP_DIR"
+  fi
+}
+
 
 log_ready_to_start() {
   echo
@@ -179,6 +221,28 @@ log_ready_to_start() {
   echo "INFO: Oozie is ready to be started"
 
   echo
+}
+
+function findFile() {
+   # Mapr change
+   RET=`find -H ${1} -name ${2} | grep -e "[.0-9].jar"`
+   if [ "${RET}" = "" ]; then
+     RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
+     if [ "${RET}" = "" ]; then
+       RET=`find -H ${1} -name ${2} | grep -e "beta.jar"`
+         if [ "${RET}" = "" ]; then
+           RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+       fi
+     fi
+   fi
+   RET=`echo ${RET} | sed "s/ .*//"`
+   if [ "${RET}" = "" ]; then
+     echo
+     echo "File '${2}' not found in '${1}'"
+     echo
+     cleanUp
+     exit -1;
+   fi
 }
 
 check_extjs() {
@@ -211,6 +275,63 @@ check_adding_extensions() {
   fi
 }
 
+check_mapr_jars() {
+  #clean up old hadoop jars
+  rm -rf ${JETTY_LIB_DIR}/hadoop-*-mapr-*.jar
+  rm -rf ${JETTY_LIB_DIR}/zookeeper-*.jar
+  rm -rf ${JETTY_LIB_DIR}/JPam*.jar
+  suffix="-[0-9.]*"
+  hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar"
+  for jar in ${hadoopJars//:/$'\n'}
+  do
+    findFile ${HADOOP_BASE_DIR}${HADOOP_VERSION} ${jar}
+    jarsPath="${jarsPath}:${RET}"
+  done
+
+  # MapR change - add JPam*.jar to the maprJars list.
+  if [[ -n $(find ${MAPR_HOME}/lib -name "JPam*.jar" -print) ]]; then
+    maprLibJars="${maprLibJars}:JPam*.jar"
+  fi
+  # MapR change - add zookeeper*.jar to the hadoopJars list.
+  if [[ -n $(find ${MAPR_HOME}/lib -name "zookeeper-*.jar" -print) ]]; then
+    maprLibJars="${maprLibJars}:zookeeper-*.jar"
+  fi
+  # MapR change - add zookeeper*.jar to the hadoopJars list.
+  if [[ -n $(find ${MAPR_HOME}/lib \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print) ]]; then
+    maprLibJars="${maprLibJars}:$(basename "$(find ${MAPR_HOME}/lib \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print)")"
+  fi
+  for jar in ${maprLibJars//:/$'\n'}
+  do
+    findFile ${MAPR_HOME}/lib ${jar}
+    jarsPath="${jarsPath}:${RET}"
+  done
+}
+
+check_property() {
+  OOZIECPPATH=""
+  OOZIECPPATH=${BASEDIR}/lib/'*':${BASEDIR}/libtools/'*':${BASEDIR}/libext/'*'
+  CONF_FILE=${BASEDIR}/conf/oozie-site.xml
+  WARDEN_CONF=${MAPR_HOME}/conf/conf.d/warden.oozie.conf
+  isSecure=`${JAVA_BIN} ${OOZIE_OPTS} -cp ${OOZIECPPATH} org.apache.oozie.tools.OozieConfCLI oozie.https.enabled $CONF_FILE 2>>/dev/null`
+  if [ "$isSecure" = "null" -o "$isSecure" = "" ]; then
+    isSecure="$MAPR_SECURITY_STATUS"
+  fi
+  if [ "$isSecure" = "true" ]; then
+    sed -i 's/\(service.port=\)\(.*\)/\111443/' $WARDEN_CONF
+    sed -i 's/\(service.ui.port=\)\(.*\)/\111443/' $WARDEN_CONF
+    sed -i '/OOZIE_CLIENT_OPTS/s/^#*//g' ${BASEDIR}/conf/oozie-client-env.sh
+  else
+    sed -i 's/\(service.port=\)\(.*\)/\111000/' $WARDEN_CONF
+    sed -i 's/\(service.ui.port=\)\(.*\)/\111000/' $WARDEN_CONF
+  fi
+}
+
+yarn_site_symlink() {
+  if [ -f ${HADOOP_CONF_DIR}/yarn-site.xml ]; then
+    test -e ${JETTY_WEBAPP_DIR}/WEB-INF/classes/yarn-site.xml || ln -s ${HADOOP_CONF_DIR}/yarn-site.xml ${JETTY_WEBAPP_DIR}/WEB-INF/classes/yarn-site.xml
+  fi
+}
+
 cleanup_and_exit() {
   echo
   cleanUp
@@ -220,6 +341,8 @@ cleanup_and_exit() {
 prepare_jetty() {
   check_adding_extensions
   check_extjs
+  check_mapr_jars
+  yarn_site_symlink
 
   if [ "${addExtjs}" = "true" -a ! -e ${JETTY_WEBAPP_DIR}/ext-2.2 ]; then
      unzip ${extjsHome} -d ${JETTY_WEBAPP_DIR}
@@ -227,7 +350,6 @@ prepare_jetty() {
   elif [ "${addExtjs}" = "true" -a -e ${JETTY_WEBAPP_DIR}/ext-2.2 ]; then
      # TODO
     echo "${JETTY_WEBAPP_DIR}/ext-2.2 already exists"
-    cleanup_and_exit
   fi
 
   if [ "${addJars}" = "true" ]; then
@@ -238,7 +360,6 @@ prepare_jetty() {
       if [ ! $found = 0 ]; then
         echo
         echo "${JETTY_LIB_DIR} already contains JAR ${jarPath}"
-        cleanup_and_exit
       fi
       cp ${jarPath} ${JETTY_LIB_DIR}
       checkExec "copying jar ${jarPath} to '${JETTY_LIB_DIR}'"
@@ -246,7 +367,16 @@ prepare_jetty() {
   fi
 }
 
+# MapR change. Source env.sh if it exists
+if [[ -f ${MAPR_HOME}/conf/env.sh ]]; then
+  source ${MAPR_HOME}/conf/env.sh
+fi
+
+check_property
 prepare_jetty
+
+#fix oozie permission if oozie-setup.sh executing from root
+changeOoziePermission
 
 log_ready_to_start
 exit 0
