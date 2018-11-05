@@ -152,7 +152,9 @@ public class JPAService implements Service, Instrumentable {
      */
     public void init(final Services services) throws ServiceException {
         LOG = XLog.getLog(JPAService.class);
-        final Configuration conf = services.getConf();
+        Configuration tmpConf = services.getConf();
+        tmpConf.addResource(new Configuration());
+        final Configuration conf = tmpConf;
         final String dbSchema = ConfigurationService.get(conf, CONF_DB_SCHEMA);
         String url = ConfigurationService.get(conf, CONF_URL);
         final String driver = ConfigurationService.get(conf, CONF_DRIVER);

@@ -19,9 +19,9 @@
 
 #Creating temporary directory
 function prepare() {
-  tmpDir=/tmp/oozie-war-packing-$$
+  tmpDir=/tmp/oozieTmp/oozie-war-packing-$$
   rm -rf ${tmpDir}
-  mkdir ${tmpDir}
+  mkdir -p ${tmpDir}
   tmpWarDir=${tmpDir}/oozie-war
   mkdir ${tmpWarDir}
   checkExec "creating staging directory ${tmpDir}"
@@ -71,7 +71,17 @@ function checkFileDoesNotExist() {
 
 #finds a file under a directory any depth, file returns in variable RET
 function findFile() {
-   RET=`find -H ${1} -name ${2} | grep -e "[0-9.a${hadoopJarsSuffix}].jar"`
+   # Mapr change
+   RET=`find -H ${1} -name ${2} | grep -e "[.0-9].jar"`
+   if [ "${RET}" = "" ]; then
+     RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
+     if [ "${RET}" = "" ]; then
+       RET=`find -H ${1} -name ${2} | grep -e "beta.jar"`
+         if [ "${RET}" = "" ]; then
+           RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+       fi
+     fi
+   fi
    RET=`echo ${RET} | sed "s/ .*//"`
    if [ "${RET}" = "" ]; then
      echo
@@ -80,6 +90,22 @@ function findFile() {
      cleanUp
      exit -1;
    fi  
+}
+
+#finds a file under a directory any depth, file returns in variable RET, ignores if the file is not found
+function findFileIgnoreError() {
+  # MapR change
+  RET=`find -H ${1} -name ${2} | grep -e "[.0-9].jar"`
+  if [ "${RET}" = "" ]; then
+    RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
+    if [ "${RET}" = "" ]; then
+      RET=`find -H ${1} -name ${2} | grep -e "beta.jar"`
+        if [ "${RET}" = "" ]; then
+          RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
+      fi
+    fi
+   fi
+  RET=`echo ${RET} | sed "s/ .*//"`
 }
   
 function checkOption() {
@@ -98,13 +124,50 @@ function getHadoopJars() {
   if [[ "${version}" =~ (2|3).* ]]; then
     suffix="-[0-9.]*"
     #List is separated by ":"
-    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:guava*.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar:commons-io-*.jar"
+    hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:guava*.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar:commons-io-*.jar:httpclient${suffix}.jar:httpcore${suffix}.jar"
   else
     echo
     echo "Exiting: Unsupported Hadoop version '${hadoopVer}', supported versions: 2.x"
     echo
     cleanUp
     exit -1;
+  fi
+
+  # MapR change - Check for the maprfs fat jar and inject it into the war
+  if [[ -n $(find ${hadoopHome} -name "maprfs-[0-9]*[0-9]-SNAPSHOT.jar" -print) ]]; then
+    hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9]-SNAPSHOT.jar
+  elif [[ -n $(find ${hadoopHome} \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print) ]]; then
+    maprfsJar=$(basename "$(find ${hadoopHome} \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print)")
+    hadoopJars=$hadoopJars:${maprfsJar}
+  else
+     hadoopJars=$hadoopJars:maprfs-[0-9]*[0-9].jar
+  fi
+  # MapR change - Add protobuf*jar to oozie.war
+  if [[ -n $(find ${hadoopHome} -name "protobuf-java*.jar" -print) ]]; then
+    hadoopJars=$hadoopJars:protobuf-java*.jar
+  fi
+  # MapR change - Add guava*jar to oozie.war
+  if [[ -n $(find ${hadoopHome} -name "guava-[0-9]*[0-9].jar" -print) ]]; then
+    hadoopJars=$hadoopJars:guava-[0-9]*[0-9].jar
+  fi
+
+  # MapR change - add JPam*.jar to the maprJars list.
+  if [[ -n $(find ${maprLib} -name "JPam*.jar" -print) ]]; then
+    maprJars=$maprJars:JPam*.jar
+  fi
+
+  # MapR change - add json-smart*.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "json-smart*.jar" -print) ]]; then
+    maprJars=$maprJars:json-smart*.jar
+  fi
+  # MapR change - add zookeeper*.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "zookeeper-*.jar" -print) ]]; then
+    maprJars=$maprJars:zookeeper-*.jar
+  fi
+
+  # MapR change - add hadoop-*-auth.jar to the hadoopJars list.
+  if [[ -n $(find ${maprLib} -name "hadoop*auth.jar" -print) ]]; then
+    maprJars=$maprJars:hadoop*auth.jar
   fi
 }
 
@@ -140,6 +203,8 @@ inputWar=""
 outputWar=""
 secureWeb=false
 secureWebPath=""
+maprLib=/opt/mapr/lib
+maprJars=""
 
 while [ $# -gt 0 ]
 do
@@ -269,23 +334,37 @@ components=""
 
 if [ "${addHadoop}" = "true" ]; then
   components="Hadoop JARs";
-  found=`ls ${tmpWarDir}/WEB-INF/lib/hadoop*core*jar 2> /dev/null | wc -l`
-  checkExec "looking for Hadoop JARs in input WAR"
-  if [ ! $found = 0 ]; then
-    echo
-    echo "Specified Oozie WAR '${inputWar}' already contains Hadoop JAR files"
-    echo
-    cleanUp
-    exit -1
-  fi  
   ## adding hadoop
-    echo "Injecting following Hadoop JARs"
-    echo
+    #echo "Injecting following Hadoop JARs"
+    #echo
     for jar in ${hadoopJars//:/$'\n'}
     do
       findFile ${hadoopHome} ${jar}
       jar=${RET}
-      echo ${jar}
+      #echo ${jar}
+      cp ${jar} ${tmpWarDir}/WEB-INF/lib/
+      checkExec "copying jar ${jar} to staging"
+    done
+    suffix="-[0-9.]*"
+    unifiedJars="hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:hadoop-hdfs${suffix}.jar:httpcore${suffix}.jar:httpclient${suffix}.jar"
+    ## adding hadoop
+    for jar in ${unifiedJars//:/$'\n'}
+    do
+      findFileIgnoreError ${hadoopHome} ${jar}
+      jar=${RET}
+      if [ ! "${jar}" = "" ]; then
+        #echo ${jar}
+        cp ${jar} ${tmpWarDir}/WEB-INF/lib/
+      fi
+      checkExec "copying jar ${jar} to staging"
+    done
+
+    ## adding MapR JARS
+    for jar in ${maprJars//:/$'\n'}
+    do
+      findFile ${maprLib} ${jar}
+      jar=${RET}
+      #echo ${jar}
       cp ${jar} ${tmpWarDir}/WEB-INF/lib/
       checkExec "copying jar ${jar} to staging"
     done
@@ -296,13 +375,6 @@ if [ "${addExtjs}" = "true" ]; then
     components="${components}, "
   fi
   components="${components}ExtJS library"
-  if [ -e ${tmpWarDir}/ext-2.2 ]; then
-    echo
-    echo "Specified Oozie WAR '${inputWar}' already contains ExtJS library files"
-    echo
-    cleanUp
-    exit -1
-  fi
   #If the extjs path given is a ZIP, expand it and use it from there
   if [ -f ${extjsHome} ]; then
     unzip ${extjsHome} -d ${tmpDir} > /dev/null
@@ -321,15 +393,6 @@ if [ "${addJars}" = "true" ]; then
 
   for jarPath in ${jarsPath//:/$'\n'}
   do
-    found=`ls ${tmpWarDir}/WEB-INF/lib/${jarPath} 2> /dev/null | wc -l`
-    checkExec "looking for JAR ${jarPath} in input WAR"
-    if [ ! $found = 0 ]; then
-      echo
-      echo "Specified Oozie WAR '${inputWar}' already contains JAR ${jarPath}"
-      echo
-      cleanUp
-      exit -1
-    fi
     cp ${jarPath} ${tmpWarDir}/WEB-INF/lib/
     checkExec "copying jar ${jarPath} to staging"
   done
@@ -339,6 +402,13 @@ if [ "${secureWeb}" = "true" ]; then
   #Inject the SSL version of web.xml in oozie war
   cp ${secureWebPath} ${tmpWarDir}/WEB-INF/web.xml
   checkExec "Injecting secure web.xml file into staging"
+fi
+
+hive_site_file="${OOZIE_HOME}/conf/action-conf/hive-site.xml"
+if [ -f ${hive_site_file} ]; then
+  #copy hive-site in oozie war
+  cp "${hive_site_file}" ${tmpWarDir}/WEB-INF/classes
+  checkExec "copying hive-site.xml to staging"
 fi
 
 #Creating new Oozie WAR

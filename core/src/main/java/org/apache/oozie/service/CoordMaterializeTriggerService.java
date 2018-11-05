@@ -60,6 +60,8 @@ public class CoordMaterializeTriggerService implements Service {
      */
     public static final String CONF_MATERIALIZATION_SYSTEM_LIMIT = CONF_PREFIX + "materialization.system.limit";
 
+    public static final String SKIP_PAST_JOB = CONF_PREFIX + "skip.past.job";
+
     private static final String INSTRUMENTATION_GROUP = "coord_job_mat";
     private static final String INSTR_MAT_JOBS_COUNTER = "jobs";
 

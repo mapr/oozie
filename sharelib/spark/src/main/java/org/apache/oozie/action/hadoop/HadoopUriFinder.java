@@ -55,7 +55,7 @@ class HadoopUriFinder {
      */
     static URI getFixedUri(final FileSystem fs, final URI fileUri) throws URISyntaxException {
         if (fs.getUri().getScheme().equals(fileUri.getScheme())
-                && (fs.getUri().getHost().equals(fileUri.getHost()) || fileUri.getHost() == null)
+                && (fileUri.getHost() == null || fs.getUri().getHost().equals(fileUri.getHost()))
                 && (fs.getUri().getPort() == -1 || fileUri.getPort() == -1
                         || fs.getUri().getPort() == fileUri.getPort())) {
             return new URI(fs.getUri().getScheme(), fileUri.getUserInfo(), fs.getUri().getHost(), fs.getUri().getPort(),

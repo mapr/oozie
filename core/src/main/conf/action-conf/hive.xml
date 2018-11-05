@@ -55,4 +55,15 @@
       <name>mapreduce.job.committer.task.cleanup.needed</name>
       <value>false</value>
    </property>
+   <!-- Tez properties -->
+   <property>
+      <name>tez.lib.uris</name>
+      <value>maprfs:///apps/tez/tez-0.9,maprfs:///apps/tez/tez-0.9/lib</value>
+   </property>
+
+   <!-- To able to run on mapr cluster, tez.use.cluster.hadoop-libs has to be true -->
+   <property>
+      <name>tez.use.cluster.hadoop-libs</name>
+      <value>true</value>
+   </property>
 </configuration>

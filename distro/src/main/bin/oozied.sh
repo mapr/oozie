@@ -32,6 +32,8 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+BASEMAPR=/opt/mapr
+PID_LINK=${BASEMAPR}/pid/oozie.pid
 
 if [ $# -le 0 ]; then
   echo "Usage: oozied.sh (start|stop|run)"

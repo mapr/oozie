@@ -29,8 +29,41 @@
             <directory>${basedir}/../core/src/main/conf/</directory>
             <outputDirectory>/conf</outputDirectory>
             <includes>
+                <include>oozie-site.xml</include>
+                <include>oozie-env.sh</include>
+            </includes>
+            <fileMode>600</fileMode>
+            <directoryMode>755</directoryMode>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../core/src/main/conf/action-conf/</directory>
+            <outputDirectory>/conf/action-conf</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+            <fileMode>600</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../core/src/main/conf/</directory>
+            <outputDirectory>/conf</outputDirectory>
+            <includes>
                 <include>**</include>
             </includes>
+            <excludes>
+                <exclude>oozie-site.xml</exclude>
+                <exclude>oozie-env.sh</exclude>
+                <exclude>action-conf</exclude>
+            </excludes>
+            <fileMode>644</fileMode>
+            <directoryMode>755</directoryMode>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../client/src/main/conf/</directory>
+            <outputDirectory>/conf</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <fileMode>664</fileMode>
         </fileSet>
         <!-- Distro files, readme, licenses, etc -->
         <fileSet>
@@ -42,6 +75,7 @@
                 <include>README.txt</include>
                 <include>release-log.txt</include>
             </includes>
+            <fileMode>644</fileMode>
         </fileSet>
         <fileSet>
             <directory>${basedir}/src/main/bin</directory>
@@ -58,6 +92,9 @@
             <includes>
                 <include>*</include>
             </includes>
+            <excludes>
+                <exclude>*hadoop*.jar</exclude>
+            </excludes>
             <fileMode>0755</fileMode>
         </fileSet>
         <!-- Tools -->
@@ -75,6 +112,10 @@
             <includes>
                 <include>*</include>
             </includes>
+            <excludes>
+                <exclude>*hadoop*.jar</exclude>
+            </excludes>
+            <fileMode>644</fileMode>
         </fileSet>
         <!-- Oozie Server - embedded jetty -->
         <fileSet>
@@ -91,6 +132,7 @@
                     <include>**/taglibs-*jar</include>
                     <include>**/org.eclipse.jdt.core-*jar</include>
                 </includes>
+                <fileMode>644</fileMode>
         </fileSet>
         <fileSet>
             <directory>${basedir}/../webapp/target/oozie-webapp-${project.version}</directory>
@@ -98,6 +140,8 @@
             <excludes>
                 <exclude>**/web.xml</exclude>
             </excludes>
+            <fileMode>755</fileMode>
+            <directoryMode>755</directoryMode>
         </fileSet>
     </fileSets>
     <files>
@@ -105,39 +149,46 @@
         <file>
             <source>${basedir}/../core/src/main/resources/oozie-default.xml</source>
             <outputDirectory>/conf</outputDirectory>
+            <fileMode>644</fileMode>
         </file>
         <!-- Oozie core jar -->
         <file>
             <source>${basedir}/../core/target/oozie-core-${project.version}.jar</source>
             <outputDirectory>/oozie-core</outputDirectory>
+            <fileMode>644</fileMode>
         </file>
         <!-- Oozie core test jar -->
         <file>
             <source>${basedir}/../core/target/oozie-core-${project.version}-tests.jar</source>
             <outputDirectory>/oozie-core</outputDirectory>
+            <fileMode>644</fileMode>
         </file>
         <!-- Oozie Documentation -->
         <file>
             <source>${basedir}/../docs/target/oozie-docs-${project.version}-docs.zip</source>
             <outputDirectory>/</outputDirectory>
             <destName>docs.zip</destName>
+            <fileMode>644</fileMode>
         </file>
         <!-- Oozie Client TAR.GZ  -->
         <file>
             <source>${basedir}/../client/target/oozie-client-${project.version}-client.tar.gz</source>
             <outputDirectory>/</outputDirectory>
             <destName>oozie-client-${project.version}.tar.gz</destName>
+            <fileMode>644</fileMode>
         </file>
         <!-- Oozie examples TAR.GZ  -->
         <file>
             <source>${basedir}/../examples/target/oozie-examples-${project.version}-examples.tar.gz</source>
             <outputDirectory>/</outputDirectory>
             <destName>oozie-examples.tar.gz</destName>
+            <fileMode>644</fileMode>
         </file>
         <!-- Oozie sharelib TAR.GZ  -->
         <file>
             <source>${basedir}/../sharelib/target/oozie-sharelib-${project.version}.tar.gz</source>
             <outputDirectory>/</outputDirectory>
+            <fileMode>644</fileMode>
         </file>
     </files>
 </assembly>

@@ -71,7 +71,7 @@
 
     <property>
         <name>oozie.jmx_monitoring.enable</name>
-        <value>false</value>
+        <value>true</value>
         <description>
             If the oozie functional metrics needs to be exposed via JMX interface, set it to true.
         </description>
@@ -622,6 +622,15 @@
         <value>50</value>
         <description>
             This value determines the number of coordinator jobs to be materialized at a given time.
+        </description>
+    </property>
+
+    <property>
+        <name>oozie.service.CoordMaterializeTriggerService.skip.past.job</name>
+        <value>false</value>
+        <description>
+            When true, Oozie will skip all materializing for coordinator jobs which must be set status to "SKIPPED",
+            when execution is LAST_ONLY.
         </description>
     </property>
 
@@ -1528,7 +1537,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.service.JPAService.create.db.schema</name>
-        <value>false</value>
+        <value>true</value>
         <description>
             Creates Oozie DB.
 
@@ -2132,7 +2141,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.service.HadoopAccessorService.kerberos.enabled</name>
-        <value>false</value>
+        <value>${mapr_sec_enabled}</value>
         <description>
             Indicates if Oozie is configured to use Kerberos.
         </description>
@@ -2180,7 +2189,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.service.HadoopAccessorService.hadoop.configurations</name>
-        <value>*=hadoop-conf</value>
+        <value>*=${hadoop_conf_directory}</value>
         <description>
             Comma separated AUTHORITY=HADOOP_CONF_DIR, where AUTHORITY is the HOST:PORT of
             the Hadoop service (JobTracker, YARN, HDFS). The wildcard '*' configuration is
@@ -2247,7 +2256,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.service.WorkflowAppService.system.libpath</name>
-        <value>/user/${user.name}/share/lib</value>
+        <value>/oozie/share/lib</value>
         <description>
             System library path to use for workflow applications.
             This path is added to workflow application if their job properties sets
@@ -2334,7 +2343,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.authentication.type</name>
-        <value>simple</value>
+        <value>${mapr_sec_type}</value>
         <description>
             Defines authentication used for Oozie HTTP endpoint.
             Supported values are: simple | kerberos | #AUTHENTICATION_HANDLER_CLASSNAME#
@@ -2459,7 +2468,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.service.HadoopAccessorService.supported.filesystems</name>
-        <value>hdfs,hftp,webhdfs</value>
+        <value>hdfs,hftp,webhdfs,maprfs</value>
         <description>
             Enlist the different filesystems supported for federation. If wildcard "*" is specified,
             then ALL file schemes will be allowed.
@@ -2719,7 +2728,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.https.enabled</name>
-        <value>false</value>
+        <value>${https_enabled}</value>
         <description>
             Controls whether SSL encryption is enabled.
         </description>

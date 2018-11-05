@@ -102,7 +102,7 @@ oozie_config=${OOZIE_CONFIG}
 if [ -e "${OOZIE_CONFIG}/oozie-env.sh" ]; then
   print "Sourcing:                    ${OOZIE_CONFIG}/oozie-env.sh"
   source ${OOZIE_CONFIG}/oozie-env.sh
-  grep "^ *export " ${OOZIE_CONFIG}/oozie-env.sh | sed 's/ *export/  setting/'
+  #grep "^ *export " ${OOZIE_CONFIG}/oozie-env.sh | sed 's/ *export/  setting/'
 fi
 
 # verify that the sourced env file didn't change OOZIE_HOME
@@ -174,6 +174,12 @@ if [ "${OOZIE_INSTANCE_ID}" = "" ]; then
 else
   print "Using   OOZIE_INSTANCE_ID:   ${OOZIE_INSTANCE_ID}"
 fi
+
+export PATH=${PATH}:/opt/mapr/bin
+print "MapR: Adding /opt/mapr/bin to PATH"
+
+# Needed for file client impersonation
+export MAPR_IMPERSONATION_ENABLED="true"
 
 print
 
