@@ -281,7 +281,7 @@ check_mapr_jars() {
   rm -rf ${JETTY_LIB_DIR}/zookeeper-*.jar
   rm -rf ${JETTY_LIB_DIR}/JPam*.jar
   suffix="-[0-9.]*"
-  hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar"
+  hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:commons-configuration-*.jar"
   for jar in ${hadoopJars//:/$'\n'}
   do
     findFile ${HADOOP_BASE_DIR}${HADOOP_VERSION} ${jar}
