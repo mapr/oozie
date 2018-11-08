@@ -2604,7 +2604,7 @@
         <profile>
             <id>tez</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <dependencyManagement>
                 <dependencies>
