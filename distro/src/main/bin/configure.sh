@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MAPR_HOME=${MAPR_HOME:-/opt/mapr}
-OOZIE_VERSION="5.0.0"
+OOZIE_VERSION="5.1.0"
 OOZIE_HOME="$MAPR_HOME"/oozie/oozie-"$OOZIE_VERSION"
 OOZIE_BIN="$OOZIE_HOME"/bin
 MAPR_CONF_DIR="${MAPR_HOME}/conf/"
