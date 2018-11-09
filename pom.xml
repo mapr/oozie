@@ -2170,6 +2170,12 @@
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.9.4</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.htrace</groupId>
+                <artifactId>htrace-core</artifactId>
+                <version>3.1.0-incubating</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
