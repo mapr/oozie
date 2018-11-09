@@ -2113,6 +2113,12 @@
                 <artifactId>jetty-plus</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.htrace</groupId>
+                <artifactId>htrace-core</artifactId>
+                <version>3.1.0-incubating</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
