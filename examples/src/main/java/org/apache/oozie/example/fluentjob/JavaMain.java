@@ -39,7 +39,7 @@ public class JavaMain implements WorkflowFactory {
                 .withConfigProperty("mapred.job.queue.name", "${queueName}")
                 .withMainClass("org.apache.oozie.example.DemoJavaMain")
                 .withArchive(
-                        "${nameNode}/user/${wf:user()}/${examplesRoot}/apps/java-main/lib/oozie-examples-${projectVersion}.jar")
+                        "${nameNode}/user/${wf:user()}/${examplesRoot}/apps/java-main/lib/oozie-examples-${projectVersion}-mapr.jar")
                 .withArg("Hello")
                 .withArg("Oozie!")
                 .withErrorHandler(ErrorHandler.buildAsErrorHandler(EmailActionBuilder.create()
