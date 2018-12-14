@@ -93,6 +93,8 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Dmapr.library.flatclass=true";
   jetty_opts="${jetty_opts} ${MAPR_AUTH_CLIENT_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
+  jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
+  
   #JMX opts
   jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote"
   jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.password.file=$MAPR_HOME/conf/jmxremote.password"
