@@ -2698,7 +2698,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.http.hostname</name>
-        <value>0.0.0.0</value>
+        <value>${oozie_hostname}</value>
         <description>
             Oozie server host name. The network interface Oozie server binds to as an IP address or a hostname.
             Most users won't need to change this setting from the default value.
