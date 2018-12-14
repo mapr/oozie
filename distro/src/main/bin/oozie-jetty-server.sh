@@ -93,6 +93,7 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Dmapr.library.flatclass=true";
   jetty_opts="${jetty_opts} ${MAPR_AUTH_CLIENT_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
+  jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
 
   # MapR Change: Set parameters in oozie-site.xml based on if MapR security is enabled or not
   if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
