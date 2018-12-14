@@ -94,6 +94,13 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} ${MAPR_AUTH_CLIENT_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
   jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
+  
+  #JMX opts
+  jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote"
+  jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.password.file=$MAPR_HOME/conf/jmxremote.password"
+  jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.access.file=$MAPR_HOME/conf/jmxremote.access"
+  jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.ssl=false"
+  jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.port=9010"
 
   # MapR Change: Set parameters in oozie-site.xml based on if MapR security is enabled or not
   if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
@@ -101,11 +108,13 @@ setup_jetty_opts() {
     jetty_opts="${jetty_opts} -Dmapr_sec_enabled=true"
     jetty_opts="${jetty_opts} -Dmapr_signature_secret=com.mapr.security.maprauth.MaprSignatureSecretFactory"
     jetty_opts="${jetty_opts} -Dhttps_enabled=true"
+    jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.authenticate=true"
   else
     jetty_opts="${jetty_opts} -Dmapr_sec_type=simple"
     jetty_opts="${jetty_opts} -Dmapr_sec_enabled=false"
     jetty_opts="${jetty_opts} -Dhttps_enabled=false"
     jetty_opts="${jetty_opts} -Dmapr_signature_secret=oozie"
+    jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.authenticate=false"
   fi
 
   jetty_opts="${jetty_opts} -cp ${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}"

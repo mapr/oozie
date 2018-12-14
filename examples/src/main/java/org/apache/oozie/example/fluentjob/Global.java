@@ -36,7 +36,7 @@ public class Global implements WorkflowFactory {
                 .withName("java-main-1")
                 .withMainClass("org.apache.oozie.example.DemoJavaMain")
                 .withArchive(
-                        "${nameNode}/user/${wf:user()}/${examplesRoot}/apps/java-main/lib/oozie-examples-${projectVersion}.jar")
+                        "${nameNode}/user/${wf:user()}/${examplesRoot}/apps/java-main/lib/oozie-examples-${projectVersion}-mapr.jar")
                 .withArg("Hello")
                 .withArg("Oozie!")
                 .build();

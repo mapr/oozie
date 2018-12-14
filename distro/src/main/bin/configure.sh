@@ -104,6 +104,12 @@ copyExtraLib(){
   fi
 }
 
+configureOozieJMX() {
+  if ! grep -q org.apache.oozie.service.MetricsInstrumentationService $OOZIE_HOME/conf/oozie-site.xml; then
+    sed -i -e 's/<\/configuration>/    <property>\n        <name>oozie.services.ext<\/name>\n        <value>\n          org.apache.oozie.service.MetricsInstrumentationService\n        <\/value>\n    <\/property>\n\n<\/configuration>/' \
+    $OOZIE_HOME/conf/oozie-site.xml
+  fi
+}
 
 #
 # main
@@ -159,6 +165,7 @@ extractSharelib
 copyExtraLib
 #build oozie war file
 changeOoziePermission
+configureOozieJMX
 configureClientImpersonation
 if [ ! -f "$OOZIE_HOME/conf/.first_start" ]; then
     createRestartFile
