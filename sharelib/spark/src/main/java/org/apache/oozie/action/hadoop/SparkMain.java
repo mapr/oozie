@@ -412,7 +412,7 @@ public class SparkMain extends LauncherMain {
         if (hadoopJobId == null) {
             throw new RuntimeException("Launcher Hadoop Job ID system,property not set");
         }
-        String logFile = new File("spark-oozie-" + hadoopJobId + ".log").getAbsolutePath();
+        String logFile = new File("spark-oozie-" + hadoopJobId + ".log").toString();
         Properties hadoopProps = new Properties();
 
         // Preparing log4j configuration
