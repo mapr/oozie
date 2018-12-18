@@ -190,7 +190,7 @@ public class SparkMain extends LauncherMain {
         if (hadoopJobId == null) {
             throw new RuntimeException("Launcher Hadoop Job ID system,property not set");
         }
-        final String logFile = new File("spark-oozie-" + hadoopJobId + ".log").getAbsolutePath();
+        final String logFile = new File("spark-oozie-" + hadoopJobId + ".log").toString();
 
         final String logLevel = actionConf.get("oozie.spark.log.level", "INFO");
         final String rootLogLevel = actionConf.get("oozie.action." + LauncherAMUtils.ROOT_LOGGER_LEVEL, "INFO");
