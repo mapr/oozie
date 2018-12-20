@@ -541,6 +541,14 @@ public class SparkMain extends LauncherMain {
      * @throws IOException
      */
     private void setHiveSite(Configuration hiveConf) throws IOException {
+        File hiveFile = new File(HIVE_SITE_CONF);
+        if (hiveFile.exists()) {
+            System.out.println("Hive-site.xml will be overwritten in container.");
+            Configuration conf = new Configuration();
+            conf.addResource(HIVE_SITE_CONF);
+            hiveConf.addResource(conf);
+            hiveFile.delete();
+        }
         // See https://issues.apache.org/jira/browse/HIVE-1411
         hiveConf.set("datanucleus.plugin.pluginRegistryBundleCheck", "LOG");
 
