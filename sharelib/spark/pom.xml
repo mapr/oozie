@@ -153,6 +153,10 @@
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.spark-project.spark</groupId>
+                    <artifactId>unused</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -289,9 +293,33 @@
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-kafka-0-10_${spark.scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-0-10_${spark.scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
             <artifactId>spark-bagel_${spark.scala.binary.version}</artifactId>
             <version>${spark.bagel.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mapr.streams</groupId>
+                    <artifactId>mapr-streams</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.oozie</groupId>
@@ -480,6 +508,16 @@
             <artifactId>hive-exec</artifactId>
             <version>${spark.hive.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hive.shims</groupId>
+                    <artifactId>hive-shims-0.20S</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hive.shims</groupId>
+                    <artifactId>hive-shims-0.23</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
