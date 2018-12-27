@@ -109,6 +109,7 @@
          <teradata.version>1.5.4</teradata.version>
          <tez.version>0.9.1-mapr</tez.version>
          <mapr.version>6.1.0-mapr-SNAPSHOT</mapr.version>
+         <kafka.version>1.1.1-mapr-SNAPSHOT</kafka.version>
 
          <jetty.version>9.3.27.v20190418</jetty.version>
          <apache.jsp.version>8.0.33</apache.jsp.version>
