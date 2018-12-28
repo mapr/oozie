@@ -327,6 +327,30 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.mapr.db</groupId>
+            <artifactId>maprdb-spark</artifactId>
+            <version>${spark.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-scala_${spark.scala.binary.version}</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.specs2</groupId>
+                    <artifactId>specs2-core_${spark.scala.binary.version}</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.specs2</groupId>
+                    <artifactId>specs2-junit_${spark.scala.binary.version}</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.spark-project.spark</groupId>
+                    <artifactId>unused</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>${kafka.version}</version>
