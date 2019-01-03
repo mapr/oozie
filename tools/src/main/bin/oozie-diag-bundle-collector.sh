@@ -34,6 +34,18 @@ BASEDIR=$(dirname "${PRG}")
 cd "${BASEDIR}"/.. || (echo "Cannot change directory to ${BASEDIR}" && exit)
 BASEDIR=$(pwd)
 
+MAPR_HOME="/opt/mapr"
+HADOOP_VERSION_FILE="${MAPR_HOME}/conf/hadoop_version"
+HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
+HADOOP_CONF_DIR="hadoop-conf"
+if [ -f ${HADOOP_VERSION_FILE} ]
+then
+  HADOOP_VERSION=`cat ${HADOOP_VERSION_FILE} | grep yarn_version | cut -d '=' -f 2`
+  HADOOP_CONF_DIR=${HADOOP_BASE_DIR}${HADOOP_VERSION}/etc/hadoop/
+else
+  echo "Unknown hadoop version"
+fi
+
 OOZIECPPATH=""
 for i in "${BASEDIR}/libtools/"*.jar; do
   OOZIECPPATH="${OOZIECPPATH}:$i"
@@ -57,5 +69,8 @@ while [[ ${1} =~ ^\-D ]]; do
   JAVA_PROPERTIES="${JAVA_PROPERTIES} ${1}"
   shift
 done
+
+JAVA_PROPERTIES="${JAVA_PROPERTIES} -Dhadoop_conf_directory=${HADOOP_CONF_DIR}";
+export OOZIE_HOME=${BASEDIR}
 
 ${JAVA_BIN} ${JAVA_PROPERTIES} -cp "${OOZIECPPATH}" org.apache.oozie.tools.diag.DiagBundleCollectorDriver "${@}"
