@@ -97,7 +97,7 @@
          <pig.classifier>h2</pig.classifier>
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7-mapr</sqoop.version>
-         <spark.version>2.3.2-mapr-SNAPSHOT</spark.version>
+         <spark.version>2.3.2.0-mapr-SNAPSHOT</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <spark.guava.version>14.0.1</spark.guava.version>
@@ -2533,7 +2533,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>2.3.2-mapr-SNAPSHOT</spark.version>
+                <spark.version>2.3.2.0-mapr-SNAPSHOT</spark.version>
                 <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
                 <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>
