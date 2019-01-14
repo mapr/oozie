@@ -34,7 +34,9 @@ BASEDIR=$(dirname "${PRG}")
 cd "${BASEDIR}"/.. || (echo "Cannot change directory to ${BASEDIR}" && exit)
 BASEDIR=$(pwd)
 
+ENV_FILE=env.sh
 MAPR_HOME="/opt/mapr"
+MAPR_CONF_DIR=${MAPR_HOME}/conf
 HADOOP_VERSION_FILE="${MAPR_HOME}/conf/hadoop_version"
 HADOOP_BASE_DIR=/opt/mapr/hadoop/hadoop-
 HADOOP_CONF_DIR="hadoop-conf"
@@ -44,6 +46,11 @@ then
   HADOOP_CONF_DIR=${HADOOP_BASE_DIR}${HADOOP_VERSION}/etc/hadoop/
 else
   echo "Unknown hadoop version"
+fi
+
+# MapR change. Source env.sh if it exists
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+  source ${MAPR_CONF_DIR}/env.sh
 fi
 
 OOZIECPPATH=""
@@ -69,6 +76,10 @@ while [[ ${1} =~ ^\-D ]]; do
   JAVA_PROPERTIES="${JAVA_PROPERTIES} ${1}"
   shift
 done
+
+if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+  JAVA_PROPERTIES="${JAVA_PROPERTIES} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
+fi
 
 JAVA_PROPERTIES="${JAVA_PROPERTIES} -Dhadoop_conf_directory=${HADOOP_CONF_DIR}";
 export OOZIE_HOME=${BASEDIR}
