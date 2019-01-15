@@ -200,6 +200,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-yarn-timeline-history-with-acls</artifactId>
+            <version>${tez.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
