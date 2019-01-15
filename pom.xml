@@ -654,6 +654,39 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.tez</groupId>
+                <artifactId>tez-yarn-timeline-history-with-acls</artifactId>
+                <version>${tez.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.tez</groupId>
+                        <artifactId>tez-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tez</groupId>
+                        <artifactId>tez-yarn-timeline-history</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-yarn-client</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
             <!-- core -->
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
