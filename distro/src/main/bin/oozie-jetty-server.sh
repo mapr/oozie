@@ -91,7 +91,7 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib";
   #MapR opts
   jetty_opts="${jetty_opts} -Dmapr.library.flatclass=true";
-  jetty_opts="${jetty_opts} ${MAPR_AUTH_CLIENT_OPTS}";
+  jetty_opts="${jetty_opts} ${MAPR_ECOSYSTEM_SERVER_LOGIN_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
   jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
   
@@ -117,7 +117,7 @@ setup_jetty_opts() {
     jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.authenticate=false"
   fi
 
-  jetty_opts="${jetty_opts} -cp ${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}"
+  jetty_opts="${jetty_opts} -cp ${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}/webapp/WEB-INF/classes/:${JETTY_DIR}"
   echo "Adding to JETTY_OPTS:     ${jetty_opts}"
 
   #MAPR-23180: cleanup old tmp files
