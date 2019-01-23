@@ -326,9 +326,14 @@ check_property() {
   fi
 }
 
-yarn_site_symlink() {
+conf_symlink() {
   if [ -f ${HADOOP_CONF_DIR}/yarn-site.xml ]; then
     test -e ${JETTY_WEBAPP_DIR}/WEB-INF/classes/yarn-site.xml || ln -s ${HADOOP_CONF_DIR}/yarn-site.xml ${JETTY_WEBAPP_DIR}/WEB-INF/classes/yarn-site.xml
+  fi
+  HIVE_VERSION=`cat ${MAPR_HOME}/hive/hiveversion`
+  HIVE_SITE=${MAPR_HOME}/hive/hive-${HIVE_VERSION}/conf/hive-site.xml
+  if [ -f ${HIVE_SITE} ]; then
+    test -e ${JETTY_WEBAPP_DIR}/WEB-INF/classes/hive-site.xml || ln -s ${HIVE_SITE} ${JETTY_WEBAPP_DIR}/WEB-INF/classes/hive-site.xml
   fi
 }
 
@@ -342,7 +347,7 @@ prepare_jetty() {
   check_adding_extensions
   check_extjs
   check_mapr_jars
-  yarn_site_symlink
+  conf_symlink
 
   if [ "${addExtjs}" = "true" -a ! -e ${JETTY_WEBAPP_DIR}/ext-2.2 ]; then
      unzip ${extjsHome} -d ${JETTY_WEBAPP_DIR}
