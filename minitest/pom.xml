@@ -23,12 +23,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0-mapr</version>
+        <version>4.3.0-mapr-mep-4.x-1901</version>
     </parent>
 
     <groupId>org.apache.oozie.test</groupId>
     <artifactId>oozie-mini</artifactId>
-    <version>4.3.0-mapr</version>
+    <version>4.3.0-mapr-mep-4.x-1901</version>
     <description>Apache Oozie MiniOozie</description>
     <name>Apache Oozie MiniOozie</name>
 
