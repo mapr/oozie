@@ -141,6 +141,14 @@
         <module>zookeeper-security-tests</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>mapr.release</id>
+            <name>MapR Releases Repository</name>
+            <url>${env.MAPR_MAVEN_REPO}</url>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>mapr.release</id>
