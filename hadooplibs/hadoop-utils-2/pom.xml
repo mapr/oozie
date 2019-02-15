@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>4.3.0-mapr</version>
+        <version>4.3.0-mapr-mep-5.x</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>org.apache.oozie</groupId>
