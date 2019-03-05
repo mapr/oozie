@@ -319,6 +319,10 @@
                     <groupId>tomcat</groupId>
                     <artifactId>jasper-compiler</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>net.sf.jpam</groupId>
+                    <artifactId>jpam</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
