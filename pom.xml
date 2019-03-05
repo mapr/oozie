@@ -119,8 +119,8 @@
          <jackson.version>2.6.5</jackson.version>
          <log4j.version>1.2.17</log4j.version>
          <activemq.version>5.15.3</activemq.version>
-         <httpcore.version>4.3.3</httpcore.version>
-         <httpclient.version>4.3.6</httpclient.version>
+         <httpcore.version>4.4.11</httpcore.version>
+         <httpclient.version>4.5.7</httpclient.version>
          <kyro.version>2.22</kyro.version>
          <javax.servlet.api.version>3.0.1</javax.servlet.api.version>
          <jgit.version>5.0.1.201806211838-r</jgit.version>
