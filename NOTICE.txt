@@ -8,3 +8,45 @@ Copyright 2018 The Apache Software Foundation
 
 This product includes software developed by The Apache Software
 Foundation (http://www.apache.org/).
+
+--------------------------------------------
+For the HSQLDB component:
+
+COPYRIGHTS AND LICENSES (based on BSD License)
+
+For work developed by the HSQL Development Group:
+
+Copyright (c) 2001-2010, The HSQL Development Group
+
+--------------------------------------------
+For work originally developed by the Hypersonic SQL Group:
+
+Copyright (c) 1995-2000 by the Hypersonic SQL Group.
+
+This software consists of voluntary contributions made by many individuals on behalf of the
+Hypersonic SQL Group.
+
+--------------------------------------------
+This product includes software developed by the JDOM Project (http://www.jdom.org/)
+
+Copyright (C) 2000-2011 Jason Hunter & Brett McLaughlin.
+http://www.jdom.org/
+
+License: JDOM License
+
+--------------------------------------------
+For PostgreSQL JDBC Driver component :
+
+License: BSD License
+Copyright (c) 1997-2010, PostgreSQL Global Development Group
+
+--------------------------------------------
+For Enterprise JavaBeans (EJB) 3.0, JavaBeans Activation Framework (JAF), JavaMail API component :
+
+License: COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+
+--------------------------------------------
+For serp component :
+
+License: Serp BSD License
+Copyright (c) 2002-2006, A. Abram White
