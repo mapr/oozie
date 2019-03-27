@@ -84,7 +84,7 @@
         <oozie.hadoop-utils.version>hadoop-${hadoop.majorversion}-${project.version}</oozie.hadoop-utils.version>
         <hbase.version>0.94.27</hbase.version>
 
-        <dropwizard.metrics.version>3.1.2</dropwizard.metrics.version>
+        <dropwizard.metrics.version>3.1.5</dropwizard.metrics.version>
 
         <clover.license>/home/jenkins/tools/clover/latest/lib/clover.license</clover.license>
 
@@ -114,13 +114,13 @@
          <jline.version>0.9.94</jline.version>
          <openjpa.version>2.4.1</openjpa.version>
          <xerces.version>2.11.0</xerces.version>
-         <curator.version>2.5.0</curator.version>
+         <curator.version>2.7.1</curator.version>
          <jackson.version>1.8.8</jackson.version>
          <jersy.version>1.18.3</jersy.version>
          <log4j.version>1.2.17</log4j.version>
          <activemq.version>5.13.3</activemq.version>
-         <httpcore.version>4.4.4</httpcore.version>
-         <httpclient.version>4.5.2</httpclient.version>
+         <httpcore.version>4.4.8</httpcore.version>
+         <httpclient.version>4.5.4</httpclient.version>
          <kyro.version>2.22</kyro.version>
     </properties>
 
@@ -304,7 +304,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math3</artifactId>
-                <version>3.1.1</version>
+                <version>3.4.1</version>
             </dependency>
 
             <dependency>
@@ -1221,7 +1221,7 @@
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
             </dependency>
 
             <dependency>
@@ -1245,7 +1245,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.4</version>
+                <version>1.10</version>
             </dependency>
 
             <dependency>
@@ -1995,7 +1995,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.3.2</version>
+                <version>3.5</version>
             </dependency>
 
             <dependency>
@@ -2258,12 +2258,22 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.1</version>
+                <version>2.9.3</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>2.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.paranamer</groupId>
+                <artifactId>paranamer</artifactId>
+                <version>2.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang.modules</groupId>
+                <artifactId>scala-xml_2.11</artifactId>
+                <version>1.0.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
