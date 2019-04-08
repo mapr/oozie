@@ -2941,4 +2941,41 @@ public class TestJavaActionExecutor extends ActionExecutorTestCase {
         assertEquals("DEBUG", conf.get(oozieActionHiveRootLogger));
     }
 
+    public void testEmptyArgsWithNullArgsNotAllowed() throws Exception {
+        testEmptyArgs(false, "SUCCEEDED", WorkflowAction.Status.OK);
+    }
+
+    public void testEmptyArgsWithNullArgsAllowed() throws Exception {
+        testEmptyArgs(true, "FAILED/KILLED", WorkflowAction.Status.ERROR);
+    }
+
+    private void testEmptyArgs(boolean nullArgsAllowed, String expectedExternalStatus, WorkflowAction.Status expectedStatus)
+            throws Exception {
+        ConfigurationService.setBoolean(LauncherMapper.CONF_OOZIE_NULL_ARGS_ALLOWED, nullArgsAllowed);
+
+        String actionXml = "<java>" +
+                "<job-tracker>" + getJobTrackerUri() + "</job-tracker>" +
+                "<name-node>" + getNameNodeUri() + "</name-node>" +
+                "<main-class>" + LauncherMainTester.class.getName() + "</main-class>" +
+                "<arg></arg>" +
+                "</java>";
+
+        Context context = createContext(actionXml, null);
+        final RunningJob runningJob = submitAction(context);
+        waitFor(60 * 1000, new Predicate() {
+            @Override
+            public boolean evaluate() throws Exception {
+                return runningJob.isComplete();
+            }
+        });
+        assertTrue(runningJob.isSuccessful());
+        ActionExecutor ae = new JavaActionExecutor();
+        ae.check(context, context.getAction());
+        assertTrue(ae.isCompleted(context.getAction().getExternalStatus()));
+        assertEquals(expectedExternalStatus, context.getAction().getExternalStatus());
+        assertNull(context.getAction().getData());
+
+        ae.end(context, context.getAction());
+        assertEquals(expectedStatus, context.getAction().getStatus());
+    }
 }
