@@ -93,7 +93,7 @@
          <!-- Sharelib component versions -->
          <hive.version>2.3.3-mapr</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
-         <pig.version>0.16.0-mapr-1703</pig.version>
+         <pig.version>0.16.0-mapr-1901</pig.version>
          <pig.classifier>h2</pig.classifier>
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7-mapr</sqoop.version>
