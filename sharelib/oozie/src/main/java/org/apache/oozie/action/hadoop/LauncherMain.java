@@ -447,6 +447,10 @@ public abstract class LauncherMain {
         System.out.println(banner);
         boolean maskNextArg = false;
         for (String arg : args) {
+            if (arg == null) {
+                arg = "null"; // prevent NPE in pwd masking
+            }
+
             if (maskNextArg) {
                 System.out.println("             " + "********");
                 maskNextArg = false;
