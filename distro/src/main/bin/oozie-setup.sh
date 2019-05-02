@@ -153,11 +153,7 @@ do
     OOZIE_OPTS="${OOZIE_OPTS} -Dhadoop_conf_directory=${HADOOP_CONF_DIR}"
     OOZIE_OPTS="${OOZIE_OPTS} -Djava.security.auth.login.config=${MAPR_HOME}/conf/mapr.login.conf"
 
-    #Create lib directory from war if lib doesn't exist
-    if [ ! -d "${BASEDIR}/lib" ]; then
-      mkdir ${BASEDIR}/lib
-      cp ${JETTY_LIB_DIR}/*  ${BASEDIR}/lib
-    fi
+    test -e ${BASEDIR}/lib || ln -s ${JETTY_DIR}/webapp/WEB-INF/lib ${BASEDIR}/lib
 
     OOZIECPPATH=""
     OOZIECPPATH=${BASEDIR}/lib/'*':${BASEDIR}/libtools/'*':${BASEDIR}/libext/'*'
