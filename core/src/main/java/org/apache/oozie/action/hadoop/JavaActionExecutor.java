@@ -1119,11 +1119,16 @@ public class JavaActionExecutor extends ActionExecutor {
                 ApplicationId appId = newApp.getNewApplicationResponse().getApplicationId();
                 ApplicationSubmissionContext appContext =
                         createAppSubmissionContext(appId, launcherConf, context, actionConf, action, credentials, actionXml);
-                yarnClient.submitApplication(appContext);
+
+                YarnClient finalYarnClient = yarnClient;
+                UserGroupInformation ugi = Services.get()
+                        .get(UserGroupInformationService.class)
+                        .getProxyUser(context.getWorkflow().getUser());
+                ugi.doAs((PrivilegedExceptionAction<ApplicationId>) () -> finalYarnClient.submitApplication(appContext));
 
                 launcherId = appId.toString();
                 LOG.debug("After submission get the launcherId [{0}]", launcherId);
-                ApplicationReport appReport = yarnClient.getApplicationReport(appId);
+                ApplicationReport appReport = finalYarnClient.getApplicationReport(appId);
                 consoleUrl = appReport.getTrackingUrl();
             }
 
