@@ -19,6 +19,7 @@
 package org.apache.oozie.tools;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -65,10 +66,14 @@ public class OozieDBCLI {
     private static final String RUN_OPT = "run";
     private final static String DB_VERSION_PRE_4_0 = "1";
     private final static String DB_VERSION_FOR_4_0 = "2";
-    private static String DB_VERSION_FOR_4_1 = "3";
+    private static final String DB_VERSION_PROPERTY = "db.version";
+    private static final String OOZIE_VERSION_PROPERTY = "oozie.version";
+    private static final String UPDATE_SYS_PROPERTY = "update OOZIE_SYS set data='%s' where name='%s'";
+    final static String DB_VERSION_FOR_4_1 = "3";
     final static String DB_VERSION_FOR_5_0 = "4";
     private final static String DISCRIMINATOR_COLUMN = "bean_type";
     private final static String TEMP_COLUMN_PREFIX = "temp_";
+    private static final String OOZIE_BUILD_VERSION = BuildInfo.getBuildInfo().getProperty(BuildInfo.BUILD_VERSION);
     private HashMap <String, List<String>> clobColumnMap;
 
     public static final String[] HELP_INFO = {
@@ -205,8 +210,7 @@ public class OozieDBCLI {
         createOozieSysTable(sqlFile, run, DB_VERSION_FOR_5_0);
         System.out.println();
         if (run) {
-            System.out.println("Oozie DB has been created for Oozie version '" +
-                               BuildInfo.getBuildInfo().getProperty(BuildInfo.BUILD_VERSION) + "'");
+            System.out.println("Oozie DB has been created for Oozie version '" + OOZIE_BUILD_VERSION + "'");
         }
         System.out.println();
     }
@@ -216,21 +220,29 @@ public class OozieDBCLI {
         if (!checkDBExists()) {
             throw new Exception("Oozie DB doesn't exist");
         }
-        String version = BuildInfo.getBuildInfo().getProperty(BuildInfo.BUILD_VERSION);
 
         if (!verifyOozieSysTable(false, false)) { // If OOZIE_SYS table doesn't
                                                   // exist (pre 3.2)
             createOozieSysTable(sqlFile, run, DB_VERSION_PRE_4_0);
         }
-        String ver = getOozieDBVersion().trim();
-        String startingVersion = ver;
-        if (ver.equals(DB_VERSION_FOR_5_0)) {
-            System.out.println("Oozie DB already upgraded to Oozie version '" + version + "'");
-            return;
+        String startingVersion = getOozieDBVersion().trim();
+        if (startingVersion.equals(DB_VERSION_FOR_5_0)) {
+            System.out.println("Oozie DB already upgraded to Oozie version '" + OOZIE_BUILD_VERSION + "'");
+        } else {
+            upgradeDB(sqlFile, run, startingVersion);
         }
 
-        createUpgradeDB(sqlFile, run, false);
+        if (!getOozieVersion().trim().equals(OOZIE_BUILD_VERSION)) {
+            updateOozieVersion(sqlFile, run);
+        }
 
+
+        System.out.println();
+    }
+
+    private void upgradeDB(String sqlFile, boolean run, String startingVersion) throws Exception {
+        String ver = startingVersion;
+        createUpgradeDB(sqlFile, run, false);
         while (!ver.equals(DB_VERSION_FOR_5_0)) {
             if (ver.equals(DB_VERSION_PRE_4_0)) {
                 System.out.println("Upgrading to db schema for Oozie 4.0");
@@ -238,22 +250,29 @@ public class OozieDBCLI {
                 ver = run ? getOozieDBVersion().trim() : DB_VERSION_FOR_4_0;
             }
             else if (ver.equals(DB_VERSION_FOR_4_0)) {
-                System.out.println("Upgrading to db schema for Oozie " + version);
+                System.out.println("Upgrading to db schema for Oozie " + OOZIE_BUILD_VERSION);
                 upgradeDBtoPre50(sqlFile, run, startingVersion);
                 ver = run ? getOozieDBVersion().trim() : DB_VERSION_FOR_4_1;
             }
             else if (ver.equals(DB_VERSION_FOR_4_1)) {
-                System.out.println("Upgrading to db schema for Oozie " + version);
+                System.out.println("Upgrading to db schema for Oozie " + OOZIE_BUILD_VERSION);
                 upgradeDBto50(sqlFile, run, startingVersion);
                 ver = run ? getOozieDBVersion().trim() : DB_VERSION_FOR_5_0;
             }
         }
-
         if (run) {
             System.out.println();
-            System.out.println("Oozie DB has been upgraded to Oozie version '" + version + "'");
+            System.out.println("Oozie DB has been upgraded to Oozie version '" + OOZIE_BUILD_VERSION + "'");
         }
-        System.out.println();
+    }
+
+    private void updateOozieVersion(String sqlFile, boolean run) throws Exception {
+        System.out.println("Update oozie version to '" + OOZIE_BUILD_VERSION + "'");
+        updateSysProperties(sqlFile, run, ImmutableMap.of(OOZIE_VERSION_PROPERTY, OOZIE_BUILD_VERSION));
+        if (run) {
+            System.out.println();
+            System.out.println("Oozie version has been updated to '" + OOZIE_BUILD_VERSION + "'");
+        }
     }
 
     private void upgradeDBTo40(String sqlFile, boolean run) throws Exception {
@@ -272,33 +291,35 @@ public class OozieDBCLI {
         ddlTweaksFor50(sqlFile, run);
     }
 
-    private final static String UPDATE_OOZIE_VERSION =
-            "update OOZIE_SYS set data='" + BuildInfo.getBuildInfo().getProperty(BuildInfo.BUILD_VERSION)
-            + "' where name='oozie.version'";
-
     private void upgradeOozieDBVersion(String sqlFile, boolean run, String version) throws Exception {
-        String updateDBVersion = "update OOZIE_SYS set data='" + version + "' where name='db.version'";
+        updateSysProperties(sqlFile, run, ImmutableMap.of(
+                OOZIE_VERSION_PROPERTY, OOZIE_BUILD_VERSION,
+                DB_VERSION_PROPERTY, version
+        ));
+    }
+
+    private void updateSysProperties(String sqlFile, boolean run, Map<String, String> props) throws Exception {
+        List<String> queries = new ArrayList<>();
+        for (Map.Entry<String, String> prop : props.entrySet()) {
+            System.out.println("Update OOZIE_SYS table: " + prop);
+            String format = String.format(UPDATE_SYS_PROPERTY, prop.getValue(), prop.getKey());
+            queries.add(format);
+        }
         PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(sqlFile,true),
-                StandardCharsets.UTF_8));
+                                                                    StandardCharsets.UTF_8));
         writer.println();
-        writer.println(UPDATE_OOZIE_VERSION);
-        writer.println(updateDBVersion);
+        for (String query : queries) {
+            writer.println(query);
+        }
         writer.close();
-        System.out.println("Update db.version in OOZIE_SYS table to " + version);
         if (run) {
-            Connection conn = createConnection();
-            try {
+            try (Connection conn = createConnection(); Statement st = conn.createStatement()) {
                 conn.setAutoCommit(true);
-                Statement st = conn.createStatement();
-                st.executeUpdate(updateDBVersion);
-                st.executeUpdate(UPDATE_OOZIE_VERSION);
-                st.close();
-            }
-            catch (Exception ex) {
-                throw new Exception("Could not upgrade db.version in OOZIE_SYS table: " + ex.toString(), ex);
-            }
-            finally {
-                conn.close();
+                for (String sql : queries) {
+                    st.executeUpdate(sql);
+                }
+            } catch (Exception ex) {
+                throw new Exception(String.format("Could not update OOZIE_SYS table (%s): %s", props, ex.toString()), ex);
             }
         }
         System.out.println("DONE");
@@ -988,20 +1009,28 @@ public class OozieDBCLI {
         return tableExists;
     }
 
-    private final static String GET_OOZIE_DB_VERSION = "select data from OOZIE_SYS where name = 'db.version'";
+    private final static String GET_OOZIE_DB_PROPERTY = "select data from OOZIE_SYS where name = '%s'";
 
     private String getOozieDBVersion() throws Exception {
-        String version;
-        System.out.println("Get Oozie DB version");
+        return getSysProperty(DB_VERSION_PROPERTY);
+    }
+
+    private String getOozieVersion() throws Exception {
+        return getSysProperty(OOZIE_VERSION_PROPERTY);
+    }
+
+    private String getSysProperty(final String key) throws Exception {
+        String value;
+        System.out.println("Get Oozie DB property for " + key);
         Connection conn = createConnection();
         try {
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(GET_OOZIE_DB_VERSION);
+            ResultSet rs = st.executeQuery(String.format(GET_OOZIE_DB_PROPERTY, key));
             if (rs.next()) {
-                version = rs.getString(1);
+                value = rs.getString(1);
             }
             else {
-                throw new Exception("ERROR: Could not find Oozie DB 'db.version' in OOZIE_SYS table");
+                throw new Exception("ERROR: Could not find Oozie DB '" + key + "' in OOZIE_SYS table");
             }
             rs.close();
             st.close();
@@ -1013,7 +1042,7 @@ public class OozieDBCLI {
             conn.close();
         }
         System.out.println("DONE");
-        return version;
+        return value;
     }
 
     private final static String CREATE_OOZIE_SYS =
@@ -1021,8 +1050,8 @@ public class OozieDBCLI {
 
 
     private final static String SET_OOZIE_VERSION =
-        "insert into OOZIE_SYS (name, data) values ('oozie.version', '" +
-        BuildInfo.getBuildInfo().getProperty(BuildInfo.BUILD_VERSION) + "')";
+        "insert into OOZIE_SYS (name, data) values ('" + OOZIE_VERSION_PROPERTY + "', '" +
+                OOZIE_BUILD_VERSION + "')";
 
     private final static String CREATE_OOZIE_SYS_INDEX =
         "create clustered index OOZIE_SYS_PK on OOZIE_SYS (name);";
@@ -1165,8 +1194,7 @@ public class OozieDBCLI {
     }
 
     private void showVersion() throws Exception {
-        System.out.println("Oozie DB tool version: "
-                           + BuildInfo.getBuildInfo().getProperty(BuildInfo.BUILD_VERSION));
+        System.out.println("Oozie DB tool version: " + OOZIE_BUILD_VERSION);
         System.out.println();
         validateConnection();
         if (!checkDBExists()) {
