@@ -3,6 +3,7 @@
 MAPR_HOME=${MAPR_HOME:-/opt/mapr}
 OOZIE_VERSION=`cat $MAPR_HOME/oozie/oozieversion`
 OOZIE_HOME="$MAPR_HOME"/oozie/oozie-"$OOZIE_VERSION"
+JETTY_LIB_DIR="${OOZIE_HOME}"/embedded-oozie-server/webapp/WEB-INF/lib/
 OOZIE_BIN="$OOZIE_HOME"/bin
 MAPR_CONF_DIR="${MAPR_HOME}/conf/"
 MAPR_WARDEN_CONF_DIR="${MAPR_HOME}/conf/conf.d"
@@ -11,6 +12,7 @@ WARDEN_OOZIE_CONF="$OOZIE_HOME"/conf/warden.oozie.conf
 WARDEN_OOZIE_DEST="$MAPR_WARDEN_CONF_DIR/warden.oozie.conf"
 OOZIE_TMP_DIR=/tmp/oozieTmp
 HADOOP_VER=$(cat "$MAPR_HOME/hadoop/hadoopversion")
+HADOOP_HOME="$MAPR_HOME/hadoop/hadoop-$HADOOP_VER"
 secureCluster=0
 MAPR_USER=""
 MAPR_GROUP=""
@@ -111,6 +113,39 @@ configureOozieJMX() {
   fi
 }
 
+findAndCopyJar() {
+   local sourceDir="${1}"; shift
+   local filters="$@"
+   foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "SNAPSHOT.jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "beta.jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "[a-z].jar" -print -quit)"
+   if [ -z "${foundJar}" ]; then
+         echo "File by filters '${filters}' not found in '${sourceDir}'" 1>&2
+         return 1
+   fi
+
+   find ${JETTY_LIB_DIR} ${filters} -delete
+   cp "${foundJar}" ${JETTY_LIB_DIR}
+}
+
+copyMaprLibs() {
+  test -e ${OOZIE_HOME}/lib || ln -s ${JETTY_LIB_DIR} ${OOZIE_HOME}/lib
+
+  # move all hadoop jars
+  local suffix="-[0-9.]*"
+  local hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:commons-configuration-*.jar"
+  for jar in ${hadoopJars//:/$'\n'}; do
+    findAndCopyJar ${HADOOP_HOME} -iname "${jar}" || exit -1
+  done
+
+  # move mapr jars if available
+  findAndCopyJar "${MAPR_HOME}/lib" -iname "JPam*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" -iname "zookeeper-*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
+}
+
 #
 # main
 #
@@ -163,6 +198,7 @@ fi
 
 extractSharelib
 copyExtraLib
+copyMaprLibs
 #build oozie war file
 changeOoziePermission
 configureOozieJMX
