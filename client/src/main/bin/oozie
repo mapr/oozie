@@ -51,7 +51,10 @@ if [ "${OOZIE_URL}" = "" ]; then
   export OOZIE_URL="http://$(hostname -f):11000/oozie"
 fi
 
-test -e ${BASEDIR}/lib || ln -s ${BASEDIR}/embedded-oozie-server/webapp/WEB-INF/lib ${BASEDIR}/lib
+if [ ! -e ${BASEDIR}/lib ]; then
+    echo "Missing Oozie libs. Configure Oozie by running as root: /opt/mapr/server/configure.sh -R" 1>&2
+    exit 1
+fi
 
 OOZIECPPATH=""
 for i in "${BASEDIR}/lib/"*.jar; do
