@@ -1135,6 +1135,7 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-yarn-server-common</artifactId>
                 <version>${hadoop.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -1159,6 +1160,7 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-annotations</artifactId>
                 <version>${hadoop.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
