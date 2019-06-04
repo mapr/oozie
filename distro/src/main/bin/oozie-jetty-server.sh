@@ -242,10 +242,6 @@ stop_jetty() {
   fi
 }
 
-symlink_lib() {
-  test -e ${BASEDIR}/lib || ln -s ${JETTY_DIR}/webapp/WEB-INF/lib ${BASEDIR}/lib
-}
-
 prepare_sharelib() {
   # default share dir
   hadoop fs -test -d /oozie/share/lib
@@ -270,14 +266,12 @@ jetty_main() {
   case $actionCmd in
     (run)
        ${BASEDIR}/bin/oozie-setup.sh
-       symlink_lib
        prepare_sharelib
        setup_ooziedb
        run_jetty
       ;;
     (start)
        ${BASEDIR}/bin/oozie-setup.sh
-       symlink_lib
        prepare_sharelib
        setup_ooziedb
        start_jetty

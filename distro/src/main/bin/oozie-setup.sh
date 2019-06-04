@@ -118,6 +118,10 @@ JETTY_WEBAPP_DIR=${JETTY_DIR}/webapp
 JETTY_LIB_DIR=${JETTY_WEBAPP_DIR}/WEB-INF/lib/
 
 source ${BASEDIR}/bin/oozie-sys.sh -silent
+if [ ! -e ${BASEDIR}/lib ]; then
+    echo "Missing Oozie libs. Configure Oozie by running as root: /opt/mapr/server/configure.sh -R" 1>&2
+    exit 1
+fi
 
 addExtjs=""
 addHadoopJars=""
@@ -141,7 +145,6 @@ else
   echo "Unknown hadoop version"
 fi
 
-
 while [ $# -gt 0 ]
 do
   if [ "$1" = "sharelib" ] || [ "$1" = "db" ] || [ "$1" = "export" ] || [ "$1" = "import" ]; then
@@ -152,8 +155,6 @@ do
     OOZIE_OPTS="${OOZIE_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
     OOZIE_OPTS="${OOZIE_OPTS} -Dhadoop_conf_directory=${HADOOP_CONF_DIR}"
     OOZIE_OPTS="${OOZIE_OPTS} -Djava.security.auth.login.config=${MAPR_HOME}/conf/mapr.login.conf"
-
-    test -e ${BASEDIR}/lib || ln -s ${JETTY_DIR}/webapp/WEB-INF/lib ${BASEDIR}/lib
 
     OOZIECPPATH=""
     OOZIECPPATH=${BASEDIR}/lib/'*':${BASEDIR}/libtools/'*':${BASEDIR}/libext/'*'
@@ -219,28 +220,6 @@ log_ready_to_start() {
   echo
 }
 
-function findFile() {
-   # Mapr change
-   RET=`find -H ${1} -name ${2} | grep -e "[.0-9].jar"`
-   if [ "${RET}" = "" ]; then
-     RET=`find -H ${1} -name ${2} | grep -e "SNAPSHOT.jar"`
-     if [ "${RET}" = "" ]; then
-       RET=`find -H ${1} -name ${2} | grep -e "beta.jar"`
-         if [ "${RET}" = "" ]; then
-           RET=`find -H ${1} -name ${2} | grep -e "[a-z].jar"`
-       fi
-     fi
-   fi
-   RET=`echo ${RET} | sed "s/ .*//"`
-   if [ "${RET}" = "" ]; then
-     echo
-     echo "File '${2}' not found in '${1}'"
-     echo
-     cleanUp
-     exit -1;
-   fi
-}
-
 check_extjs() {
   if [ "${addExtjs}" = "true" ]; then
     checkFileExists ${extjsHome}
@@ -269,38 +248,6 @@ check_adding_extensions() {
       addExtjs=true
     fi
   fi
-}
-
-check_mapr_jars() {
-  #clean up old hadoop jars
-  find ${JETTY_LIB_DIR} -iname 'hadoop-*-mapr-*.jar' -delete
-  find ${JETTY_LIB_DIR} -iname 'zookeeper-*.jar' -delete
-  find ${JETTY_LIB_DIR} -iname 'jpam*.jar' -delete
-  suffix="-[0-9.]*"
-  hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:commons-configuration-*.jar"
-  for jar in ${hadoopJars//:/$'\n'}
-  do
-    findFile ${HADOOP_BASE_DIR}${HADOOP_VERSION} ${jar}
-    jarsPath="${jarsPath}:${RET}"
-  done
-
-  # MapR change - add JPam*.jar to the maprJars list.
-  if [[ -n $(find ${MAPR_HOME}/lib -name "JPam*.jar" -print) ]]; then
-    maprLibJars="${maprLibJars}:JPam*.jar"
-  fi
-  # MapR change - add zookeeper*.jar to the hadoopJars list.
-  if [[ -n $(find ${MAPR_HOME}/lib -name "zookeeper-*.jar" -print) ]]; then
-    maprLibJars="${maprLibJars}:zookeeper-*.jar"
-  fi
-  # MapR change - add zookeeper*.jar to the hadoopJars list.
-  if [[ -n $(find ${MAPR_HOME}/lib \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print) ]]; then
-    maprLibJars="${maprLibJars}:$(basename "$(find ${MAPR_HOME}/lib \( -name "maprfs-[0-9].*jar" ! -name "*test*.jar" \) -print)")"
-  fi
-  for jar in ${maprLibJars//:/$'\n'}
-  do
-    findFile ${MAPR_HOME}/lib ${jar}
-    jarsPath="${jarsPath}:${RET}"
-  done
 }
 
 check_property() {
@@ -342,7 +289,6 @@ cleanup_and_exit() {
 prepare_jetty() {
   check_adding_extensions
   check_extjs
-  check_mapr_jars
   conf_symlink
 
   if [ "${addExtjs}" = "true" -a ! -e ${JETTY_WEBAPP_DIR}/ext-2.2 ]; then

@@ -36,14 +36,16 @@ HADOOP_CLASSPATH=`hadoop classpath`
 
 
 source ${BASEDIR}/bin/oozie-sys.sh -silent
+if [ ! -e ${BASEDIR}/lib ]; then
+    echo "Missing Oozie libs. Configure Oozie by running as root: /opt/mapr/server/configure.sh -R" 1>&2
+    exit 1
+fi
 
 OOZIEDB_OPTS="-Doozie.home.dir=${OOZIE_HOME}";
 OOZIEDB_OPTS="${OOZIEDB_OPTS} -Doozie.config.dir=${OOZIE_CONFIG}";
 OOZIEDB_OPTS="${OOZIEDB_OPTS} -Doozie.log.dir=${OOZIE_LOG}";
 OOZIEDB_OPTS="${OOZIEDB_OPTS} -Doozie.data.dir=${OOZIE_DATA}";
 OOZIEDB_OPTS="${OOZIEDB_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
-
-test -e ${BASEDIR}/lib || ln -s ${BASEDIR}/embedded-oozie-server/webapp/WEB-INF/lib ${BASEDIR}/lib
 
 OOZIECPPATH=""
 for i in "${BASEDIR}/libtools/"*.jar; do
