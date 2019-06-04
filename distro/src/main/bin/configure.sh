@@ -118,9 +118,9 @@ findAndCopyJar() {
    local filters="$@"
    foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
    test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
-   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "SNAPSHOT.jar" -print -quit)"
-   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "beta.jar" -print -quit)"
-   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "[a-z].jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*SNAPSHOT.jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*beta.jar" -print -quit)"
+   test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*[a-z].jar" -print -quit)"
    if [ -z "${foundJar}" ]; then
          echo "File by filters '${filters}' not found in '${sourceDir}'" 1>&2
          return 1
