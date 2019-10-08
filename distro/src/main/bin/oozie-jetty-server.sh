@@ -109,6 +109,7 @@ setup_jetty_opts() {
     jetty_opts="${jetty_opts} -Dmapr_signature_secret=com.mapr.security.maprauth.MaprSignatureSecretFactory"
     jetty_opts="${jetty_opts} -Dhttps_enabled=true"
     jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.authenticate=true"
+    jetty_opts="${jetty_opts} -Dsecurity.headers.file=${BASEDIR}/conf/security-headers.xml"
   else
     jetty_opts="${jetty_opts} -Dmapr_sec_type=simple"
     jetty_opts="${jetty_opts} -Dmapr_sec_enabled=false"
