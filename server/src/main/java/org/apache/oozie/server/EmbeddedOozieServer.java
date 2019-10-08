@@ -25,12 +25,15 @@ import com.google.inject.ProvisionException;
 import com.mapr.web.security.SslConfig;
 import com.mapr.web.security.WebSecurityManager;
 import com.mapr.web.security.SslConfig.SslConfigScope;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.oozie.server.guice.OozieGuiceModule;
 import org.apache.oozie.service.ConfigurationService;
 import org.apache.oozie.service.ServiceException;
 import org.apache.oozie.service.Services;
 import org.apache.oozie.util.ConfigUtils;
+import org.eclipse.jetty.rewrite.handler.HeaderPatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.server.Connector;
@@ -45,8 +48,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Properties;
 import java.util.Objects;
 
 /**
@@ -149,6 +154,21 @@ public class EmbeddedOozieServer {
         handlerCollection.addHandler(servletContextHandler);
         handlerCollection.addHandler(oozieRewriteHandler);
         server.setHandler(handlerCollection);
+
+        applyHeadersConfiguration();
+    }
+
+    private void applyHeadersConfiguration() throws IOException {
+        Properties properties = new Properties();
+        String headersFile = conf.get("oozie.server.response.headers");
+        if (StringUtils.isNotBlank(headersFile) && new File(headersFile).exists()) {
+            properties.loadFromXML(FileUtils.openInputStream(new File(headersFile)));
+        }
+        for (String name : properties.stringPropertyNames()) {
+            String value = properties.getProperty(name);
+            HeaderPatternRule rule = new HeaderPatternRule("*", name, value);
+            oozieRewriteHandler.addRule(rule);
+        }
     }
 
     /**

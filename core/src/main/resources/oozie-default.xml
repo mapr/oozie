@@ -3466,4 +3466,15 @@ will be the requeue interval for the actions which are waiting for a long time w
         </description>
     </property>
 
+
+    <property>
+        <name>oozie.server.response.headers</name>
+        <value>${security.headers.file}</value>
+        <description>
+            MapR specific configuration.
+            Path to Java Properties .xml file with server response headers to override or create.
+            Default value is 'OOZIE_HOME/conf/security-headers.xml' for secure oozie and none for insecure.
+        </description>
+    </property>
+
 </configuration>
