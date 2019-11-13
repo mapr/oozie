@@ -1044,10 +1044,6 @@
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
-                        <groupId>com.mapr.hadoop</groupId>
-                        <artifactId>maprfs</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-beans</artifactId>
                     </exclusion>
@@ -1632,10 +1628,6 @@
                         <groupId>tomcat</groupId>
                         <artifactId>jasper-compiler</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>com.mapr.hadoop</groupId>
-                        <artifactId>maprfs</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -2206,6 +2198,12 @@
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.9.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mapr.hadoop</groupId>
+                <artifactId>maprfs</artifactId>
+                <version>${mapr.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

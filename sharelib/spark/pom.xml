@@ -123,10 +123,6 @@
                     <artifactId>javax.servlet</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.mapr.hadoop</groupId>
-                    <artifactId>maprfs</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-beans</artifactId>
                 </exclusion>
