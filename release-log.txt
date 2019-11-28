@@ -2,6 +2,8 @@
 
 OOZIE-3592 Do not print misleading SecurityException for successful jobs (matijhs via asalamon74)
 
+OOZIE-3549 Add back support for truststore passwords (matijhs via asalamon74)
+
 -- Oozie 5.2.0 release
 
 OOZIE-3553 [examples] Fix sqoop example (asalamon74 via kmarton)
