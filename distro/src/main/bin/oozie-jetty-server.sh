@@ -117,7 +117,10 @@ setup_jetty_opts() {
     jetty_opts="${jetty_opts} -Dcom.sun.management.jmxremote.authenticate=false"
   fi
 
-  jetty_opts="${jetty_opts} -cp ${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}/webapp/WEB-INF/classes/:${JETTY_DIR}"
+  jetty_cp="${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}/webapp/WEB-INF/classes/:${JETTY_DIR}"
+  jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -name "slf4j-log4j12*.jar" -print)"
+  jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -name "log4j-*.jar" -print)"
+  jetty_opts="${jetty_opts} -cp $jetty_cp"
   echo "Adding to JETTY_OPTS:     ${jetty_opts}"
 
   #MAPR-23180: cleanup old tmp files
