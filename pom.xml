@@ -108,7 +108,7 @@
          <kite.version>1.1.0</kite.version>
          <teradata.version>1.5.4</teradata.version>
          <tez.version>0.9.1-mapr</tez.version>
-         <mapr.version>6.1.0-mapr-SNAPSHOT</mapr.version>
+         <mapr.version>6.2.0-mapr-SNAPSHOT</mapr.version>
          <kafka.version>1.1.1-mapr-SNAPSHOT</kafka.version>
 
          <jetty.version>9.4.22.v20191022</jetty.version>
@@ -2172,6 +2172,21 @@
                 <artifactId>maprfs</artifactId>
                 <version>${mapr.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.mapr.db</groupId>
+                <artifactId>maprdb</artifactId>
+                <version>${mapr.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mapr.db</groupId>
+                <artifactId>maprdb-mapreduce</artifactId>
+                <version>${mapr.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.11.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
