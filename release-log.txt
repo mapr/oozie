@@ -1,3 +1,7 @@
+-- Oozie 5.3.0 backported (mapr)
+
+OOZIE-3592 Do not print misleading SecurityException for successful jobs (matijhs via asalamon74)
+
 -- Oozie 5.1.0 release
 
 OOZIE-3415 [core] libpath cannot be used together with coord.application.path and bundle.application.path (asalamon74 via andras.piros)
