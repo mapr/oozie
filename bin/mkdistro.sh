@@ -62,7 +62,7 @@ MVN_OPTS="-Dbuild.time=${DATETIME} -Dvc.revision=${VC_REV} -Dvc.url=${VC_URL} -D
 DATETIME2=$(date -u "+%Y%m%d-%H%M%SGMT")
 export DATETIME2
 
-if ! mvn clean package assembly:single "${MVN_OPTS}" "$@"; then
+if ! ./mvnw clean package assembly:single "${MVN_OPTS}" "$@"; then
   echo
   echo "ERROR, Oozie distro creation failed"
   echo

@@ -29,3 +29,6 @@ distro/downloads
 SecurityAuth.audit
 build
 webapp/overlays
+
+# Maven Wrapper can download its jar
+.mvn/wrapper/maven-wrapper.jar
