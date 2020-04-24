@@ -91,7 +91,7 @@
 
 
          <!-- Sharelib component versions -->
-         <hive.version>2.3.6.0-mapr-SNAPSHOT</hive.version>
+         <hive.version>2.3.7-mapr-SNAPSHOT</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
          <pig.version>0.16.0-mapr-SNAPSHOT</pig.version>
          <pig.classifier>h2</pig.classifier>
