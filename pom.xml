@@ -94,7 +94,6 @@
          <hive.version>2.3.6-mapr-SNAPSHOT</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
          <pig.version>0.16.0-mapr-SNAPSHOT</pig.version>
-         <pig.classifier>h2</pig.classifier>
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7-mapr</sqoop.version>
          <spark.version>2.4.4.0-mapr-SNAPSHOT</spark.version>
@@ -1149,7 +1148,6 @@
                 <groupId>org.apache.pig</groupId>
                 <artifactId>pig</artifactId>
                 <version>${pig.version}</version>
-                <classifier>${pig.classifier}</classifier>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.hadoop</groupId>
