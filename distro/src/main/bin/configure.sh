@@ -141,8 +141,9 @@ copyMaprLibs() {
   done
 
   # move mapr jars if available
-  findAndCopyJar "${MAPR_HOME}/lib" -iname "JPam*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" -iname "zookeeper-*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" -iname "JPam-[0-9].*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" -iname "zookeeper-[0-9].*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" -iname "zookeeper-jute-[0-9].*.jar" 2> /dev/null
   findAndCopyJar "${MAPR_HOME}/lib" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
 }
 

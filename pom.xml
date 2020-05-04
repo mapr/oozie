@@ -1566,11 +1566,15 @@
                 <exclusions>
                     <exclusion>
                         <groupId>tomcat</groupId>
-                        <artifactId>jasper-compiler</artifactId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>tomcat</groupId>
-                        <artifactId>jasper-runtime</artifactId>
+                        <groupId>org.apache.tomcat</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>javax.servlet</groupId>
@@ -1598,7 +1602,15 @@
                     </exclusion>
                     <exclusion>
                         <groupId>tomcat</groupId>
-                        <artifactId>jasper-compiler</artifactId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tomcat</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1645,6 +1657,12 @@
                         <artifactId>mapr-mini-cluster</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.calcite.avatica</groupId>
+                <artifactId>avatica</artifactId>
+                <version>1.9.0</version>
             </dependency>
 
             <dependency>
