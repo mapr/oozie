@@ -99,7 +99,6 @@
          <spark.version>2.4.5.0-mapr-SNAPSHOT</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
-         <spark.guava.version>14.0.1</spark.guava.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
          <avro.version>1.8.2</avro.version>
@@ -133,6 +132,7 @@
          <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
          <spotbugs.version>3.1.11</spotbugs.version>
          <powermock.version>2.0.2</powermock.version>
+        <guava.version>28.2-jre</guava.version>
     </properties>
 
     <modules>
@@ -1856,7 +1856,13 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>28.2-jre</version>
+                <version>${guava.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>listenablefuture</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
