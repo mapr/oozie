@@ -95,6 +95,17 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
   jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
   
+  if [ "$1" = "start" ] || [ "$1" = "run" ]; then
+      LOG_JMX_MSGS=1
+  else
+      LOG_JMX_MSGS=0
+  fi
+
+  function logJmxMsg()
+  {
+      [ $LOG_JMX_MSGS -eq 1 ] && echo "$*"
+  }
+
   #Mapr JMX handling
   MAPR_JMX_PORT=${MAPR_JMX_OOZIE_PORT:-9010}
   
@@ -111,7 +122,7 @@ setup_jetty_opts() {
   fi
   
   if [ -z "$MAPR_JMXDISABLE" ] && [ -z "$MAPR_JMXLOCALHOST" ] && [ -z "$MAPR_JMXREMOTEHOST" ]; then
-      echo "No MapR JMX options given - defaulting to local binding"
+      logJmxMsg "No MapR JMX options given - defaulting to local binding"
   fi
   
   if [[ ( -z "$MAPR_JMXDISABLE" || "$MAPR_JMXDISABLE" = 'false' ) && \
@@ -119,13 +130,23 @@ setup_jetty_opts() {
       # default setting for localBinding
       MAPR_JMX_OPTS="-Dcom.sun.management.jmxremote"
       if [ "$MAPR_JMXAUTH" = "true" ]; then
-          MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.authenticate=true \
-              -Dcom.sun.management.jmxremote.password.file=$MAPR_HOME/conf/jmxremote.password \
-              -Dcom.sun.management.jmxremote.access.file=$MAPR_HOME/conf/jmxremote.access"
+          if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
+              if [ -f "$MAPR_HOME/conf/jmxremote.password" ] && [ -f "$MAPR_HOME/conf/jmxremote.access" ]; then
+                  MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.authenticate=true \
+                      -Dcom.sun.management.jmxremote.password.file=$MAPR_HOME/conf/jmxremote.password \
+                      -Dcom.sun.management.jmxremote.access.file=$MAPR_HOME/conf/jmxremote.access"
+              else
+                  logJmxMsg "JMX password and/or access files missing - not starting since we are in secure mode"
+                  [ $LOG_JMX_MSGS -eq 1 ] && exit 1
+              fi
+          else
+              logJmxMsg "JMX Authentication configured - not starting since we are not in secure mode"
+              [ $LOG_JMX_MSGS -eq 1 ] && exit 1
+          fi
       fi
   
       if [ "$MAPR_JMXLOCALHOST" = "true" ] && [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
-          echo "WARNING: Both MAPR_JMXLOCALHOST and MAPR_JMXREMOTEHOST options are enbled - defaulting to MAPR_JMXLOCAHOST config"
+          logJmxMsg "WARNING: Both MAPR_JMXLOCALHOST and MAPR_JMXREMOTEHOST options are enabled - defaulting to MAPR_JMXLOCALHOST config"
           MAPR_JMXREMOTEHOST=false
       fi
       if [ "$MAPR_JMXLOCALHOST" = "true" ] || [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
@@ -142,24 +163,24 @@ setup_jetty_opts() {
           fi
   
           if [ -z "$MAPR_JMX_PORT" ]; then
-              echo "WARNING: No JMX port given for oozie - disabling TCP base JMX service"
+              logJmxMsg "WARNING: No JMX port given for oozie - disabling TCP base JMX service"
               MAPR_JMX_OPTS=""
           else
               if [ "$MAPR_JMXLOCALHOST" = "true" ]; then
-                  echo "Enabling TCP JMX for oozie only on localhost port $MAPR_JMX_PORT"
+                  logJmxMsg "Enabling TCP JMX for oozie only on localhost port $MAPR_JMX_PORT"
               else
-                  echo "Enabling TCP JMX for oozie on port $MAPR_JMX_PORT"
+                  logJmxMsg "Enabling TCP JMX for oozie on port $MAPR_JMX_PORT"
               fi
               MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.port=$MAPR_JMX_PORT"
           fi
       fi
   
       if [ "$MAPR_JMXLOCALBINDING" = "true" ] && [ -z "$MAPR_JMX_OPTS" ]; then
-          echo "Enabling JMX local binding only"
+          logJmxMsg "Enabling JMX local binding only"
           MAPR_JMX_OPTS="-Dcom.sun.management.jmxremote"
       fi
   else
-      echo "JMX disabled by user request"
+      logJmxMsg "JMX disabled by user request"
       MAPR_JMX_OPTS=""
   fi
 
