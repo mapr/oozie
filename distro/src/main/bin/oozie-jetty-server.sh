@@ -143,6 +143,8 @@ setup_jetty_opts() {
               logJmxMsg "JMX Authentication configured - not starting since we are not in secure mode"
               [ $LOG_JMX_MSGS -eq 1 ] && exit 1
           fi
+      else
+          MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
       fi
   
       if [ "$MAPR_JMXLOCALHOST" = "true" ] && [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
