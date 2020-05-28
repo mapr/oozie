@@ -94,12 +94,11 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} ${MAPR_ECOSYSTEM_SERVER_LOGIN_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
   jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
-  
-  if [ "$1" = "start" ] || [ "$1" = "run" ]; then
-      LOG_JMX_MSGS=1
-  else
-      LOG_JMX_MSGS=0
-  fi
+
+  case "$actionCmd" in
+  start|run) LOG_JMX_MSGS=1 ;;
+  *) LOG_JMX_MSGS=0 ;;
+  esac
 
   function logJmxMsg()
   {
@@ -348,11 +347,12 @@ jetty_main() {
   fi
   JETTY_DIR=${BASEDIR}/embedded-oozie-server
 
+  actionCmd=$1
+
   setup_jetty_log_and_pid
   setup_java_opts
   setup_jetty_opts
 
-  actionCmd=$1
   case $actionCmd in
     (run)
        ${BASEDIR}/bin/oozie-setup.sh
