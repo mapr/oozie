@@ -2771,7 +2771,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.https.include.protocols</name>
-        <value>TLSv1,SSLv2Hello,TLSv1.1,TLSv1.2</value>
+        <value>TLSv1.2</value>
         <description>
             Enabled TLS protocols.
         </description>
