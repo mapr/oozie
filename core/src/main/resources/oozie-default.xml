@@ -115,7 +115,7 @@
 
     <property>
         <name>oozie.base.url</name>
-        <value>http://${oozie.http.hostname}:${oozie.http.port}/oozie</value>
+        <value>http://${oozie_fqdn}:${oozie.http.port}/oozie</value>
         <description>
              Base Oozie URL.
         </description>
@@ -2687,7 +2687,7 @@ will be the requeue interval for the actions which are waiting for a long time w
 
     <property>
         <name>oozie.http.hostname</name>
-        <value>${oozie_hostname}</value>
+        <value>0.0.0.0</value>
         <description>
             Oozie server host name. The network interface Oozie server binds to as an IP address or a hostname.
             Most users won't need to change this setting from the default value.

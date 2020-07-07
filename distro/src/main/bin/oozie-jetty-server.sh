@@ -93,7 +93,7 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Dmapr.library.flatclass=true";
   jetty_opts="${jetty_opts} ${MAPR_ECOSYSTEM_SERVER_LOGIN_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
-  jetty_opts="${jetty_opts} -Doozie_hostname=`hostname -f`";
+  jetty_opts="${jetty_opts} -Doozie_fqdn=`hostname -f`";
 
   case "$actionCmd" in
   start|run) LOG_JMX_MSGS=1 ;;

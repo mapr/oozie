@@ -34,6 +34,7 @@ import org.apache.oozie.service.ConfigurationService;
 import org.apache.oozie.service.ServiceException;
 import org.apache.oozie.service.Services;
 import org.apache.oozie.util.ConfigUtils;
+import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.rewrite.handler.HeaderPatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -133,6 +134,9 @@ public class EmbeddedOozieServer {
 
         if (isSecured()) {
             httpsPort =  getConfigPort(ConfigUtils.OOZIE_HTTPS_PORT);
+            httpConfiguration.setSecurePort(httpsPort);
+            httpConfiguration.setSecureScheme(HttpScheme.HTTPS.asString());
+
             ServerConnector sslConnector = sslServerConnectorFactory.createSecureServerConnector(httpsPort, conf, server);
             server.setConnectors(new Connector[]{connector, sslConnector});
             constraintSecurityHandler.setHandler(servletContextHandler);
