@@ -3240,7 +3240,7 @@ function initConsole() {
     // main tab panel containing Workflow Jobs, Coordinator Jobs, Bundle Jobs, System Info, ...
     var tabs = new Ext.TabPanel({
         renderTo: 'oozie-console',
-        height: 580,
+        height: 680,
         title: "Oozie Web Console"
 
     });

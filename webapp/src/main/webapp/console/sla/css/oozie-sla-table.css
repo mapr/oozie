@@ -75,42 +75,54 @@ table.display thead th div.DataTables_sort_wrapper span {
     top: 50%;
 }
 
-div.dataTables_length {
+.dataTables_wrapper .dataTables_length {
     float: right;
 }
 
-div.dataTables_filter {
+.dataTables_wrapper .dataTables_filter {
     float: left;
 }
 
-div.dataTables_info {
+.dataTables_wrapper .dataTables_info {
     float: left;
 }
 
-div.dataTables_paginate {
+.dataTables_wrapper .dataTables_paginate {
+    float: right;
+}
+
+.dataTables_wrapper .dt-buttons {
     float: right;
 }
 
 div.dataTables_length,
 div.dataTables_filter,
 div.dataTables_paginate,
-div.dataTables_info {
+div.dataTables_info,
+div.dt-buttons {
     padding: 6px;
 }
 
-.ColVis_Button {
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    background-color: white;
+}
+
+.dataTables_wrapper .dt-buttons button {
     background: -moz-linear-gradient(center top , #FFFFFF 0%, #F3F3F3 89%, #F9F9F9 100%) repeat scroll 0 0 transparent !important;
     box-shadow: 1px 1px 3px #CCCCCC;
     border-radius: 2px 2px 2px 2px;
     height: 26px;
     padding: 5px 8px;
-    margin-right: 2px;
-    float: right;
     cursor: pointer;
     text-align: center;
 }
 
-div.ColVis_collection button.ColVis_Button {
+.dataTables_wrapper div.dt-button-collection {
+    width: auto;
+}
+
+div.dt-button-collection button.buttons-columnVisibility {
     background-color: white;
     height: 100%;
     margin-bottom: 2px;
@@ -168,4 +180,8 @@ a:active {
     cursor: pointer;
     margin: 0;
     padding: 2px 6px;
+}
+
+.sla-status-miss {
+    color: red;
 }

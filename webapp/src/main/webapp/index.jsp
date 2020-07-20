@@ -15,6 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
+<!doctype html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -23,11 +24,11 @@
         <link rel="stylesheet" type="text/css" href="oozie-console.css"/>
 
         <!-- jquery needs to be before extjs -->
-        <script type="text/javascript" charset="utf8" src="console/sla/js/table/jquery-1.8.3.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="console/sla/css/jquery.dataTables.css">
-        <script type="text/javascript" src="console/sla/js/table/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="console/sla/js/table/jquery-ui-1.10.3.custom.min.js"></script>
-        <script type="text/javascript" src="console/sla/js/table/jquery-ui-timepicker-addon.js"></script>
+        <script type="text/javascript" charset="utf8" src="console/sla/js/table/jquery-3.5.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="console/sla/css/datatables.min.css">
+        <script type="text/javascript" src="console/sla/js/table/datatables.min.js"></script>
+        <script type="text/javascript" src="console/sla/js/table/jquery-ui-1.12.1.min.js"></script>
+        <script type="text/javascript" src="console/sla/js/table/flatpickr-4.6.6.min.js"></script>
         <script type="text/javascript" src="console/sla/js/graph/jquery.flot.min.js"></script>
         <script type="text/javascript" src="console/sla/js/oozie-sla.js"></script>
 

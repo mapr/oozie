@@ -16,86 +16,97 @@
  * limitations under the License.
  */
 
+var oTable;
 var columnsToShow = [
-              { "mData": null,  "bSortable": false, "sWidth":"0.1%", "bVisible": true},
-              { "mData": "id"},
-              { "mData": "slaStatus"},
-              { "mData": "nominalTimeTZ", "sDefaultContent": ""},
-              { "mData": "expectedStartTZ", "sDefaultContent": ""},
-              { "mData": "actualStartTZ", "sDefaultContent": "" },
-              { "mData": "startDiff", "sDefaultContent": ""},
-              { "mData": "expectedEndTZ"},
-              { "mData": "actualEndTZ", "sDefaultContent": ""},
-              { "mData": "endDiff", "sDefaultContent": ""},
-              { "mData": "expectedDuration", "sDefaultContent": "", "bVisible": false},
-              { "mData": "actualDuration", "sDefaultContent": "", "bVisible": false},
-              { "mData": "durDiff", "sDefaultContent": "", "bVisible": false},
-              { "mData": "slaMisses", "sDefaultContent": ""},
-              { "mData": "jobStatus", "sDefaultContent": ""},
-              { "mData": "parentId", "sDefaultContent": "", "bVisible": false},
-              { "mData": "appName", "bVisible": false},
-              { "mData": "slaAlertStatus", "bVisible": false},
-             ];
+    {"data": null, "orderable": false, "width": "0.1%", "visible": true},
+    {"data": "id"},
+    {"data": "slaStatus"},
+    {"data": "nominalTimeTZ", "defaultContent": ""},
+    {"data": "expectedStartTZ", "defaultContent": ""},
+    {"data": "actualStartTZ", "defaultContent": ""},
+    {"data": "startDiff", "defaultContent": ""},
+    {"data": "expectedEndTZ"},
+    {"data": "actualEndTZ", "defaultContent": ""},
+    {"data": "endDiff", "defaultContent": ""},
+    {"data": "expectedDuration", "defaultContent": "", "visible": false},
+    {"data": "actualDuration", "defaultContent": "", "visible": false},
+    {"data": "durDiff", "defaultContent": "", "visible": false},
+    {"data": "slaMisses", "defaultContent": ""},
+    {"data": "jobStatus", "defaultContent": ""},
+    {"data": "parentId", "defaultContent": "", "visible": false},
+    {"data": "appName", "visible": false},
+    {"data": "slaAlertStatus", "visible": false},
+];
 
-$.fn.dataTableExt.oApi.fnGetTds  = function ( oSettings, mTr )
-{
-    var anTds = [];
-    var anVisibleTds = [];
-    var iCorrector = 0;
-    var nTd, iColumn, iColumns;
-
-    /* Take either a TR node or aoData index as the mTr property */
-    var iRow = (typeof mTr == 'object') ?
-        oSettings.oApi._fnNodeToDataIndex(oSettings, mTr) : mTr;
-    var nTr = oSettings.aoData[iRow].nTr;
-
-    /* Get an array of the visible TD elements */
-    for ( iColumn=0, iColumns=nTr.childNodes.length ; iColumn<iColumns ; iColumn++ )
-    {
-        nTd = nTr.childNodes[iColumn];
-        if ( nTd.nodeName.toUpperCase() == "TD" )
-        {
-            anVisibleTds.push( nTd );
-        }
-    }
-
-    /* Construct and array of the combined elements */
-    for ( iColumn=0, iColumns=oSettings.aoColumns.length ; iColumn<iColumns ; iColumn++ )
-    {
-        if ( oSettings.aoColumns[iColumn].bVisible )
-        {
-            anTds.push( anVisibleTds[iColumn-iCorrector] );
-        }
-        else
-        {
-            anTds.push( oSettings.aoData[iRow]._anHidden[iColumn] );
-            iCorrector++;
-        }
-    }
-
-    return anTds;
-};
 
 function initializeTable() {
-    $('#sla_table').dataTable({
-        "bJQueryUI": true,
-        "sScrollX": "100%",
-        "bFilter": false,
-        "aoColumns": columnsToShow,
-        /** scroll required as this is within extjs panel, change size according to table attributes **/
-        "sScrollY": "360px",
-        "bPaginate": true,
-        "bStateSave": true,
-        "aaSorting": [[ 3, 'desc' ]],
-        "bDestroy": true
-    });
-
+    var table = $('#sla_table').DataTable(
+      {
+          "jQueryUI": true,
+          "dom": '<"clear"><"fg-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix"fBlr>t<"fg-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix"ip>',
+          "stateSave": true,
+          "scrollY": "300px",
+          "scrollX": "100%",
+          "paging": true,
+          "pagingType": "full_numbers",
+          "buttons": [
+              "copy",
+              {
+                  "extend": "csv",
+                  // Ignore column 0
+                  "columns": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+              },
+              {
+                  "extend": "colvis",
+                  "columns": ":gt(0)",
+                  "text": "Show/Hide columns",
+                  "postfixButtons": [ 'colvisRestore' ],
+              },
+          ],
+          "columns": columnsToShow,
+          "rowCallback": function (row, data, iDisplayIndex, iDisplayIndexFull) {
+              var rowAllColumns = row.cells;
+              $(rowAllColumns[1]).html(
+                '<a href="/oozie?job=' + data.id + '" target="_blank">' + data.id
+                + '</a>');
+              $(rowAllColumns[15]).html(
+                '<a href="/oozie?job=' + data.parentId + '" target="_blank">'
+                + data.parentId + '</a>');
+              if (data.slaStatus == "MISS") {
+                  $(rowAllColumns[2]).addClass('sla-status-miss');
+              }
+              // Changing only the html with readable text to preserve sort order.
+              if (data.startDiff || data.startDiff == 0) {
+                  $(rowAllColumns[6]).html(timeElapsed(data.startDiff));
+              }
+              if (data.endDiff || data.endDiff == 0) {
+                  $(rowAllColumns[9]).html(timeElapsed(data.endDiff));
+              }
+              if (data.expectedDuration == -1) {
+                  $(rowAllColumns[10]).html("");
+              } else {
+                  $(rowAllColumns[10]).html(timeElapsed(data.expectedDuration));
+              }
+              if (data.actualDuration == -1) {
+                  $(rowAllColumns[11]).html("");
+              } else {
+                  $(rowAllColumns[11]).html(timeElapsed(data.actualDuration));
+              }
+              if (data.durDiff || data.durDiff == 0) {
+                  $(rowAllColumns[12]).html(timeElapsed(data.durDiff));
+              }
+              $("td:first", row).html(iDisplayIndexFull + 1);
+              return row;
+          },
+          "order": [[3, 'desc']]
+      });
+    return table;
 }
 
 function drawTable(jsonData) {
     var currentTime = new Date().getTime();
 
-    for ( var i = 0; i < jsonData.slaSummaryList.length; i++) {
+    for (var i = 0; i < jsonData.slaSummaryList.length; i++) {
         var slaMisses = "";
         var slaSummary = jsonData.slaSummaryList[i];
 
@@ -124,68 +135,10 @@ function drawTable(jsonData) {
         }
         slaSummary.slaMisses = slaSummary.eventStatus;
     }
-    oTable = $('#sla_table').dataTable(
-            {
-                "bJQueryUI" : true,
-                "sDom" : 'CT<"clear"> <"H"lfr>t<"F"ip>',
-                "oColVis" : {
-                    "buttonText" : "Show/Hide columns",
-                    "bRestore" : true,
-                    "aiExclude" : [ 0 ]
-                },
-                "bStateSave" : true,
-                "sScrollY" : "360px",
-                "sScrollX" : "100%",
-                "bPaginate" : true,
-                "sPaginationType": "full_numbers",
-                "oTableTools" : {
-                    "sSwfPath" : "console/sla/js/table/copy_csv_xls_pdf.swf",
-                    "aButtons" : [
-                                   "copy",
-                                   {
-                                       "sExtends": "csv",
-                                       // Ignore column 0
-                                       "mColumns": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
-                                   },
-                                 ],
-                },
-                "aaData" : jsonData.slaSummaryList,
-                "aoColumns" : columnsToShow,
-                "fnRowCallback" : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                    var rowAllColumns = this.fnGetTds(nRow);
-                    $(rowAllColumns[1]).html(
-                            '<a href="/oozie?job=' + aData.id + '" target="_blank">' + aData.id
-                                    + '</a>');
-                    $(rowAllColumns[15]).html(
-                            '<a href="/oozie?job=' + aData.parentId + '" target="_blank">'
-                                    + aData.parentId + '</a>');
-                    if (aData.slaStatus == "MISS") {
-                        $(rowAllColumns[2]).css('color', 'red');
-                    }
-                    // Changing only the html with readable text to preserve sort order.
-                    if (aData.startDiff || aData.startDiff == 0) {
-                        $(rowAllColumns[6]).html(timeElapsed(aData.startDiff));
-                    }
-                    if (aData.endDiff || aData.endDiff == 0) {
-                        $(rowAllColumns[9]).html(timeElapsed(aData.endDiff));
-                    }
-                    if (aData.expectedDuration == -1) {
-                        $(rowAllColumns[10]).html("");
-                    } else {
-                        $(rowAllColumns[10]).html(timeElapsed(aData.expectedDuration));
-                    }
-                    if (aData.actualDuration == -1) {
-                        $(rowAllColumns[11]).html("");
-                    } else {
-                        $(rowAllColumns[11]).html(timeElapsed(aData.actualDuration));
-                    }
-                    if (aData.durDiff || aData.durDiff == 0) {
-                        $(rowAllColumns[12]).html(timeElapsed(aData.durDiff));
-                    }
-                    $("td:first", nRow).html(iDisplayIndexFull + 1);
-                    return nRow;
-                },
-                "aaSorting" : [ [ 3, 'desc' ] ],
-                "bDestroy" : true
-            });
+
+    if (!oTable) {
+        oTable = initializeTable();
+    }
+    oTable.clear();
+    oTable.rows.add(jsonData.slaSummaryList).draw();
 }

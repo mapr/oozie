@@ -17,8 +17,9 @@
  */
 
 function initializeDatePicker() {
-   $(".datepicker").datetimepicker({
-           dateFormat: 'yy-mm-dd'
+   $(".datepicker").flatpickr({
+       enableTime: true,
+       dateFormat: 'Y-m-d H:i'
    });
 }
 
@@ -115,7 +116,7 @@ function buildTableAndGraph(jsonData) {
                 }
                 $("#Table").show();
                 /* Needed otherwise width of column header will be resized */
-                oTable.fnAdjustColumnSizing();
+                oTable.columns.adjust();
                 $("#Graph").hide();
             }
         }
