@@ -104,6 +104,7 @@ copyExtraLib(){
   if [ ! -f $OOZIE_HOME/share/lib/spark/maprbuildversion-*.jar ]; then
       find $OOZIE_HOME/share -maxdepth 0 -type d -exec cp $MAPR_HOME/lib/maprbuildversion-*.jar {}/lib/spark/ \;
   fi
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/oozie" -name "mapr-ojai-driver-*.jar" -not -name "*tests*.jar"
 }
 
 configureOozieJMX() {
@@ -114,7 +115,9 @@ configureOozieJMX() {
 }
 
 findAndCopyJar() {
-   local sourceDir="${1}"; shift
+   local sourceDir="${1}"
+   local targetDir="${2}"
+   shift 2
    local filters="$@"
    foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
    test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
@@ -126,8 +129,8 @@ findAndCopyJar() {
          return 1
    fi
 
-   find ${JETTY_LIB_DIR} ${filters} -delete
-   cp "${foundJar}" ${JETTY_LIB_DIR}
+   find "$targetDir" ${filters} -delete
+   cp "${foundJar}" "$targetDir"
 }
 
 copyMaprLibs() {
@@ -137,14 +140,14 @@ copyMaprLibs() {
   local suffix="-[0-9.]*"
   local hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:commons-configuration-*.jar"
   for jar in ${hadoopJars//:/$'\n'}; do
-    findAndCopyJar ${HADOOP_HOME} -iname "${jar}" || exit -1
+    findAndCopyJar "${HADOOP_HOME}" "${JETTY_LIB_DIR}" -iname "${jar}" || exit -1
   done
 
   # move mapr jars if available
-  findAndCopyJar "${MAPR_HOME}/lib" -iname "JPam-[0-9].*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" -iname "zookeeper-[0-9].*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" -iname "zookeeper-jute-[0-9].*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "JPam-[0-9].*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-[0-9].*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-jute-[0-9].*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
 }
 
 #
