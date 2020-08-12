@@ -14,6 +14,7 @@ OOZIE_TMP_DIR=/tmp/oozieTmp
 HADOOP_VER=$(cat "$MAPR_HOME/hadoop/hadoopversion")
 HADOOP_HOME="$MAPR_HOME/hadoop/hadoop-$HADOOP_VER"
 secureCluster=0
+clientNode=0
 MAPR_USER=""
 MAPR_GROUP=""
 
@@ -176,12 +177,31 @@ if [ ${#} -gt 1 ]; then
         return 0 2>/dev/null || exit 0
         ;;
       -EC|--EC)
+        #Parse Common options
+        #Ingore ones we don't care about
+        ecOpts=($2)
+        shift 2
+        restOpts="$@"
+        eval set -- "${ecOpts[@]} --"
+        while (($#)); do
+          case "$1" in
+            --client | -c)
+              clientNode=1
+              shift 1
+              ;;
+            *)
+              #echo "Ignoring common option $j"
+              shift 1
+              ;;
+          esac
+        done
+        shift 2
+        eval set -- "$restOpts"
+        ;;
+      -R|--R)
          shift
          ;;
-       -R|--R)
-         shift
-         ;;
-       --)
+      --)
         echo "$USAGE"
         return 1 2>/dev/null || exit 1
         ;;
@@ -197,6 +217,10 @@ fi
 #
 if [ ! -d ${OOZIE_TMP_DIR} ]; then
   mkdir -p ${OOZIE_TMP_DIR}
+fi
+
+if [ "$secureCluster" == "1" ] && [ "$clientNode" == "1" ]; then
+  sed -i '/OOZIE_CLIENT_OPTS/s/^#*//g' ${OOZIE_HOME}/conf/oozie-client-env.sh
 fi
 
 extractSharelib
