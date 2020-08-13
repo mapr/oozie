@@ -120,7 +120,7 @@ setup_jetty_opts() {
   jetty_cp="${JETTY_DIR}/*:${JETTY_DIR}/dependency/*:${BASEDIR}/lib/*:${BASEDIR}/libtools/*:${JETTY_DIR}/webapp/WEB-INF/classes/:${JETTY_DIR}"
   # find libraries and concat via semicolon without a trailing one
   jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -name "slf4j-log4j12*.jar" -print0 | tr '\0' ':' | head -c -1)"
-  jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -name "log4j-*.jar" -print0 | tr '\0' ':' | head -c -1)"
+  jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -maxdepth 1 -name "log4j-*.jar" -print0 | tr '\0' ':' | head -c -1)"
   jetty_opts="${jetty_opts} -cp $jetty_cp"
   echo "Adding to JETTY_OPTS:     ${jetty_opts}"
 
