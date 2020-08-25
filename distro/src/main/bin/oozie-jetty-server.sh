@@ -95,84 +95,86 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
   jetty_opts="${jetty_opts} -Doozie_fqdn=`hostname -f`";
   #JMX opts
+  isSecure="false"
+  if [ -f "${MAPR_HOME:-/opt/mapr}/conf/mapr-clusters.conf" ]; then
+    isSecure=$(head -1 ${MAPR_HOME:-/opt/mapr}/conf/mapr-clusters.conf | grep -o 'secure=\w*' | cut -d= -f2)
+  fi
+
+  MAPR_JMX_PORT=${MAPR_JMX_OOZIE_PORT:-3418}
+
+  if [ -z "$MAPR_JMXLOCALBINDING" ]; then
+    MAPR_JMXLOCALBINDING="false"
+  fi
+
+  if [ -z "$MAPR_JMXAUTH" ]; then
+    MAPR_JMXAUTH="false"
+  fi
+
+  if [ -z "$MAPR_JMXSSL" ]; then
+    MAPR_JMXSSL="false"
+  fi
+
+  if [ -z "$MAPR_AUTH_LOGIN_CONFIG_FILE" ]; then
+    MAPR_AUTH_LOGIN_CONFIG_FILE="${MAPR_HOME:-/opt/mapr}/conf/mapr.login.conf"
+  fi
+
+  if [ -z "$MAPR_LOGIN_CONFIG" ]; then
+    MAPR_LOGIN_CONFIG="JMX_AGENT_LOGIN"
+  fi
+
+  if [ -z "$MAPR_JMXDISABLE" ] && [ -z "$MAPR_JMXLOCALHOST" ] && [ -z "$MAPR_JMXREMOTEHOST" ]; then
+    echo "No MapR JMX options given - defaulting to local binding"
+  fi
+
   if [[ ( -z "$MAPR_JMXDISABLE" || "$MAPR_JMXDISABLE" = 'false' ) && \
-    ( -z "$MAPR_JMX_OOZIE_ENABLE" || "$MAPR_JMX_OOZIE_ENABLE" = "true" ) ]]; then
+        ( -z "$MAPR_JMX_OOZIE_ENABLE" || "$MAPR_JMX_OOZIE_ENABLE" = "true" ) ]]; then
 
-    isSecure="false"
-    if [ -f "${BASEMAPR:-/opt/mapr}/conf/mapr-clusters.conf" ]; then
-      isSecure=$(head -1 ${BASEMAPR:-/opt/mapr}/conf/mapr-clusters.conf | grep -o 'secure=\w*' | cut -d= -f2)
+    # default setting for localBinding
+    MAPR_JMX_OPTS="-Dcom.sun.management.jmxremote"
+
+    if [ "$MAPR_JMXLOCALHOST" = "true" ] && [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
+      echo "WARNING: Both MAPR_JMXLOCALHOST and MAPR_JMXREMOTEHOST options are enabled - defaulting to MAPR_JMXLOCAHOST config"
+      MAPR_JMXREMOTEHOST=false
     fi
 
-    MAPR_JMX_PORT=${MAPR_JMX_OOZIE_PORT:-3418}
-
-    if [ -z "$MAPR_JMXLOCALBINDING" ]; then
-      MAPR_JMXLOCALBINDING="false"
-    fi
-
-    if [ -z "$MAPR_JMXAUTH" ]; then
-      MAPR_JMXAUTH="false"
-    fi
-
-    if [ -z "$MAPR_JMXSSL" ]; then
-      MAPR_JMXSSL="false"
-    fi
-
-    if [ -z "$MAPR_JMXDISABLE" ] && [ -z "$MAPR_JMXLOCALHOST" ] && [ -z "$MAPR_JMXREMOTEHOST" ]; then
-      echo "WARNING: No MapR JMX options given - defaulting to local binding"
-    fi
-
-    if [ -z "$MAPR_JMX_AGENT" ]; then
-      if [ -f "${BASEMAPR:-/opt/mapr}/lib/jmxagent.jar" ]; then
-        MAPR_JMX_AGENT="${BASEMAPR:-/opt/mapr}/lib/jmxagent.jar"
+    if [ "$isSecure" = "true" ] && [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
+      JMX_JAR="$(find "${MAPR_HOME:-/opt/mapr}/lib/" -name 'jmxagent*.jar' -print -quit)"
+      if [ -n "$JMX_JAR" ] && [ -f ${JMX_JAR} ]; then
+        MAPR_JMX_OPTS="-javaagent:$JMX_JAR \
+        -Dmapr.jmx.agent.login.config=$MAPR_LOGIN_CONFIG"
+        MAPR_JMXAUTH="true"
       else
-        echo "ERROR: No agent is specified and the default agent (jmxagent.jar) file is missing in Mapr library directory."
+        echo "jmxagent jar file is missing"
         exit 1
       fi
     fi
-
-    if [ -z "$MAPR_JMX_CONF" ]; then
-      if [ -f "${BASEMAPR:-/opt/mapr}/conf/mapr.login.conf" ]; then
-        MAPR_JMX_CONF="${BASEMAPR:-/opt/mapr}/conf/mapr.login.conf"
-      else
-        echo "ERROR: mapr.login.conf file is missing in Mapr config directory."
-        exit 1
-      fi
-    fi
-
-    MAPR_JMX_OPTS="-javaagent:${MAPR_JMX_AGENT} -Djava.security.auth.login.config=${MAPR_JMX_CONF} -Dmapr.jmx.agent.login.config=hadoop_simple -Dcom.sun.management.jmxremote"
 
     if [ "$MAPR_JMXAUTH" = "true" ]; then
       if [ "$isSecure" = "true" ]; then
-        if [ -f "${BASEMAPR:-/opt/mapr}/conf/jmxremote.password" ] && [ -f "${BASEMAPR:-/opt/mapr}/conf/jmxremote.access" ]; then
+        if [ -f "$MAPR_AUTH_LOGIN_CONFIG_FILE" ] && [ -f "${MAPR_HOME:-/opt/mapr}/conf/jmxremote.access" ]; then
           MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.authenticate=true \
-          -Dcom.sun.management.jmxremote.password.file=${BASEMAPR:-/opt/mapr}/conf/jmxremote.password \
-          -Dcom.sun.management.jmxremote.access.file=${BASEMAPR:-/opt/mapr}/conf/jmxremote.access"
+          -Djava.security.auth.login.config=$MAPR_AUTH_LOGIN_CONFIG_FILE \
+          -Dcom.sun.management.jmxremote.access.file=${MAPR_HOME:-/opt/mapr}/conf/jmxremote.access"
         else
-          echo "ERROR: JMX password and/or access files missing - not starting since we are in secure mode"
+          echo "JMX login config or access file missing - not starting since we are in secure mode"
           exit 1
         fi
+
+        if [ "$MAPR_JMXREMOTEHOST" = "false" ]; then
+          MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.login.config=$MAPR_LOGIN_CONFIG"
+        fi
       else
-        echo "ERROR: JMX Authentication configured - not starting since we are not in secure mode"
+        echo "JMX Authentication configured - not starting since we are not in secure mode"
         exit 1
       fi
     else
       MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
     fi
 
-    if [ "$MAPR_JMXLOCALHOST" = "true" ] && [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
-      echo "WARNING: Both MAPR_JMXLOCALHOST and MAPR_JMXREMOTEHOST options are enabled - defaulting to MAPR_JMXLOCAHOST config"
-      MAPR_JMXREMOTEHOST=false
-    elif [ "$MAPR_JMXLOCALHOST" = "false" ] && [ "$MAPR_JMXREMOTEHOST" = "false" ]; then
-      echo "WARNING: Both MAPR_JMXLOCALHOST and MAPR_JMXREMOTEHOST options are disabled."
-      MAPR_JMX_OPTS=""
-    elif [ -z "$MAPR_JMXLOCALHOST" ] && [ -z "$MAPR_JMXREMOTEHOST" ]; then
-      echo "WARNING: Both MAPR_JMXLOCALHOST and MAPR_JMXREMOTEHOST options are not specified."
-      MAPR_JMX_OPTS=""
-    fi
-
     if [ "$MAPR_JMXLOCALHOST" = "true" ] || [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
-      if [ "$MAPR_JMXSSL" = "true" ]; then
-        MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.ssl=true"
+      if [ "$MAPR_JMXSSL" = "true" ] && [ "$MAPR_JMXLOCALHOST" = "true" ] ; then
+        echo "WARNING: ssl is not supported in localhost. Setting default to false"
+        MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.ssl=false"
       else
         MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.ssl=false"
       fi
@@ -184,19 +186,24 @@ setup_jetty_opts() {
       fi
 
       if [ -z "$MAPR_JMX_PORT" ]; then
-        echo "WARNING: No JMX port given for OOZIE"
+        echo "WARNING: No JMX port given for Oozie - disabling TCP base JMX service"
         MAPR_JMX_OPTS=""
       else
-        if [ "$MAPR_JMXLOCALHOST" = "true" ]; then
-          echo "Enabling TCP JMX for OOZIE only on localhost port $MAPR_JMX_PORT"
+        if [ "$MAPR_JMXREMOTEHOST" = "true" ] && [ "$isSecure" = "true" ]; then
+          MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dmapr.jmx.agent.port=$MAPR_JMX_PORT"
+          echo "Enabling TCP JMX for Oozie on port $MAPR_JMX_PORT"
         else
-          echo "Enabling TCP JMX for OOZIE on port $MAPR_JMX_PORT"
+          MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dcom.sun.management.jmxremote.port=$MAPR_JMX_PORT"
+          if [ "$MAPR_JMXLOCALHOST" = "true" ]; then
+            echo "Enabling TCP JMX for Oozie only on localhost port $MAPR_JMX_PORT"
+          else
+            echo "Enabling TCP JMX for Oozie on port $MAPR_JMX_PORT"
+          fi
         fi
-        MAPR_JMX_OPTS="$MAPR_JMX_OPTS -Dmapr.jmx.agent.port=$MAPR_JMX_PORT"
       fi
     fi
-
-    if [ "$MAPR_JMXLOCALBINDING" = "true" ] && [ "$MAPR_JMX_OPTS" = "" ]; then
+    
+    if [ "$MAPR_JMXLOCALBINDING" = "true" ] && [ -z "$MAPR_JMX_OPTS" ]; then
       echo "Enabling JMX local binding only"
       MAPR_JMX_OPTS="-Dcom.sun.management.jmxremote"
     fi
@@ -204,7 +211,7 @@ setup_jetty_opts() {
     echo "JMX disabled by user request"
     MAPR_JMX_OPTS=""
   fi
-
+  
   jetty_opts="${jetty_opts} ${MAPR_JMX_OPTS}"
 
   # MapR Change: Set parameters in oozie-site.xml based on if MapR security is enabled or not
