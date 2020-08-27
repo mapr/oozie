@@ -132,6 +132,7 @@
          <spotbugs.version>3.1.11</spotbugs.version>
          <powermock.version>2.0.2</powermock.version>
         <guava.version>28.2-jre</guava.version>
+        <slf4j.version>1.7.25</slf4j.version>
     </properties>
 
     <modules>
@@ -375,7 +376,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.6.6</version>
+                <version>${slf4j.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -1667,12 +1668,12 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.6</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.6.6</version>
+                <version>${slf4j.version}</version>
                 <scope>provided</scope>
             </dependency>
 
