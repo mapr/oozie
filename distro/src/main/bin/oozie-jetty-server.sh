@@ -102,6 +102,8 @@ setup_jetty_opts() {
 
   MAPR_JMX_PORT=${MAPR_JMX_OOZIE_PORT:-3418}
 
+  JMX_JAR="$(find "${MAPR_HOME:-/opt/mapr}/lib/" -name 'jmxagent*.jar' -print -quit)"
+
   if [ -z "$MAPR_JMXLOCALBINDING" ]; then
     MAPR_JMXLOCALBINDING="false"
   fi
@@ -138,7 +140,6 @@ setup_jetty_opts() {
     fi
 
     if [ "$isSecure" = "true" ] && [ "$MAPR_JMXREMOTEHOST" = "true" ]; then
-      JMX_JAR="$(find "${MAPR_HOME:-/opt/mapr}/lib/" -name 'jmxagent*.jar' -print -quit)"
       if [ -n "$JMX_JAR" ] && [ -f ${JMX_JAR} ]; then
         MAPR_JMX_OPTS="-javaagent:$JMX_JAR \
         -Dmapr.jmx.agent.login.config=$MAPR_LOGIN_CONFIG"
@@ -232,6 +233,9 @@ setup_jetty_opts() {
   # find libraries and concat via semicolon without a trailing one
   jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -name "slf4j-log4j12*.jar" -print0 | tr '\0' ':' | head -c -1)"
   jetty_cp="$jetty_cp:$(find "$MAPR_HOME/lib/" -maxdepth 1 -name "log4j-*.jar" -print0 | tr '\0' ':' | head -c -1)"
+  if [ -f ${JMX_JAR} ]; then
+    jetty_cp=$jetty_cp:$JMX_JAR
+  fi
   jetty_opts="${jetty_opts} -cp $jetty_cp"
   echo "Adding to JETTY_OPTS:     ${jetty_opts}"
 
