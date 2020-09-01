@@ -201,6 +201,10 @@ if [ ${#} -gt 1 ]; then
       -R|--R)
          shift
          ;;
+      --client | -c)
+         clientNode=1
+         shift 1
+         ;;
       --)
         echo "$USAGE"
         return 1 2>/dev/null || exit 1
