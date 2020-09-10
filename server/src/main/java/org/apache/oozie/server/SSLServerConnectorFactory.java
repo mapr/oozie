@@ -139,7 +139,7 @@ class SSLServerConnectorFactory {
             keystorePass = new String(sslConfig.getClientKeystorePassword());
         }
         Preconditions.checkNotNull(keystorePass, "keystorePass is null");
-        sslContextFactory.setKeyManagerPassword(keystorePass);
+        sslContextFactory.setKeyStorePassword(keystorePass);
     }
 
     private void setKeyStoreFile() {
