@@ -48,7 +48,14 @@ if [ -r "${BASEDIR}/conf/oozie-client-env.sh" ]; then
 fi
 
 if [ "${OOZIE_URL}" = "" ]; then
-  export OOZIE_URL="http://$(hostname -f):11000/oozie"
+  case "$MAPR_SECURITY_STATUS" in
+  true)
+    export OOZIE_URL="https://$(hostname -f):11443/oozie"
+    ;;
+  *)
+    export OOZIE_URL="http://$(hostname -f):11000/oozie"
+    ;;
+  esac
 fi
 
 if [ ! -e ${BASEDIR}/lib ]; then
