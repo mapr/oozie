@@ -109,7 +109,7 @@
          <mapr.version>6.1.0-mapr-SNAPSHOT</mapr.version>
          <kafka.version>1.1.1-mapr-SNAPSHOT</kafka.version>
 
-         <jetty.version>9.4.22.v20191022</jetty.version>
+         <jetty.version>9.4.33.v20201020</jetty.version>
 
          <sun-jersey.version>1.18.6</sun-jersey.version>
          <jline.version>0.9.94</jline.version>
