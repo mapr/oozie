@@ -25,6 +25,7 @@ import org.apache.oozie.service.Services;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 public class OozieGuiceModule extends AbstractModule {
@@ -41,5 +42,7 @@ public class OozieGuiceModule extends AbstractModule {
         bind(JspHandler.class).toProvider(JspHandlerProvider.class).in(Singleton.class);
 
         bind(RewriteHandler.class).toProvider(RewriteHandlerProvider.class).in(Singleton.class);
+
+        bind(SslContextFactory.class).to(SslContextFactory.Server.class);
     }
 }
