@@ -345,13 +345,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-bagel_${spark.scala.binary.version}</artifactId>
+            <artifactId>spark-bagel_${spark.bagel.scala.binary.version}</artifactId>
             <version>${spark.bagel.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.mapr.db</groupId>
-            <artifactId>maprdb-spark</artifactId>
+            <artifactId>maprdb-spark_${spark.scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>compile</scope>
             <exclusions>

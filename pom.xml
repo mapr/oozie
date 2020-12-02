@@ -102,7 +102,8 @@
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
          <avro.version>1.8.2</avro.version>
-         <spark.scala.binary.version>2.11</spark.scala.binary.version>
+         <spark.scala.binary.version>2.12</spark.scala.binary.version>
+         <spark.bagel.scala.binary.version>2.11</spark.bagel.scala.binary.version>
          <kite.version>1.1.0</kite.version>
          <teradata.version>1.5.4</teradata.version>
          <tez.version>0.9.2.0-mapr-SNAPSHOT</tez.version>
