@@ -344,12 +344,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-bagel_${spark.bagel.scala.binary.version}</artifactId>
-            <version>${spark.bagel.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.mapr.db</groupId>
             <artifactId>maprdb-spark_${spark.scala.binary.version}</artifactId>
             <version>${spark.version}</version>
@@ -711,6 +705,12 @@
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
             <version>1.4.01</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <version>2.8</version>
         </dependency>
 
         <dependency>

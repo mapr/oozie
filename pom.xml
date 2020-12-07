@@ -97,8 +97,6 @@
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7-mapr</sqoop.version>
          <spark.version>2.4.7.0-mapr-SNAPSHOT</spark.version>
-         <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
-         <spark.bagel.version>1.6.1</spark.bagel.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
          <avro.version>1.8.2</avro.version>
@@ -122,7 +120,7 @@
          <jackson.version>2.9.10</jackson.version>
          <log4j.version>1.2.17</log4j.version>
          <activemq.version>5.15.9</activemq.version>
-         <commons.lang3.version>3.3.2</commons.lang3.version>
+         <commons.lang3.version>3.8.1</commons.lang3.version>
          <httpcore.version>4.4.11</httpcore.version>
          <httpclient.version>4.5.7</httpclient.version>
          <kyro.version>2.22</kyro.version>
@@ -2631,25 +2629,12 @@
             </properties>
         </profile>
         <profile>
-            <id>spark-1</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <spark.version>1.6.1</spark.version>
-                <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
-                <spark.bagel.version>1.6.1</spark.bagel.version>
-            </properties>
-        </profile>
-        <profile>
             <id>spark-2</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <spark.version>2.4.7.0-mapr-SNAPSHOT</spark.version>
-                <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
-                <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>
         </profile>
         <profile>
