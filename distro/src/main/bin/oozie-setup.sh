@@ -155,6 +155,7 @@ do
     OOZIE_OPTS="${OOZIE_OPTS} -Dderby.stream.error.file=${OOZIE_LOG}/derby.log"
     OOZIE_OPTS="${OOZIE_OPTS} -Dhadoop_conf_directory=${HADOOP_CONF_DIR}"
     OOZIE_OPTS="${OOZIE_OPTS} -Djava.security.auth.login.config=${MAPR_HOME}/conf/mapr.login.conf"
+    OOZIE_OPTS="${OOZIE_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
 
     OOZIECPPATH=""
     OOZIECPPATH=${BASEDIR}/lib/'*':${BASEDIR}/libtools/'*':${BASEDIR}/libext/'*'

@@ -38,3 +38,4 @@
 #
 # export OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Djavax.net.ssl.trustStore=/opt/mapr/conf/ssl_truststore"
 
+export OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"

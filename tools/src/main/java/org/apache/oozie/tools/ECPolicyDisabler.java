@@ -28,6 +28,7 @@ import org.apache.hadoop.ipc.RemoteException;
 import org.apache.hadoop.ipc.protobuf.RpcHeaderProtos.RpcResponseHeaderProto.RpcErrorCodeProto;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.oozie.util.XLog;
 
 /**
  * Utility class which can disable Erasure Coding for a given path.
@@ -43,6 +44,8 @@ public final class ECPolicyDisabler {
     private static final String SETERASURECODINGPOLICY_METHOD = "setErasureCodingPolicy";
     private static final String GETERASURECODINGPOLICY_METHOD = "getErasureCodingPolicy";
 
+    private final static XLog LOG = XLog.getLog(ECPolicyDisabler.class);
+
     enum Result {
         DONE, NO_SUCH_METHOD, ALREADY_SET, NOT_SUPPORTED;
     }
@@ -50,16 +53,16 @@ public final class ECPolicyDisabler {
     public static void tryDisableECPolicyForPath(FileSystem fs, Path path) {
         switch (check(fs, path)) {
             case DONE:
-                System.out.println("Done");
+                LOG.debug("Done");
                 break;
             case ALREADY_SET:
-                System.out.println("Current policy is already replication");
+                LOG.debug("Current policy is already replication");
                 break;
             case NOT_SUPPORTED:
-                System.out.println("Found Hadoop that does not support Erasure Coding. Not taking any action.");
+                LOG.debug("Found Hadoop that does not support Erasure Coding. Not taking any action.");
                 break;
             case NO_SUCH_METHOD:
-                System.out.println("HDFS Namenode doesn't support Erasure Coding.");
+                LOG.debug("HDFS Namenode doesn't support Erasure Coding.");
                 break;
         }
     }
