@@ -99,7 +99,7 @@
          <spark.version>2.4.4.0-mapr-SNAPSHOT</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
-         <spark.guava.version>14.0.1</spark.guava.version>
+         <guava.version>14.0.1</guava.version>
          <spark.scala.binary.version>2.11</spark.scala.binary.version>
          <sqoop.classifier>hadoop200</sqoop.classifier>
          <kite.version>1.1.0</kite.version>
@@ -1485,6 +1485,10 @@
                 <version>${hive.version}</version>
                 <exclusions>
                     <exclusion>
+                        <groupId>org.apache.calcite.avatica</groupId>
+                        <artifactId>avatica-core</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.apache.hive</groupId>
                         <artifactId>hive-llap-tez</artifactId>
                     </exclusion>
@@ -1828,7 +1832,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>11.0.2</version>
+                <version>${guava.version}</version>
             </dependency>
 
             <dependency>
