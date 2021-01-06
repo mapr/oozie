@@ -223,7 +223,7 @@
                     <artifactId>hive-metastore</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.spark-project.hive</groupId>
+                    <groupId>org.apache.hive</groupId>
                     <artifactId>hive-serde</artifactId>
                 </exclusion>
                 <exclusion>
@@ -679,6 +679,23 @@
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-serde</artifactId>
+            <version>${spark.hive.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.opencsv</groupId>
+                    <artifactId>opencsv</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
