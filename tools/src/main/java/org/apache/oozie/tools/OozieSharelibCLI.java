@@ -177,9 +177,7 @@ public class OozieSharelibCLI {
                 tmpDir.mkdir();
             }
 
-            File temp = File.createTempFile("oozie", ".dir", tmpDir);
-            temp.delete();
-            temp.mkdir();
+            File temp = Files.createTempDirectory(tmpDir.toPath(), "oozie").toFile();
             temp.deleteOnExit();
 
             //Check whether the lib is a tar file or folder
