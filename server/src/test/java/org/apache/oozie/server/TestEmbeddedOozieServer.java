@@ -60,6 +60,7 @@ public class TestEmbeddedOozieServer {
     @Mock private Services mockServices;
     @Mock private SSLServerConnectorFactory mockSSLServerConnectorFactory;
     @Spy private Server mockServer;
+    @Mock private OozieStatusServer mockStatusServer;
     @Mock private ServerConnector mockServerConnector;
     @Mock private ConfigurationService mockConfigService;
     @Mock private Configuration mockConfiguration;
@@ -74,7 +75,7 @@ public class TestEmbeddedOozieServer {
 
     @Before public void setUp() {
         embeddedOozieServer = new EmbeddedOozieServer(mockServer, mockJspHandler, mockServices, mockSSLServerConnectorFactory,
-                mockOozieRewriteHandler, servletContextHandler, oozieServletMapper, oozieFilterMapper, constraintSecurityHandler);
+                mockOozieRewriteHandler, servletContextHandler, oozieServletMapper, oozieFilterMapper, constraintSecurityHandler, mockStatusServer);
 
         doReturn("11000").when(mockConfiguration).get("oozie.http.port");
         doReturn("11443").when(mockConfiguration).get("oozie.https.port");

@@ -66,6 +66,7 @@ public class EmbeddedOozieServer {
     protected static final String TRUSTSTORE_PASS_SYSTEM_PROPERTY = "javax.net.ssl.trustStorePassword";
     private static String contextPath;
     protected Server server;
+    private OozieStatusServer statusServer;
     private int httpPort;
     private int httpsPort;
     private final WebAppContext servletContextHandler;
@@ -99,7 +100,8 @@ public class EmbeddedOozieServer {
                                final WebAppContext servletContextHandler,
                                final ServletMapper oozieServletMapper,
                                final FilterMapper oozieFilterMapper,
-                               final ConstraintSecurityHandler constraintSecurityHandler)
+                               final ConstraintSecurityHandler constraintSecurityHandler,
+                               final OozieStatusServer statusServer)
     {
         this.constraintSecurityHandler = constraintSecurityHandler;
         this.serviceController = Objects.requireNonNull(serviceController, "serviceController is null");
@@ -111,6 +113,7 @@ public class EmbeddedOozieServer {
         this.servletContextHandler = Objects.requireNonNull(servletContextHandler, "servletContextHandler is null");
         this.oozieServletMapper = Objects.requireNonNull(oozieServletMapper, "oozieServletMapper is null");
         this.oozieFilterMapper = Objects.requireNonNull(oozieFilterMapper, "oozieFilterMapper is null");
+        this.statusServer = Objects.requireNonNull(statusServer, "oozieStatusServer is null");
     }
 
     /**
@@ -264,6 +267,7 @@ public class EmbeddedOozieServer {
 
     public void start() throws Exception {
         server.start();
+        statusServer.start();
         LOG.info("Server started.");
     }
 
@@ -272,6 +276,11 @@ public class EmbeddedOozieServer {
         if (serviceController != null) {
             serviceController.destroy();
             LOG.info("Oozie services stopped.");
+        }
+
+        if (statusServer != null) {
+            statusServer.stop();
+            LOG.info("Status server stopped.");
         }
 
         if (server != null) {
