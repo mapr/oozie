@@ -83,7 +83,7 @@
         <hadoop.version>2.7.5.0-mapr-710-SNAPSHOT</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
-        <hbase.version>1.2.3</hbase.version>
+        <hbase.version>1.4.13.0-mapr-SNAPSHOT</hbase.version>
 
         <dropwizard.metrics.version>3.1.2</dropwizard.metrics.version>
 
