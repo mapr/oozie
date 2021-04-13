@@ -142,17 +142,37 @@
     </modules>
 
     <distributionManagement>
+        <snapshotRepository>
+            <id>mapr.snapshot</id>
+            <name>MapR Snapshot Repository</name>
+            <url>${env.MAPR_SNAPSHOTS_REPO}</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
         <repository>
-            <id>mapr.release</id>
-            <name>MapR Releases Repository</name>
-            <url>${env.MAPR_MAVEN_REPO}</url>
+            <id>mapr.central</id>
+            <name>MapR Central Repository</name>
+            <url>${env.MAVEN_CENTRAL}</url>
         </repository>
     </distributionManagement>
 
     <repositories>
         <repository>
+            <id>mapr.snapshot</id>
+            <url>${env.MAPR_SNAPSHOTS_REPO}</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>mapr.release</id>
-            <url>${env.MAPR_MAVEN_REPO}</url>
+            <url>${env.MAPR_RELEASES_REPO}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>mapr.central</id>
+            <url>${env.MAVEN_CENTRAL}</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
