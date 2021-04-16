@@ -39,7 +39,7 @@ MAPR_LIB_DIR=${MAPR_HOME_DIR}/lib
 ENV_FILE=env.sh
 
 # MapR change. Source env.sh if it exists
-if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print 2>>/dev/null) ]]; then
   source ${MAPR_CONF_DIR}/env.sh
 fi
 
