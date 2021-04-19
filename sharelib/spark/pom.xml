@@ -35,7 +35,7 @@
     <properties>
         <sharelib.action.postfix>spark</sharelib.action.postfix>
         <sharelib.transitive.filtering>false</sharelib.transitive.filtering>
-        <spark.hive.version>1.2.0-mapr-spark-MEP-7.x-SNAPSHOT</spark.hive.version>
+        <spark.hive.version>1.2.0-mapr-spark-MEP-7.1.0-2104</spark.hive.version>
     </properties>
 
     <dependencies>
