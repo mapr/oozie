@@ -1218,6 +1218,10 @@
                         <groupId>org.apache.hive</groupId>
                         <artifactId>hive-llap-server</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>mapr-log4j-slf4j-impl</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1466,6 +1470,10 @@
                         <groupId>org.apache.orc</groupId>
                         <artifactId>orc-core</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>mapr-log4j-slf4j-impl</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -1529,6 +1537,10 @@
                     <exclusion>
                         <groupId>org.apache.logging.log4j</groupId>
                         <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hive</groupId>
+                        <artifactId>mapr-log4j-slf4j-impl</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.pentaho</groupId>
