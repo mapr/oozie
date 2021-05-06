@@ -42,6 +42,10 @@ is_running() {
   SERVICE="$1"
   PID_FILE="$2"
 
+  if [ -L "$PID_FILE" ]; then
+    PID_FILE=$(readlink $PID_FILE)
+  fi
+
   if [ -f "$PID_FILE" ]; then
     if [ -s "$PID_FILE" ]; then
       kill -0 $(cat "$PID_FILE") >/dev/null 2>&1
