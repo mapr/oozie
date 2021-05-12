@@ -4,8 +4,7 @@ env.MAVEN_CENTRAL="${MAVEN_CENTRAL_COMMON}"
 env.MAPR_CENTRAL="${MAPR_CENTRAL_COMMON}"
 env.MAPR_RELEASES_REPO="${MAPR_RELEASES_REPO_COMMON}"
 env.MAPR_SNAPSHOTS_REPO="${MAPR_SNAPSHOTS_REPO_COMMON}"
-//Got this info from oozie freestyle job. Only oozie has mapr_maven_repo = mapr_releases_repo. Another jobs have mapr_snap_repo
-env.MAPR_MAVEN_REPO="${MAPR_RELEASES_REPO_COMMON}"
+env.MAPR_MAVEN_REPO="${MAPR_SNAPSHOTS_REPO_COMMON}"
 
 ARTIFACTORY_SERVER=''
 env.REPOSITORY_NAME=''
