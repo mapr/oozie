@@ -1503,6 +1503,7 @@
                 <groupId>org.apache.hive</groupId>
                 <artifactId>hive-exec</artifactId>
                 <version>${hive.version}</version>
+                <classifier>${hive.classifier}</classifier>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.calcite.avatica</groupId>
