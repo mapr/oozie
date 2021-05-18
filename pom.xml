@@ -130,10 +130,11 @@
          <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
          <spotbugs.version>3.1.11</spotbugs.version>
          <powermock.version>2.0.2</powermock.version>
-        <guava.version>28.2-jre</guava.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <commons-compress.version>1.20</commons-compress.version>
-        <parquet-avro.version>1.11.0</parquet-avro.version>
+         <guava.version>28.2-jre</guava.version>
+         <slf4j.version>1.7.25</slf4j.version>
+         <commons-compress.version>1.20</commons-compress.version>
+         <parquet-avro.version>1.11.0</parquet-avro.version>
+         <avatica.version>1.8.0</avatica.version>
     </properties>
 
     <modules>
@@ -1657,7 +1658,7 @@
             <dependency>
                 <groupId>org.apache.calcite.avatica</groupId>
                 <artifactId>avatica</artifactId>
-                <version>1.17.0</version>
+                <version>${avatica.version}</version>
             </dependency>
 
             <dependency>
