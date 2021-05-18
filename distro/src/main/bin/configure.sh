@@ -104,6 +104,12 @@ copyExtraLib(){
   fi
   findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/oozie" -name "mapr-ojai-driver-*.jar" -not -name "*tests*.jar"
   findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -name "maprbuildversion-*.jar" -not -name "*tests*.jar"
+  rm -f "$OOZIE_HOME/share/lib/spark/zookeeper-*"
+  rm -f "$OOZIE_HOME/share/lib/pig/zookeeper-*"
+  rm -f "$OOZIE_HOME/share/lib/hive/zookeeper-*"
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -iname "zookeeper-[0-9].*.jar" -not -name "*tests*.jar"
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/pig" -iname "zookeeper-[0-9].*.jar" -not -name "*tests*.jar"
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/hive" -iname "zookeeper-[0-9].*.jar" -not -name "*tests*.jar"
 }
 
 configureOozieJMX() {
@@ -144,7 +150,7 @@ copyMaprLibs() {
 
   # move mapr jars if available
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "JPam*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-[0-9].*.jar" -not -name "*test*.jar" 2> /dev/null
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
 }
 
