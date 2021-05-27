@@ -23,19 +23,21 @@ public class OozieStatusServer {
   private int port;
   private String hostname;
   private boolean enabled;
+  private int maxThread;
 
   @Inject
-  public OozieStatusServer(Boolean enabled, Integer port, String hostname) {
+  public OozieStatusServer(Boolean enabled, Integer port, String hostname, int maxThread) {
     this.enabled = enabled;
     this.port = Objects.requireNonNull(port, "Status port is null");
     this.hostname = Objects.requireNonNull(hostname, "Status hostname is null");
+    this.maxThread = maxThread;
   }
 
   public void start() throws Exception {
     if (enabled) {
       final QueuedThreadPool threadPool = new QueuedThreadPool();
       threadPool.setDaemon(true);
-      threadPool.setMaxThreads(5);
+      threadPool.setMaxThreads(maxThread);
       server = new Server(threadPool);
 
       ServerConnector connector = new ServerConnector(server);

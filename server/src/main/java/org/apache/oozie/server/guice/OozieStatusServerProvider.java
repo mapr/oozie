@@ -12,6 +12,7 @@ public class OozieStatusServerProvider implements Provider<OozieStatusServer> {
   public static final String OOZIE_STATUS_SERVER_ENABLED = "oozie.status.server.enabled";
   public static final String OOZIE_STATUS_SERVER_HOSTNAME = "oozie.status.server.hostname";
   public static final String OOZIE_STATUS_SERVER_PORT = "oozie.status.server.port";
+  public static final String OOZIE_STATUS_SERVER_MAX_THREAD = "oozie.status.server.max.threads";
 
   private final Configuration oozieConfiguration;
 
@@ -25,7 +26,8 @@ public class OozieStatusServerProvider implements Provider<OozieStatusServer> {
     boolean enabled = oozieConfiguration.getBoolean(OOZIE_STATUS_SERVER_ENABLED, true);
     int httpPort = oozieConfiguration.getInt(OOZIE_STATUS_SERVER_PORT, 21443);
     String hostname = oozieConfiguration.get(OOZIE_STATUS_SERVER_HOSTNAME, "localhost");
+    int maxThread = oozieConfiguration.getInt(OOZIE_STATUS_SERVER_MAX_THREAD, 10);
 
-    return new OozieStatusServer(enabled, httpPort, hostname);
+    return new OozieStatusServer(enabled, httpPort, hostname, maxThread);
   }
 }
