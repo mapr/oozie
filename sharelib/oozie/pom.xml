@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>5.2.1.0-mapr-710</version>
+        <version>5.2.1.100-mapr-720</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>oozie-sharelib-oozie</artifactId>
-    <version>5.2.1.0-mapr-710</version>
+    <version>5.2.1.100-mapr-720</version>
     <description>Apache Oozie Share Lib Oozie</description>
     <name>Apache Oozie Share Lib Oozie</name>
     <packaging>jar</packaging>
