@@ -96,7 +96,7 @@
          <pig.version>0.17.0.0-mapr-SNAPSHOT</pig.version>
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7.0-mapr-710-SNAPSHOT</sqoop.version>
-         <spark.version>2.4.7.0-mapr-SNAPSHOT</spark.version>
+         <spark.version>3.1.1.0-mapr-SNAPSHOT</spark.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
          <avro.version>1.9.2</avro.version>
@@ -2635,7 +2635,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>2.4.7.0-mapr-SNAPSHOT</spark.version>
+                <spark.version>3.1.1.0-mapr-SNAPSHOT</spark.version>
             </properties>
         </profile>
         <profile>
