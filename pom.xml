@@ -135,7 +135,6 @@
          <slf4j.version>1.7.25</slf4j.version>
          <commons-compress.version>1.20</commons-compress.version>
          <parquet-avro.version>1.11.0</parquet-avro.version>
-         <avatica.version>1.8.0</avatica.version>
     </properties>
 
     <modules>
@@ -1654,12 +1653,6 @@
                         <artifactId>mapr-mini-cluster</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.calcite.avatica</groupId>
-                <artifactId>avatica</artifactId>
-                <version>${avatica.version}</version>
             </dependency>
 
             <dependency>
