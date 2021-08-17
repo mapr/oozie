@@ -160,9 +160,9 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
         <repository>
-            <id>mapr.central</id>
-            <name>MapR Central Repository</name>
-            <url>${env.MAVEN_CENTRAL}</url>
+            <id>mapr.release</id>
+            <name>MapR Releases Repository</name>
+            <url>${env.MAPR_RELEASES_REPO}</url>
         </repository>
     </distributionManagement>
 
@@ -180,16 +180,6 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-        </repository>
-        <repository>
-            <id>mapr.central</id>
-            <url>${env.MAVEN_CENTRAL}</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
         <repository>
             <id>apache.snapshots.repo</id>
