@@ -536,7 +536,7 @@
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
-            <version>${hive.jline.version}</version>
+            <version>${spark.jline.version}</version>
         </dependency>
 
         <dependency>

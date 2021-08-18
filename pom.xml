@@ -97,6 +97,7 @@
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7.0-mapr-710-SNAPSHOT</sqoop.version>
          <spark.version>3.1.2.0-mapr-SNAPSHOT</spark.version>
+         <spark.jline.version>2.14.6</spark.jline.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
          <avro.version>1.9.2</avro.version>
@@ -362,7 +363,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.10</version>
+                <version>1.15</version>
             </dependency>
 
             <dependency>
