@@ -22,12 +22,10 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
-import com.mapr.web.security.SslConfig;
-import com.mapr.web.security.WebSecurityManager;
-import com.mapr.web.security.SslConfig.SslConfigScope;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.oozie.server.guice.OozieGuiceModule;
 import org.apache.oozie.service.ConfigurationService;
 import org.apache.oozie.service.ServiceException;
@@ -64,6 +62,10 @@ public class EmbeddedOozieServer {
     protected static final String OOZIE_HTTPS_TRUSTSTORE_PASS = "oozie.https.truststore.pass";
     protected static final String TRUSTSTORE_PATH_SYSTEM_PROPERTY = "javax.net.ssl.trustStore";
     protected static final String TRUSTSTORE_PASS_SYSTEM_PROPERTY = "javax.net.ssl.trustStorePassword";
+    public static final String SERVER_TRUSTSTORE_PASSWORD = "ssl.server.truststore.password";
+    public static final String SERVER_TRUSTSTORE_LOCATION = "ssl.server.truststore.location";
+    public static final String SSL_SERVER_XML = "ssl-server.xml";
+    public static final String CORE_SITE_XML = "core-site.xml";
     private static String contextPath;
     protected Server server;
     private OozieStatusServer statusServer;
@@ -78,6 +80,7 @@ public class EmbeddedOozieServer {
     private Configuration conf;
     private final RewriteHandler oozieRewriteHandler;
     private final ConstraintSecurityHandler constraintSecurityHandler;
+    private Configuration sslServerConf;
 
     /**
      * Construct Oozie server
@@ -125,6 +128,12 @@ public class EmbeddedOozieServer {
      */
     public void setup() throws URISyntaxException, IOException, ServiceException {
         conf = serviceController.get(ConfigurationService.class).getConf();
+        String hadoopConfPath = System.getProperty("hadoop_conf_directory");
+        if(hadoopConfPath != null) {
+            sslServerConf = new Configuration();
+            sslServerConf.addResource(new Path(hadoopConfPath + SSL_SERVER_XML));
+            sslServerConf.addResource(new Path(hadoopConfPath + CORE_SITE_XML));
+        }
         setContextPath(conf);
         httpPort = getConfigPort(ConfigUtils.OOZIE_HTTP_PORT);
 
@@ -143,7 +152,7 @@ public class EmbeddedOozieServer {
             httpConfiguration.setSecurePort(httpsPort);
             httpConfiguration.setSecureScheme(HttpScheme.HTTPS.asString());
 
-            ServerConnector sslConnector = sslServerConnectorFactory.createSecureServerConnector(httpsPort, conf, server);
+            ServerConnector sslConnector = sslServerConnectorFactory.createSecureServerConnector(httpsPort, conf, sslServerConf, server);
             server.setConnectors(new Connector[]{connector, sslConnector});
             constraintSecurityHandler.setHandler(servletContextHandler);
             handlerCollection.addHandler(constraintSecurityHandler);
@@ -187,9 +196,8 @@ public class EmbeddedOozieServer {
     private void setTrustStore() {
         if (System.getProperty(TRUSTSTORE_PATH_SYSTEM_PROPERTY) == null) {
             String trustStorePath = conf.get(OOZIE_HTTPS_TRUSTSTORE_FILE);
-            if (trustStorePath == null || trustStorePath.equals("")) {
-                SslConfig sslConfig = WebSecurityManager.getSslConfig(SslConfigScope.SCOPE_CLIENT_ONLY);
-                trustStorePath = sslConfig.getClientTruststoreLocation();
+            if ((trustStorePath == null || trustStorePath.equals("")) && sslServerConf != null) {
+                trustStorePath = sslServerConf.get(SERVER_TRUSTSTORE_LOCATION);
             }
             if (trustStorePath != null) {
                 LOG.info("Setting javax.net.ssl.trustStore from config file");
@@ -205,7 +213,14 @@ public class EmbeddedOozieServer {
      */
     private void setTrustStorePassword() {
         if (System.getProperty(TRUSTSTORE_PASS_SYSTEM_PROPERTY) == null) {
-            final String trustStorePassword = conf.get(OOZIE_HTTPS_TRUSTSTORE_PASS);
+            String trustStorePassword = conf.get(OOZIE_HTTPS_TRUSTSTORE_PASS);
+            if ((trustStorePassword == null || trustStorePassword.equals("")) && sslServerConf != null) {
+                try {
+                    trustStorePassword = new String(sslServerConf.getPassword(SERVER_TRUSTSTORE_PASSWORD));
+                } catch (IOException e) {
+                    LOG.error("Can't get truststore password: " + e);
+                }
+            }
             if (trustStorePassword != null) {
                 LOG.info("Setting javax.net.ssl.trustStorePassword from config file");
                 System.setProperty(TRUSTSTORE_PASS_SYSTEM_PROPERTY, trustStorePassword);

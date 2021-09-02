@@ -93,7 +93,7 @@ public class TestSSLServerConnectorFactory {
     public void includeProtocolsCanBeSetViaConfig() throws Exception {
         SSLServerConnectorFactory sslServerConnectorFactory = new SSLServerConnectorFactory(mockSSLContextFactory);
         testConfig.set(OOZIE_HTTPS_INCLUDE_PROTOCOLS, "TLSv1,TLSv1.2");
-        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
 
         verify(mockSSLContextFactory).setIncludeProtocols(
                 "TLSv1",
@@ -102,7 +102,7 @@ public class TestSSLServerConnectorFactory {
 
     @Test
     public void emptyExcludeProtocolsAreNotSet() throws Exception {
-        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
         verify(mockSSLContextFactory, never()).setExcludeProtocols(anyString());
     }
 
@@ -111,7 +111,7 @@ public class TestSSLServerConnectorFactory {
         SSLServerConnectorFactory sslServerConnectorFactory = new SSLServerConnectorFactory(mockSSLContextFactory);
         testConfig.set(OOZIE_HTTPS_INCLUDE_PROTOCOLS, "TLSv1,TLSv1.2");
         testConfig.set(OOZIE_HTTPS_EXCLUDE_PROTOCOLS, "TLSv1");
-        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
 
         verify(mockSSLContextFactory).setIncludeProtocols(
                 "TLSv1",
@@ -123,7 +123,7 @@ public class TestSSLServerConnectorFactory {
 
     @Test
     public void emptyIncludeCipherSuitesAreNotSet() throws Exception {
-        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
         verify(mockSSLContextFactory, never()).setIncludeCipherSuites(anyString());
     }
 
@@ -131,7 +131,7 @@ public class TestSSLServerConnectorFactory {
     public void includeCipherSuitesCanBeSetViaConfig() throws Exception {
         testConfig.set(OOZIE_HTTPS_INCLUDE_CIPHER_SUITES, "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA");
 
-        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
         verify(mockSSLContextFactory).setIncludeCipherSuites("SSL_RSA_EXPORT_WITH_DES40_CBC_SHA");
     }
 
@@ -141,7 +141,7 @@ public class TestSSLServerConnectorFactory {
         testConfig.set(OOZIE_HTTPS_EXCLUDE_CIPHER_SUITES, "TLS_ECDHE_RSA_WITH_RC4_128_SHA,"
                 + "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA,SSL_RSA_EXPORT_WITH_DES40_CBC_SHA");
 
-        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
 
         verify(mockSSLContextFactory).setExcludeCipherSuites(
                 "TLS_ECDHE_RSA_WITH_RC4_128_SHA",
@@ -170,7 +170,7 @@ public class TestSSLServerConnectorFactory {
     }
 
     private void checkHSTSMaxAge(final long expectedMaxAge) {
-        ServerConnector connector = sslServerConnectorFactory.createSecureServerConnector(42, testConfig, mockServer);
+        ServerConnector connector = sslServerConnectorFactory.createSecureServerConnector(42, testConfig, null, mockServer);
         HttpConnectionFactory factory = (HttpConnectionFactory)connector.getConnectionFactory(HttpVersion.HTTP_1_1.asString());
         long actualMaxAge = factory.getHttpConfiguration().getCustomizer(SecureRequestCustomizer.class).getStsMaxAge();
         assertEquals("HSTS max age mismatch", expectedMaxAge, actualMaxAge);

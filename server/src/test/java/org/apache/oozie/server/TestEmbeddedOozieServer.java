@@ -161,14 +161,14 @@ public class TestEmbeddedOozieServer {
         ServerConnector mockSecuredServerConnector = new ServerConnector(embeddedOozieServer.server);
         doReturn(mockSecuredServerConnector)
                 .when(mockSSLServerConnectorFactory)
-                .createSecureServerConnector(anyInt(), any(Configuration.class), any(Server.class));
+                .createSecureServerConnector(anyInt(), any(Configuration.class), any(Configuration.class), any(Server.class));
 
         embeddedOozieServer.setup();
 
         verify(mockJspHandler).setupWebAppContext(isA(WebAppContext.class));
         verify(oozieFilterMapper).addFilters();
         verify(mockSSLServerConnectorFactory).createSecureServerConnector(
-                isA(Integer.class), isA(Configuration.class), isA(Server.class));
+                isA(Integer.class), isA(Configuration.class), any(Configuration.class), isA(Server.class));
         Assert.assertEquals(confTruststoreFile, System.getProperty("javax.net.ssl.trustStore"));
     }
 

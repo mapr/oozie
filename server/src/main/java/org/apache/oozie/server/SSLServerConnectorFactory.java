@@ -22,9 +22,6 @@ package org.apache.oozie.server;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.mapr.web.security.SslConfig;
-import com.mapr.web.security.WebSecurityManager;
-import com.mapr.web.security.SslConfig.SslConfigScope;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.oozie.service.ConfigurationService;
 import org.eclipse.jetty.http.HttpVersion;
@@ -38,6 +35,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -53,11 +51,14 @@ class SSLServerConnectorFactory {
     public static final String OOZIE_HTTPS_INCLUDE_CIPHER_SUITES = "oozie.https.include.cipher.suites";
     public static final String OOZIE_HTTPS_EXCLUDE_CIPHER_SUITES = "oozie.https.exclude.cipher.suites";
     public static final String OOZIE_HSTS_MAX_AGE_SECONDS = "oozie.hsts.max.age.seconds";
+    public static final String SERVER_KEYSTORE_PASSWORD = "ssl.server.keystore.password";
+    public static final String SERVER_KEYSTORE_LOCATION = "ssl.server.keystore.location";
     @VisibleForTesting
     static final long OOZIE_DEFAULT_HSTS_MAX_AGE = 31536000;
 
     private SslContextFactory sslContextFactory;
     private Configuration conf;
+    private Configuration sslServerConf;
 
     @Inject
     public SSLServerConnectorFactory(final SslContextFactory sslContextFactory) {
@@ -73,8 +74,9 @@ class SSLServerConnectorFactory {
      *
      *  @return ServerConnector
     */
-    public ServerConnector createSecureServerConnector(int oozieHttpsPort, Configuration conf, Server server) {
+    public ServerConnector createSecureServerConnector(int oozieHttpsPort, Configuration conf, Configuration sslServerConf, Server server) {
         this.conf = Objects.requireNonNull(conf, "conf is null");
+        this.sslServerConf = sslServerConf;
         Objects.requireNonNull(server, "server is null");
         Preconditions.checkState(oozieHttpsPort >= 1 && oozieHttpsPort <= 65535,
                 String.format("Invalid port number specified: \'%d\'. It should be between 1 and 65535.", oozieHttpsPort));
@@ -139,9 +141,12 @@ class SSLServerConnectorFactory {
 
     private void setKeystorePass() {
         String keystorePass = ConfigurationService.getPassword(conf, OOZIE_HTTPS_KEYSTORE_PASS);
-        if (keystorePass == null || keystorePass.equals("")) {
-            SslConfig sslConfig = WebSecurityManager.getSslConfig(SslConfigScope.SCOPE_CLIENT_ONLY);
-            keystorePass = new String(sslConfig.getClientKeystorePassword());
+        if ((keystorePass == null || keystorePass.equals("")) && sslServerConf != null) {
+            try {
+                keystorePass = new String(sslServerConf.getPassword(SERVER_KEYSTORE_PASSWORD));
+            } catch (IOException e) {
+                LOG.error("Can't get keystore password: " + e);
+            }
         }
         Objects.requireNonNull(keystorePass, "keystorePass is null");
         sslContextFactory.setKeyStorePassword(keystorePass);
@@ -149,9 +154,8 @@ class SSLServerConnectorFactory {
 
     private void setKeyStoreFile() {
         String keystoreFile = conf.get(OOZIE_HTTPS_KEYSTORE_FILE);
-        if (keystoreFile == null || keystoreFile.equals("")) {
-            SslConfig sslConfig = WebSecurityManager.getSslConfig(SslConfigScope.SCOPE_CLIENT_ONLY);
-            keystoreFile = sslConfig.getClientKeystoreLocation();
+        if ((keystoreFile == null || keystoreFile.equals("")) && sslServerConf != null) {
+            keystoreFile = sslServerConf.get(SERVER_KEYSTORE_LOCATION);
         }
         Objects.requireNonNull(keystoreFile, "keystoreFile is null");
         sslContextFactory.setKeyStorePath(keystoreFile);
