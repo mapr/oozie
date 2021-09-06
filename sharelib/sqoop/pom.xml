@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>5.2.1.100-mapr-720</version>
+        <version>5.2.1.100-eep-800</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>oozie-sharelib-sqoop</artifactId>
-    <version>5.2.1.100-mapr-720</version>
+    <version>5.2.1.100-eep-800</version>
     <description>Apache Oozie Share Lib Sqoop</description>
     <name>Apache Oozie Share Lib Sqoop</name>
     <packaging>jar</packaging>
@@ -254,18 +254,6 @@
              <groupId>org.apache.oozie</groupId>
             <artifactId>oozie-sharelib-oozie</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.mapr.security</groupId>
-            <artifactId>mapr-security-web</artifactId>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Teradata dependencies-->
