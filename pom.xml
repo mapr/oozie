@@ -136,6 +136,9 @@
          <slf4j.version>1.7.25</slf4j.version>
          <commons-compress.version>1.20</commons-compress.version>
          <parquet-avro.version>1.11.0</parquet-avro.version>
+        <!-- bc version -->
+        <bcfips.version>1.0.2.1</bcfips.version>
+        <bctlsfips.version>1.0.11.4</bctlsfips.version>
     </properties>
 
     <modules>
@@ -926,6 +929,17 @@
                         <artifactId>protobuf-java</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bc-fips</artifactId>
+                <version>${bcfips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bctls-fips</artifactId>
+                <version>${bctlsfips.version}</version>
             </dependency>
 
             <dependency>

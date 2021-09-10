@@ -39,3 +39,7 @@
 # export OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Djavax.net.ssl.trustStore=/opt/mapr/conf/ssl_truststore"
 
 export OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
+
+# Log level for org.bouncycastle.jsse by default WARN.
+# If you need logs from this library uncomment next line and change WARNING to the INFO
+#### export  OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Doozie.client.bcfks.log.level=WARNING"

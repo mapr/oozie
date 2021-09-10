@@ -94,6 +94,9 @@ setup_jetty_opts() {
   jetty_opts="${jetty_opts} ${MAPR_ECOSYSTEM_SERVER_LOGIN_OPTS}";
   jetty_opts="${jetty_opts} -Dhadoop_conf_directory=${confDir}";
   jetty_opts="${jetty_opts} -Doozie_fqdn=`hostname -f`";
+
+  jetty_opts="${jetty_opts} ${MAPR_COMMON_JAVA_OPTS}"
+
   #JMX opts
   isSecure="false"
   if [ -f "${MAPR_HOME:-/opt/mapr}/conf/mapr-clusters.conf" ]; then

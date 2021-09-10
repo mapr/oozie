@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
+import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 
 /**
  * Factory that is used to configure SSL settings for the Oozie server.
@@ -53,6 +55,8 @@ class SSLServerConnectorFactory {
     public static final String OOZIE_HSTS_MAX_AGE_SECONDS = "oozie.hsts.max.age.seconds";
     public static final String SERVER_KEYSTORE_PASSWORD = "ssl.server.keystore.password";
     public static final String SERVER_KEYSTORE_LOCATION = "ssl.server.keystore.location";
+    public static final String SSL_SERVER_KEYSTORE_TYPE = "ssl.server.keystore.type";
+    public static final String BCFKS_KEYSTORE_TYPE = "bcfks";
     @VisibleForTesting
     static final long OOZIE_DEFAULT_HSTS_MAX_AGE = 31536000;
 
@@ -87,6 +91,15 @@ class SSLServerConnectorFactory {
         setIncludeCipherSuites();
         setExludeCipherSuites();
 
+        if (sslServerConf != null){
+            String keystoreType = sslServerConf.get(SSL_SERVER_KEYSTORE_TYPE);
+            if (keystoreType.equalsIgnoreCase(BCFKS_KEYSTORE_TYPE)) {
+                java.security.Security.addProvider(new BouncyCastleFipsProvider());
+                java.security.Security.addProvider(new BouncyCastleJsseProvider());
+                sslContextFactory.setProvider(BouncyCastleJsseProvider.PROVIDER_NAME);
+                sslContextFactory.setKeyStoreType(BCFKS_KEYSTORE_TYPE);
+            }
+        }
         setKeyStoreFile();
         setKeystorePass();
 

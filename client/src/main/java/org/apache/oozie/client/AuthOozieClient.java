@@ -35,6 +35,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -45,6 +47,10 @@ import org.apache.hadoop.security.authentication.client.AuthenticationException;
 import org.apache.hadoop.security.authentication.client.Authenticator;
 import org.apache.hadoop.security.authentication.client.KerberosAuthenticator;
 import org.apache.hadoop.security.authentication.client.PseudoAuthenticator;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 
 /**
  * This subclass of {@link XOozieClient} supports Kerberos HTTP SPNEGO and simple authentication.
@@ -63,6 +69,15 @@ public class AuthOozieClient extends XOozieClient {
     public static final String USE_AUTH_TOKEN_CACHE_SYS_PROP = "oozie.auth.token.cache";
 
     public static final int AUTH_TOKEN_CACHE_FILENAME_MAXLENGTH = 255;
+
+    public static final String CORE_SITE_XML = "core-site.xml";
+    public static final String SSL_CLIENT_XML = "ssl-client.xml";
+    public static final String SSL_CLIENT_KEYSTORE_TYPE = "ssl.client.keystore.type";
+    public static final String TRUSTSTORE_PASS_SYSTEM_PROPERTY = "javax.net.ssl.trustStorePassword";
+    public static final String TRUSTSTORE_TYPE_SYSTEM_PROPERTY = "javax.net.ssl.trustStoreType";
+    public static final String SSL_SERVER_TRUSTSTORE_PASSWORD = "ssl.server.truststore.password";
+    public static final String BCFKS_KEYSTORE_TYPE = "bcfks";
+    public static final String BCFKS_LOG_LEVEL = "oozie.client.bcfks.log.level";
 
     public enum AuthType {
         KERBEROS, SIMPLE, BASIC
@@ -135,6 +150,8 @@ public class AuthOozieClient extends XOozieClient {
         boolean useAuthFile = System.getProperty(USE_AUTH_TOKEN_CACHE_SYS_PROP, "false").equalsIgnoreCase("true");
         AuthenticatedURL.Token readToken = null;
         AuthenticatedURL.Token currentToken;
+
+        setFIPSPropertiesIfNeed();
 
         // Read the token in from the file
         if (useAuthFile) {
@@ -220,6 +237,33 @@ public class AuthOozieClient extends XOozieClient {
         return conn;
     }
 
+    private void setFIPSPropertiesIfNeed() throws IOException {
+        Configuration conf = new Configuration();
+        String hadoopConfPath = System.getProperty("hadoop_conf_directory");
+        if (hadoopConfPath != null){
+            conf.addResource(new Path(hadoopConfPath + CORE_SITE_XML));
+            conf.addResource(new Path(hadoopConfPath + SSL_CLIENT_XML));
+        } else {
+            System.err.println("Can't find property hadoop_conf_directory");
+        }
+
+        String keystoreType = conf.get(SSL_CLIENT_KEYSTORE_TYPE);
+
+        if (keystoreType.equalsIgnoreCase(BCFKS_KEYSTORE_TYPE)) {
+            String log_level =  System.getProperty(BCFKS_LOG_LEVEL);
+            if (log_level == null || log_level.isEmpty()) log_level = "WARNING";
+            Logger parent = Logger.getLogger("org.bouncycastle.jsse");
+            parent.setLevel(Level.parse(log_level));
+
+            java.security.Security.addProvider(new BouncyCastleFipsProvider());
+            java.security.Security.addProvider(new BouncyCastleJsseProvider());
+
+            String trustorePass = new String(conf.getPassword(SSL_SERVER_TRUSTSTORE_PASSWORD));
+
+            System.setProperty(TRUSTSTORE_TYPE_SYSTEM_PROPERTY,BCFKS_KEYSTORE_TYPE);
+            System.setProperty(TRUSTSTORE_PASS_SYSTEM_PROPERTY, trustorePass);
+        }
+    }
     private static long getExpirationTime(AuthenticatedURL.Token token) {
         long expires = 0L;
         String[] splits = token.toString().split("&");

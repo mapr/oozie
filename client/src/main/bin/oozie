@@ -47,6 +47,10 @@ if [ -r "${BASEDIR}/conf/oozie-client-env.sh" ]; then
   source "${BASEDIR}/conf/oozie-client-env.sh"
 fi
 
+if [ -r "${MAPR_CONF_DIR}/conf/env_override.sh" ]; then
+  source "${MAPR_CONF_DIR}/conf/env_override.sh"
+fi
+
 if [ "${OOZIE_URL}" = "" ]; then
   case "$MAPR_SECURITY_STATUS" in
   true)
@@ -82,14 +86,27 @@ else
     JAVA_BIN=${JAVA_HOME}/bin/java
 fi
 
+confDir="hadoop-conf"
+hadoopVersionFile=/opt/mapr/conf/hadoop_version
+if [ -f ${hadoopVersionFile} ]; then
+  hadoopVersion=`cat ${hadoopVersionFile} | grep yarn_version | cut -d '=' -f 2`
+  confDir=/opt/mapr/hadoop/hadoop-${hadoopVersion}/etc/hadoop/
+else
+  echo "Unknown hadoop version"
+fi
+
 JAVA_PROPERTIES="${JAVA_PROPERTIES} -Djava.library.path=${JAVA_LIBRARY_PATH}:/opt/mapr/lib"
 
 # Prime OOZIE_CLIENT_OPTS with JAVA_PROPERTIES for backwards compatibility
 OOZIE_CLIENT_OPTS="${JAVA_PROPERTIES} ${OOZIE_CLIENT_OPTS}"
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dhadoop_conf_directory=${confDir}"
 
 if [ "$MAPR_SECURITY_STATUS" = "true" ]; then
   OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dauthenticator.class=com.mapr.security.maprauth.MaprAuthenticator"
 fi
+
+OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} ${MAPR_COMMON_JAVA_OPTS}"
+
 #MAPR 21848 - Disable retry HTTP POST command
 OOZIE_CLIENT_OPTS="${OOZIE_CLIENT_OPTS} -Dsun.net.http.retryPost=false"
 
