@@ -131,8 +131,8 @@ public class EmbeddedOozieServer {
         String hadoopConfPath = System.getProperty("hadoop_conf_directory");
         if(hadoopConfPath != null) {
             sslServerConf = new Configuration();
-            sslServerConf.addResource(new Path(hadoopConfPath + SSL_SERVER_XML));
             sslServerConf.addResource(new Path(hadoopConfPath + CORE_SITE_XML));
+            sslServerConf.addResource(new Path(hadoopConfPath + SSL_SERVER_XML));
         }
         setContextPath(conf);
         httpPort = getConfigPort(ConfigUtils.OOZIE_HTTP_PORT);
