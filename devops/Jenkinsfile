@@ -90,7 +90,7 @@ pipeline {
                     rm -rf ${PROJECT}; git clone --progress --verbose git@github.com:mapr/private-pkg.git ${PROJECT}; \
                     cd ${PROJECT}; \
                     git checkout MEP-7.0.0 ; \
-                    make ${PROJECT}-mep-6.3 TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
+                    make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
                     """
                   }
                 }
@@ -150,8 +150,8 @@ pipeline {
                     rm -rf ${PROJECT}; git clone --progress --verbose git@github.com:mapr/private-pkg.git ${PROJECT}; \
                     cd ${PROJECT}; \
                     git checkout MEP-7.0.0 ; \
-                    make ${PROJECT}-mep-6.3 TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
-                    make ${PROJECT}-mep-6.3-deploy TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
+                    make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
+                    make ${PROJECT}-deploy TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
                     """
                   }
                 }
