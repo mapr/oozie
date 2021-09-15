@@ -74,6 +74,9 @@ pipeline {
                   -e MAVEN_CENTRAL=${MAVEN_CENTRAL} \
                   -e MAPR_MAVEN_REPO=${MAPR_MAVEN_REPO} \
                   -e BUILD_NUMBER=${ID}.${BUILD_NUMBER} \
+                  -e JAVA_HOME=/opt/jdk-1.8.0 \
+                  -e ANT_HOME=/opt/apache-ant-1.8.2 \
+                  -e MAVEN_HOME=/opt/maven \
                   -e ANT_OPTS=\"-Xms1536m -Xmx1536m -XX:PermSize=4096m -XX:MaxPermSize=4096m -Dhttp.proxyHost=${HPE_PROXY_HOST} -Dhttp.proxyPort=${HPE_PROXY_PORT} -Dhttps.proxyHost=${HPE_PROXY_HOST} -Dhttps.proxyPort=${HPE_PROXY_PORT} -Dhttp.nonProxyHosts='${HPE_PROXY_EXCEPTIONS}'\" \
                   -e MAVEN_OPTS=\"-Xms1536m -Xmx1536m -XX:PermSize=4096m -XX:MaxPermSize=4096m -Dhttp.proxyHost=${HPE_PROXY_HOST} -Dhttp.proxyPort=${HPE_PROXY_PORT} -Dhttps.proxyHost=${HPE_PROXY_HOST} -Dhttps.proxyPort=${HPE_PROXY_PORT} -Dhttp.nonProxyHosts='${HPE_PROXY_EXCEPTIONS}'\" \
                   -e MAPR_RELEASES_REPO=${MAPR_RELEASES_REPO} \
@@ -89,7 +92,7 @@ pipeline {
                     sh """
                     rm -rf ${PROJECT}; git clone --progress --verbose git@github.com:mapr/private-pkg.git ${PROJECT}; \
                     cd ${PROJECT}; \
-                    git checkout MEP-7.0.0 ; \
+                    git checkout MEP-4.0.0 ; \
                     make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
                     """
                   }
@@ -133,6 +136,9 @@ pipeline {
                   -e MAVEN_CENTRAL=${MAVEN_CENTRAL} \
                   -e MAPR_MAVEN_REPO=${MAPR_MAVEN_REPO} \
                   -e BUILD_NUMBER=${ID}.${BUILD_NUMBER} \
+                  -e JAVA_HOME=/opt/jdk-1.8.0 \
+                  -e ANT_HOME=/opt/apache-ant-1.8.2 \
+                  -e MAVEN_HOME=/opt/maven \
                   -e ANT_OPTS=\"-Xms1536m -Xmx1536m -XX:PermSize=4096m -XX:MaxPermSize=4096m -Dhttp.proxyHost=${HPE_PROXY_HOST} -Dhttp.proxyPort=${HPE_PROXY_PORT} -Dhttps.proxyHost=${HPE_PROXY_HOST} -Dhttps.proxyPort=${HPE_PROXY_PORT} -Dhttp.nonProxyHosts='${HPE_PROXY_EXCEPTIONS}'\" \
                   -e MAVEN_OPTS=\"-Xms1536m -Xmx1536m -XX:PermSize=4096m -XX:MaxPermSize=4096m -Dhttp.proxyHost=${HPE_PROXY_HOST} -Dhttp.proxyPort=${HPE_PROXY_PORT} -Dhttps.proxyHost=${HPE_PROXY_HOST} -Dhttps.proxyPort=${HPE_PROXY_PORT} -Dhttp.nonProxyHosts='${HPE_PROXY_EXCEPTIONS}'\" \
                   -e MAPR_RELEASES_REPO=${MAPR_RELEASES_REPO} \
@@ -149,7 +155,7 @@ pipeline {
                     sh """
                     rm -rf ${PROJECT}; git clone --progress --verbose git@github.com:mapr/private-pkg.git ${PROJECT}; \
                     cd ${PROJECT}; \
-                    git checkout MEP-7.0.0 ; \
+                    git checkout MEP-4.0.0 ; \
                     make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
                     make ${PROJECT}-deploy TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
                     """
