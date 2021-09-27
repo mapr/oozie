@@ -22,12 +22,12 @@
     <parent>
         <artifactId>oozie-fluent-job</artifactId>
         <groupId>org.apache.oozie</groupId>
-        <version>5.1.0.600-mapr-634</version>
+        <version>5.1.0.700-mapr-635</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>oozie-fluent-job-client</artifactId>
-    <version>5.1.0.600-mapr-634</version>
+    <version>5.1.0.700-mapr-635</version>
     <description>Apache Oozie Fluent Job Client</description>
     <name>Apache Oozie Fluent Job Client</name>
     <packaging>jar</packaging>

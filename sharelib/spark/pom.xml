@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>5.1.0.600-mapr-634</version>
+        <version>5.1.0.700-mapr-635</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>oozie-sharelib-spark</artifactId>
-    <version>5.1.0.600-mapr-634</version>
+    <version>5.1.0.700-mapr-635</version>
     <description>Apache Oozie Share Lib Spark</description>
     <name>Apache Oozie Share Lib Spark</name>
     <packaging>jar</packaging>
@@ -725,7 +725,7 @@
         <dependency>
             <artifactId>zookeeper</artifactId>
             <groupId>org.apache.zookeeper</groupId>
-            <version>3.4.11-mapr-SNAPSHOT</version>
+            <version>3.4.11-mapr-1808</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>

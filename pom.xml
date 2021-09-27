@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oozie</groupId>
     <artifactId>oozie-main</artifactId>
-    <version>5.1.0.600-mapr-634</version>
+    <version>5.1.0.700-mapr-635</version>
     <description>Apache Oozie Main</description>
     <name>Apache Oozie Main</name>
     <packaging>pom</packaging>
@@ -91,12 +91,12 @@
 
 
          <!-- Sharelib component versions -->
-         <hive.version>2.3.6-mapr-SNAPSHOT</hive.version>
+         <hive.version>2.3.6-mapr-2110</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
-         <pig.version>0.16.0-mapr-SNAPSHOT</pig.version>
+         <pig.version>0.16.0-mapr-2110</pig.version>
          <hive.classifier>core</hive.classifier>
-         <sqoop.version>1.4.7-mapr</sqoop.version>
-         <spark.version>2.4.4.0-mapr-SNAPSHOT</spark.version>
+         <sqoop.version>1.4.7-mapr-635</sqoop.version>
+         <spark.version>2.4.4.400-mapr-635</spark.version>
          <spark.streaming.kafka.version>1.6.1</spark.streaming.kafka.version>
          <spark.bagel.version>1.6.1</spark.bagel.version>
          <guava.version>14.0.1</guava.version>
@@ -105,9 +105,9 @@
          <kite.version>1.1.0</kite.version>
          <avro.version>1.8.1</avro.version>
          <teradata.version>1.5.4</teradata.version>
-         <tez.version>0.9.1-mapr</tez.version>
-         <mapr.version>6.1.0-mapr-SNAPSHOT</mapr.version>
-         <kafka.version>1.1.1-mapr-SNAPSHOT</kafka.version>
+         <tez.version>0.9.1-mapr-2104</tez.version>
+         <mapr.version>6.1.0-mapr</mapr.version>
+         <kafka.version>1.1.1-mapr-2104</kafka.version>
 
          <jetty.version>9.4.41.v20210516</jetty.version>
 
@@ -2559,7 +2559,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>2.4.0.0-mapr-SNAPSHOT</spark.version>
+                <spark.version>2.4.4.400-mapr-635</spark.version>
                 <spark.streaming.kafka.version>1.6.2</spark.streaming.kafka.version>
                 <spark.bagel.version>1.6.2</spark.bagel.version>
             </properties>

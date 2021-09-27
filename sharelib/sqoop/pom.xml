@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.oozie</groupId>
         <artifactId>oozie-main</artifactId>
-        <version>5.1.0.600-mapr-634</version>
+        <version>5.1.0.700-mapr-635</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>oozie-sharelib-sqoop</artifactId>
-    <version>5.1.0.600-mapr-634</version>
+    <version>5.1.0.700-mapr-635</version>
     <description>Apache Oozie Share Lib Sqoop</description>
     <name>Apache Oozie Share Lib Sqoop</name>
     <packaging>jar</packaging>
