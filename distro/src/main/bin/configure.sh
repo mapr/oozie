@@ -152,6 +152,8 @@ copyMaprLibs() {
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-jute-[0-9].*.jar" 2> /dev/null
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "mapr-security-web*.jar" -not -name "*test*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/" "${JETTY_LIB_DIR}" -iname "bctls-fips*.jar" -not -name "*test*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/" "${JETTY_LIB_DIR}" -iname "bc-fips*.jar" -not -name "*test*.jar" 2> /dev/null
 
   ln -sf ${MAPR_HOME}/lib/slf4j-log4j12-*  ${JETTY_LIB_DIR}
 }
