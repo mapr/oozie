@@ -301,6 +301,12 @@
             <artifactId>spark-hive-thriftserver_${spark.scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-exec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
