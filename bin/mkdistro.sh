@@ -68,7 +68,7 @@ setRevUrl
 MVN_OPTS="-Dbuild.time=${DATETIME} -Dvc.revision=${VC_REV} -Dvc.url=${VC_URL} -DgenerateDocs"
 
 export DATETIME2=`date -u "+%Y%m%d-%H%M%SGMT"`
-mvn clean package assembly:single ${MVN_OPTS} "$@"
+mvn clean package -U assembly:single ${MVN_OPTS} "$@"
 
 if [ "$?" -ne "0" ]; then
   echo
