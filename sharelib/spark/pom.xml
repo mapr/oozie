@@ -137,10 +137,6 @@
                     <artifactId>jjwt</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-util</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.kohsuke</groupId>
                     <artifactId>libpam4j</artifactId>
                 </exclusion>
@@ -716,6 +712,11 @@
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
             <version>1.4.01</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
         </dependency>
 
         <dependency>

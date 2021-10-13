@@ -104,6 +104,8 @@ copyExtraLib(){
   fi
   findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/oozie" -name "mapr-ojai-driver-*.jar" -not -name "*tests*.jar"
   findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -name "maprbuildversion-*.jar" -not -name "*tests*.jar"
+  findAndCopyJar "$HADOOP_HOME" "$OOZIE_HOME/share/lib/spark" -name "hadoop-common*.jar" -not -name "*tests*.jar"
+  findAndCopyJar "$HADOOP_HOME" "$OOZIE_HOME/share/lib/spark" -name "hadoop-mapreduce-client-core*.jar" -not -name "*tests*.jar"
   rm -f "$OOZIE_HOME/share/lib/spark/zookeeper-*"
   rm -f "$OOZIE_HOME/share/lib/pig/zookeeper-*"
   rm -f "$OOZIE_HOME/share/lib/hive/zookeeper-*"
