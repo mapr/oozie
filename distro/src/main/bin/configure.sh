@@ -106,8 +106,6 @@ copyExtraLib(){
   findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -name "maprbuildversion-*.jar" -not -name "*tests*.jar"
   findAndCopyJar "$HADOOP_HOME" "$OOZIE_HOME/share/lib/spark" -name "hadoop-common*.jar" -not -name "*tests*.jar"
   findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -name "mapr-security-web*.jar" -not -name "*tests*.jar"
-  findAndCopyJar "$HADOOP_HOME" "$OOZIE_HOME/share/lib/sqoop" -name "hadoop-common*.jar" -not -name "*tests*.jar"
-  findAndCopyJar "$MAPR_HOME" "$OOZIE_HOME/share/lib/sqoop" -name "zookeeper-jute*.jar" -not -name "*tests*.jar"
 }
 
 configureOozieJMX() {
