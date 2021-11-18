@@ -2029,7 +2029,7 @@
             <dependency>
                 <groupId>guru.nidi</groupId>
                 <artifactId>graphviz-java</artifactId>
-                <version>0.7.0</version>
+                <version>0.18.1</version>
             </dependency>
 
             <!-- Fluent Job API conversion to XML -->
