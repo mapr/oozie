@@ -96,7 +96,7 @@
          <pig.version>0.17.0.0-eep-SNAPSHOT</pig.version>
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7.100-eep-800-SNAPSHOT</sqoop.version>
-         <spark.version>3.1.2.0-eep-SNAPSHOT</spark.version>
+         <spark.version>3.2.0.0-eep-SNAPSHOT</spark.version>
          <spark.jline.version>2.14.6</spark.jline.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
@@ -2659,7 +2659,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>3.1.2.0-eep-SNAPSHOT</spark.version>
+                <spark.version>3.2.0.0-eep-SNAPSHOT</spark.version>
             </properties>
         </profile>
         <profile>
