@@ -80,7 +80,7 @@
         </oozie.test.default.config.file>
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
-        <hadoop.version>2.7.6.0-eep-800-SNAPSHOT</hadoop.version>
+        <hadoop.version>2.7.6.200-eep-810-SNAPSHOT</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
         <hbase.version>1.4.13.0-eep-810-SNAPSHOT</hbase.version>
