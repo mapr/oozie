@@ -105,7 +105,7 @@ public class GraphVisualization {
             return;
         }
 
-        final MutableGraph mg = Parser.read(graphToDot(graph));
+        final MutableGraph mg = new Parser().read(graphToDot(graph));
         mg.setName(fileName);
 
         try {
@@ -125,7 +125,7 @@ public class GraphVisualization {
             return;
         }
 
-        final MutableGraph mg = Parser.read(workflowToDot(workflow));
+        final MutableGraph mg = new Parser().read(workflowToDot(workflow));
         mg.setName(fileName);
 
         try {
