@@ -109,9 +109,9 @@ import org.apache.oozie.util.PropertiesUtils;
 import org.apache.oozie.util.XConfiguration;
 import org.apache.oozie.util.XLog;
 import org.apache.oozie.util.XmlUtils;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -1895,7 +1895,7 @@ public class JavaActionExecutor extends ActionExecutor {
      * @param action the Workflow action
      * @param context executor context
      * @throws org.apache.oozie.service.HadoopAccessorException if FS is not accessible
-     * @throws org.jdom.JDOMException if XML parsing error occurs
+     * @throws org.jdom2.JDOMException if XML parsing error occurs
      * @throws java.io.IOException if IO error occurs
      * @throws java.net.URISyntaxException if processed uri is not a proper URI
      *

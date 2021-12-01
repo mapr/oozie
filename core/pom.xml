@@ -325,8 +325,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.jdom</artifactId>
             <scope>compile</scope>
         </dependency>
 

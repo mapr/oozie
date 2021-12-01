@@ -25,7 +25,7 @@ import org.apache.oozie.action.ActionExecutorException;
 import org.apache.oozie.service.ConfigurationService;
 import org.apache.oozie.util.StringUtils;
 import org.apache.oozie.util.XLog;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import java.util.ArrayList;
 import java.util.List;

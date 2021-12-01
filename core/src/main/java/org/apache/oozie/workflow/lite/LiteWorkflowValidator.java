@@ -36,8 +36,8 @@ import org.apache.oozie.service.Services;
 import org.apache.oozie.util.ParamChecker;
 import org.apache.oozie.util.XmlUtils;
 import org.apache.oozie.workflow.WorkflowException;
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 
 public class LiteWorkflowValidator {
 
