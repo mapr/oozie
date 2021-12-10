@@ -52,6 +52,8 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.yarn.security.AMRMTokenIdentifier;
 import org.apache.oozie.action.hadoop.security.LauncherSecurityManager;
+import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 
 public class LauncherAM {
     public static final String OOZIE_ACTION_CONF_XML = "oozie.action.conf.xml";
@@ -92,6 +94,9 @@ public class LauncherAM {
     public static final String ACTION_CONF_XML = "action.xml";
     public static final String ACTION_DATA_FINAL_STATUS = "final.status";
     public static final String OOZIE_SUBMITTER_USER = "oozie.submitter.user";
+
+    public static final String SSL_CLIENT_KEYSTORE_TYPE = "ssl.client.keystore.type";
+    public static final String BCFKS_KEYSTORE_TYPE = "bcfks";
 
     @VisibleForTesting
     private static final SystemEnvironment sysenv = new SystemEnvironment();
@@ -137,6 +142,14 @@ public class LauncherAM {
     public static void main(String[] args) throws Exception {
         final LocalFsOperations localFsOperations = new LocalFsOperations();
         final Configuration launcherConf = readLauncherConfiguration(localFsOperations);
+
+        String keystoreType = launcherConf.get(SSL_CLIENT_KEYSTORE_TYPE);
+
+        if (keystoreType.equalsIgnoreCase(BCFKS_KEYSTORE_TYPE)) {
+            java.security.Security.addProvider(new BouncyCastleFipsProvider());
+            java.security.Security.addProvider(new BouncyCastleJsseProvider());
+        }
+
         UserGroupInformation.setConfiguration(launcherConf);
         // MRAppMaster adds this call as well, but it's included only in Hadoop 2.9+
         // SecurityUtil.setConfiguration(launcherConf);

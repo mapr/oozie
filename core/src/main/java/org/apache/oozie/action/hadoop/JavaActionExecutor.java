@@ -168,6 +168,7 @@ public class JavaActionExecutor extends ActionExecutor {
 
     private static final String JAVA_MAIN_CLASS_NAME = "org.apache.oozie.action.hadoop.JavaMain";
     private static final String HADOOP_JOB_NAME = "mapred.job.name";
+    private static final String JAVA_SECURITY_PROPERTIES = "java.security.properties";
     static final Set<String> DISALLOWED_PROPERTIES = ImmutableSet.of(
             OozieClient.USER_NAME, MRJobConfig.USER_NAME, HADOOP_NAME_NODE, HADOOP_YARN_RM
     );
@@ -1317,6 +1318,7 @@ public class JavaActionExecutor extends ActionExecutor {
         final List<String> vargs = new ArrayList<String>(6);
 
         String launcherLogLevel = launcherJobConf.get(LauncherAM.OOZIE_LAUNCHER_LOG_LEVEL_PROPERTY);
+
         if (Strings.isNullOrEmpty(launcherLogLevel)) {
             launcherLogLevel = "INFO";
         }
@@ -1331,6 +1333,19 @@ public class JavaActionExecutor extends ActionExecutor {
         vargs.add("-Dhadoop.root.logger=" + launcherLogLevel + ",CLA");
         vargs.add("-Dhadoop.root.logfile=" + TaskLog.LogName.SYSLOG);
         vargs.add("-Dsubmitter.user=" + context.getWorkflow().getUser());
+
+        String keystoreType = launcherJobConf.get(LauncherAM.SSL_CLIENT_KEYSTORE_TYPE);
+
+        if (keystoreType.equalsIgnoreCase(LauncherAM.BCFKS_KEYSTORE_TYPE)) {
+            String propepty = System.getProperty(JAVA_SECURITY_PROPERTIES);
+            if (propepty == null){
+                propepty =  System.getenv(JAVA_SECURITY_PROPERTIES);
+            }
+
+            if (propepty != null){
+                vargs.add("-D"+JAVA_SECURITY_PROPERTIES+"="+propepty);
+            }
+        }
 
         return vargs;
     }
