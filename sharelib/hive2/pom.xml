@@ -299,6 +299,11 @@
             <artifactId>jline</artifactId>
             <version>${hive.jline.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

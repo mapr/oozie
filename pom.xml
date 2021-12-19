@@ -136,9 +136,11 @@
          <slf4j.version>1.7.25</slf4j.version>
          <commons-compress.version>1.21</commons-compress.version>
          <parquet-avro.version>1.11.0</parquet-avro.version>
-        <!-- bc version -->
-        <bcfips.version>1.0.2.1</bcfips.version>
-        <bctlsfips.version>1.0.11.4</bctlsfips.version>
+         <disruptor.version>3.4.2</disruptor.version>
+
+         <!-- bc version -->
+         <bcfips.version>1.0.2.1</bcfips.version>
+         <bctlsfips.version>1.0.11.4</bctlsfips.version>
     </properties>
 
     <modules>
@@ -1652,6 +1654,12 @@
                         <artifactId>mapr-mini-cluster</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
             </dependency>
 
             <dependency>
