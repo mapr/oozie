@@ -3,6 +3,7 @@
 MAPR_HOME=${MAPR_HOME:-/opt/mapr}
 OOZIE_VERSION=`cat $MAPR_HOME/oozie/oozieversion`
 OOZIE_HOME="$MAPR_HOME"/oozie/oozie-"$OOZIE_VERSION"
+OOZIE_LOG_DIR="${OOZIE_HOME}"/logs
 JETTY_LIB_DIR="${OOZIE_HOME}"/embedded-oozie-server/webapp/WEB-INF/lib/
 OOZIE_BIN="$OOZIE_HOME"/bin
 MAPR_CONF_DIR="${MAPR_HOME}/conf/"
@@ -156,6 +157,10 @@ copyMaprLibs() {
   ln -sf ${MAPR_HOME}/lib/slf4j-log4j12-*  ${JETTY_LIB_DIR}
 }
 
+configureOozieSetup() {
+  $OOZIE_HOME/bin/oozie-setup.sh >> "${OOZIE_LOG_DIR}"/oozie-setup.log 2>&1
+}
+
 #
 # main
 #
@@ -232,7 +237,7 @@ fi
 extractSharelib
 copyExtraLib
 copyMaprLibs
-#build oozie war file
+configureOozieSetup
 changeOoziePermission
 configureOozieJMX
 configureClientImpersonation
