@@ -103,10 +103,10 @@ copyExtraLib(){
   if [ ! -f $OOZIE_HOME/libext/mysql* ]; then
       cp $MAPR_HOME/lib/mysql* $OOZIE_HOME/libext/
   fi
-  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/oozie" -name "mapr-ojai-driver-*.jar" -not -name "*tests*.jar"
-  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -name "maprbuildversion-*.jar" -not -name "*tests*.jar"
-  findAndCopyJar "$HADOOP_HOME" "$OOZIE_HOME/share/lib/spark" -name "hadoop-common*.jar" -not -name "*tests*.jar"
-  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" -name "mapr-security-web*.jar" -not -name "*tests*.jar"
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/oozie" "mapr-ojai-driver-*.jar"
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" "maprbuildversion-*.jar"
+  findAndCopyJar "$HADOOP_HOME" "$OOZIE_HOME/share/lib/spark" "hadoop-common*.jar"
+  findAndCopyJar "$MAPR_HOME/lib" "$OOZIE_HOME/share/lib/spark" "mapr-security-web*.jar"
 }
 
 configureOozieJMX() {
@@ -119,9 +119,12 @@ configureOozieJMX() {
 findAndCopyJar() {
    local sourceDir="${1}"
    local targetDir="${2}"
-   shift 2
-   local filters="$@"
-   foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
+   local fileName="${3}"
+
+   filters="-name ${fileName} -not -name *test*.jar -not -name *sources*.jar"
+
+   foundJar="$(find -H ${sourceDir} ${filters} -print -quit)"
+
    test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*[.0-9].jar" -print -quit)"
    test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*SNAPSHOT.jar" -print -quit)"
    test -z "$foundJar" && foundJar="$(find -H ${sourceDir} ${filters} -name "*beta.jar" -print -quit)"
@@ -142,23 +145,26 @@ copyMaprLibs() {
   local suffix="-[0-9.]*"
   local hadoopJars="hadoop-mapreduce-client-contrib${suffix}.jar:hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:commons-configuration-*.jar"
   for jar in ${hadoopJars//:/$'\n'}; do
-    findAndCopyJar "${HADOOP_HOME}" "${JETTY_LIB_DIR}" -iname "${jar}" || exit -1
+    findAndCopyJar "${HADOOP_HOME}" "${JETTY_LIB_DIR}" "${jar}"
+     if [ "$?" -ne 0 ]; then
+        exit -1
+     fi
   done
 
   # move mapr jars if available
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "JPam-[0-9].*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-[0-9].*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "zookeeper-jute-[0-9].*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "maprfs-[0-9].*jar" -not -name "*test*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "bc-fips-*.jar" -not -name "*tests*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "bctls-fips-*.jar" -not -name "*tests*.jar" 2> /dev/null
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" -iname "mapr-security-web*.jar" -not -name "*test*.jar" 2> /dev/null
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "JPam-[0-9].*.jar"
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "zookeeper-[0-9].*.jar"
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "zookeeper-jute-[0-9].*.jar"
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "maprfs-[0-9].*jar"
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "bc-fips-*.jar"
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "bctls-fips-*.jar"
+  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "mapr-security-web*.jar"
 
   ln -sf ${MAPR_HOME}/lib/slf4j-log4j12-*  ${JETTY_LIB_DIR}
 }
 
 configureOozieSetup() {
-  $OOZIE_HOME/bin/oozie-setup.sh >> "${OOZIE_LOG_DIR}"/oozie-setup.log 2>&1
+  $OOZIE_HOME/bin/oozie-setup.sh >> "${OOZIE_LOG_DIR}/oozie-setup.log" 2>&1
 }
 
 #
