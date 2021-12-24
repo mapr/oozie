@@ -30,6 +30,11 @@
         <fileSet>
             <directory>${basedir}/src/main/apps</directory>
             <outputDirectory>/examples/apps</outputDirectory>
+            <excludes>
+                <exclude>pig/**</exclude>
+                <exclude>sqoop/**</exclude>
+                <exclude>sqoop-freeform/**</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>${basedir}/../sharelib/spark/src/main/resources</directory>
