@@ -321,6 +321,10 @@
                     <groupId>net.sf.jpam</groupId>
                     <artifactId>jpam</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bc-fips</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

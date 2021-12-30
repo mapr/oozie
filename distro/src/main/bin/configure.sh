@@ -156,9 +156,10 @@ copyMaprLibs() {
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "zookeeper-[0-9].*.jar"
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "zookeeper-jute-[0-9].*.jar"
   findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "maprfs-[0-9].*jar"
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "bc-fips-*.jar"
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "bctls-fips-*.jar"
-  findAndCopyJar "${MAPR_HOME}/lib" "${JETTY_LIB_DIR}" "mapr-security-web*.jar"
+
+  # copy fips library
+  findAndCopyJar "${HADOOP_HOME}/share/hadoop/common/lib" "${JETTY_LIB_DIR}" "bc-fips-*.jar"
+  findAndCopyJar "${HADOOP_HOME}/share/hadoop/common/lib" "${JETTY_LIB_DIR}" "bctls-fips-*.jar"
 
   ln -sf ${MAPR_HOME}/lib/slf4j-log4j12-*  ${JETTY_LIB_DIR}
 }
