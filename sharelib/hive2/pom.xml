@@ -253,12 +253,6 @@
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-maprdb-json-handler</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
