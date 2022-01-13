@@ -165,6 +165,9 @@ copyMaprLibs() {
 }
 
 configureOozieSetup() {
+  if [ ! -d ${OOZIE_LOG_DIR} ]; then
+    mkdir -p ${OOZIE_LOG_DIR}
+  fi
   $OOZIE_HOME/bin/oozie-setup.sh >> "${OOZIE_LOG_DIR}/oozie-setup.log" 2>&1
 }
 
