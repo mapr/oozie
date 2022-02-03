@@ -80,10 +80,10 @@
         </oozie.test.default.config.file>
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
-        <hadoop.version>2.7.6.200-eep-810-SNAPSHOT</hadoop.version>
+        <hadoop.version>2.7.6.200-eep-810</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
-        <hbase.version>1.4.13.0-eep-810-SNAPSHOT</hbase.version>
+        <hbase.version>1.4.13.200-eep-810</hbase.version>
 
         <dropwizard.metrics.version>3.1.2</dropwizard.metrics.version>
 
@@ -91,12 +91,12 @@
 
 
          <!-- Sharelib component versions -->
-         <hive.version>2.3.9.0-eep-810-SNAPSHOT</hive.version>
+         <hive.version>2.3.9.0-eep-810</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
-         <pig.version>0.17.0.0-eep-SNAPSHOT</pig.version>
+         <pig.version>0.17.0.200-eep</pig.version>
          <hive.classifier>core</hive.classifier>
-         <sqoop.version>1.4.7.100-eep-800-SNAPSHOT</sqoop.version>
-         <spark.version>3.2.0.0-eep-SNAPSHOT</spark.version>
+         <sqoop.version>1.4.7.100-eep-800</sqoop.version>
+         <spark.version>3.2.0.0-eep-810</spark.version>
          <spark.jline.version>2.14.6</spark.jline.version>
          <sqoop.classifier>hadoop260</sqoop.classifier>
          <joda.time.version>2.9.9</joda.time.version>
@@ -105,9 +105,9 @@
          <spark.bagel.scala.binary.version>2.11</spark.bagel.scala.binary.version>
          <kite.version>1.1.0</kite.version>
          <teradata.version>1.5.4</teradata.version>
-         <tez.version>0.9.2.0-eep-SNAPSHOT</tez.version>
-         <mapr.version>7.0.0.0-mapr-SNAPSHOT</mapr.version>
-         <kafka.version>2.6.1.0-eep-SNAPSHOT</kafka.version>
+         <tez.version>0.9.2.400-eep-810</tez.version>
+         <mapr.version>6.2.0.0-mapr</mapr.version>
+         <kafka.version>2.6.1.100-eep-810</kafka.version>
 
          <jetty.version>9.4.44.v20210927</jetty.version>
          <apache.jsp.version>8.0.33</apache.jsp.version>
@@ -955,7 +955,7 @@
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>3.5.6.0-mapr-SNAPSHOT</version>
+                <version>3.5.6.0-mapr-2009</version>
             </dependency>
 
             <dependency>
@@ -2614,7 +2614,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spark.version>3.2.0.0-eep-SNAPSHOT</spark.version>
+                <spark.version>3.2.0.0-eep-810</spark.version>
             </properties>
         </profile>
         <profile>
