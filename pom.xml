@@ -93,7 +93,7 @@
          <!-- Sharelib component versions -->
          <hive.version>2.3.9.0-eep-810</hive.version>
          <hive.jline.version>2.12</hive.jline.version>
-         <pig.version>0.17.0.200-eep</pig.version>
+         <pig.version>0.17.0.100-eep-800</pig.version>
          <hive.classifier>core</hive.classifier>
          <sqoop.version>1.4.7.100-eep-800</sqoop.version>
          <spark.version>3.2.0.0-eep-810</spark.version>
