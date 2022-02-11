@@ -196,6 +196,14 @@
             </snapshots>
         </repository>
         <repository>
+            <id>maven.public.repo</id>
+            <url>https://repo1.maven.org/maven2/</url>
+            <name>Maven Public Repository</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>redhat</id>
             <url>https://maven.repository.redhat.com/ga/</url>
             <snapshots>
